@@ -1,5 +1,6 @@
 import { itemDefinitions } from "../data/items.js";
 import { assetPath } from "../utils/assetPath.js";
+import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const goldIconSrc = assetPath("assets/inventaire/or.png");
 const maxQuantityWheelItems = 5;
@@ -164,11 +165,14 @@ export class MapShopFlow {
         if (resolved) return;
         if (selectedIndex < quantities.length && maxQuantity <= 0) return;
         resolved = true;
+        nativeHaptic("medium");
         cleanup();
         resolve(selectedIndex < quantities.length ? quantities[selectedIndex] : null);
       };
       const select = (nextIndex) => {
-        selectedIndex = clampIndex(nextIndex, focusableCount);
+        const normalizedIndex = clampIndex(nextIndex, focusableCount);
+        if (normalizedIndex !== selectedIndex) nativeHaptic("light");
+        selectedIndex = normalizedIndex;
         render();
       };
       const handleKeyDown = (event) => {
@@ -197,6 +201,7 @@ export class MapShopFlow {
         const nextIndex = Number(event.currentTarget.dataset.choiceIndex);
         if (selectedIndex !== nextIndex) {
           selectedIndex = nextIndex;
+          nativeHaptic("light");
           render();
           return;
         }

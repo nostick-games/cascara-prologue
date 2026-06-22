@@ -3,6 +3,7 @@ import {
   mapDialogTypeDelayMs
 } from "./mapConfig.js";
 import { assetPath } from "../../utils/assetPath.js";
+import { nativeHaptic } from "../../utils/nativeBridge.js";
 
 export function showDialog(host, { message, prompt, messageHighlights = [], promptHighlights = [], showContinueIndicator = false }) {
   const { mapDialogFrame, mapDialogLog } = host.nodes;
@@ -113,11 +114,14 @@ export function activateDialogChoice(host, options, { layout = "horizontal" } = 
     const confirm = () => {
       if (resolved) return;
       resolved = true;
+      nativeHaptic("medium");
       cleanup();
       resolve(options[selectedIndex]?.value ?? null);
     };
     const select = (nextIndex) => {
-      selectedIndex = (nextIndex + options.length) % options.length;
+      const normalizedIndex = (nextIndex + options.length) % options.length;
+      if (normalizedIndex !== selectedIndex) nativeHaptic("light");
+      selectedIndex = normalizedIndex;
       renderOptions();
     };
     const handleKeyDown = (event) => {
@@ -142,6 +146,7 @@ export function activateDialogChoice(host, options, { layout = "horizontal" } = 
       const nextIndex = Number(event.currentTarget.dataset.choiceIndex);
       if (selectedIndex !== nextIndex) {
         selectedIndex = nextIndex;
+        nativeHaptic("light");
         renderOptions();
         return;
       }
@@ -186,13 +191,16 @@ export function activateMapChoicePanel(host, options) {
     const confirm = () => {
       if (resolved) return;
       resolved = true;
+      nativeHaptic("medium");
       cleanup();
       const value = options[selectedIndex]?.value ?? null;
       hideMapChoicePanel(host);
       resolve(value);
     };
     const select = (nextIndex) => {
-      selectedIndex = (nextIndex + options.length) % options.length;
+      const normalizedIndex = (nextIndex + options.length) % options.length;
+      if (normalizedIndex !== selectedIndex) nativeHaptic("light");
+      selectedIndex = normalizedIndex;
       renderOptions();
     };
     const handleKeyDown = (event) => {
@@ -221,6 +229,7 @@ export function activateMapChoicePanel(host, options) {
       const nextIndex = Number(event.currentTarget.dataset.choiceIndex);
       if (selectedIndex !== nextIndex) {
         selectedIndex = nextIndex;
+        nativeHaptic("light");
         renderOptions();
         return;
       }
