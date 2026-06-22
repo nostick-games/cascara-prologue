@@ -128,7 +128,9 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
     private func triggerHaptic(_ payload: [String: Any]) {
         DispatchQueue.main.async {
             let now = Date.timeIntervalSinceReferenceDate
-            guard now - self.lastHapticAt >= 0.12 else { return }
+            let type = payload["type"] as? String
+            let minimumInterval = type == "selection" ? 0.06 : 0.12
+            guard now - self.lastHapticAt >= minimumInterval else { return }
             self.lastHapticAt = now
             self.haptic(payload)
         }
@@ -157,6 +159,10 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.prepare()
             generator.impactOccurred()
+        case "selection":
+            let generator = UISelectionFeedbackGenerator()
+            generator.prepare()
+            generator.selectionChanged()
         default:
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.prepare()
