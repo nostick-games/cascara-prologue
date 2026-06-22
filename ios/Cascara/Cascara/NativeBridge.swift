@@ -85,7 +85,7 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
                 try delete(payload)
                 sendResponse(requestId: requestId, ok: true, value: true, error: nil)
             case "haptic":
-                haptic(payload)
+                triggerHaptic(payload)
                 sendResponse(requestId: requestId, ok: true, value: true, error: nil)
             case "log":
                 print("[Cascara JS]", payload["message"] ?? "")
@@ -114,21 +114,39 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
         try saveStore.delete(slot: slot)
     }
 
+    private func triggerHaptic(_ payload: [String: Any]) {
+        DispatchQueue.main.async {
+            self.haptic(payload)
+        }
+    }
+
     private func haptic(_ payload: [String: Any]) {
         let type = payload["type"] as? String
         switch type {
         case "success":
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            let generator = UINotificationFeedbackGenerator()
+            generator.prepare()
+            generator.notificationOccurred(.success)
         case "warning":
-            UINotificationFeedbackGenerator().notificationOccurred(.warning)
+            let generator = UINotificationFeedbackGenerator()
+            generator.prepare()
+            generator.notificationOccurred(.warning)
         case "error":
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            let generator = UINotificationFeedbackGenerator()
+            generator.prepare()
+            generator.notificationOccurred(.error)
         case "heavy":
-            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+            let generator = UIImpactFeedbackGenerator(style: .heavy)
+            generator.prepare()
+            generator.impactOccurred()
         case "light":
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.prepare()
+            generator.impactOccurred()
         default:
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.prepare()
+            generator.impactOccurred()
         }
     }
 
@@ -196,4 +214,3 @@ final class NativeSaveStore {
         directoryURL.appendingPathComponent("\(slot).json")
     }
 }
-
