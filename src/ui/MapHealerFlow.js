@@ -189,9 +189,7 @@ export class MapHealerFlow {
         if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = true;
         resolve();
       };
-      window.setTimeout(() => {
-        window.addEventListener(eventName, handler, true);
-      }, 160);
+      window.addEventListener(eventName, handler, true);
     });
   }
 
