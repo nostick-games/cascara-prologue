@@ -1,4 +1,5 @@
 import { setPixelButtonLabel } from "../ui/PixelButton.js";
+import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const defaultCombatCreatureSpriteFrameCount = 6;
 const heroDeathDisappearDelayMs = 1080;
@@ -369,6 +370,7 @@ export class CombatScreen {
   }
 
   flashEnemy() {
+    nativeHaptic("medium");
     this.flash(this.nodes.enemySprite);
   }
 
@@ -381,6 +383,7 @@ export class CombatScreen {
   }
 
   flashHero() {
+    nativeHaptic("heavy");
     const sprite = this.nodes.heroSprite;
     sprite.classList.remove("damage-flash", "hero-hurt", "hero-entaille");
     void sprite.offsetWidth;
