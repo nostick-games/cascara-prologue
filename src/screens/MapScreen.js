@@ -1258,7 +1258,6 @@ export class MapScreen {
     ctx.translate(-Math.round(this.camera.x), -Math.round(this.camera.y));
     this.drawTileLayers(time, { aboveHero: false });
     this.drawRespawnPoints(time);
-    this.drawWebRespawnDebugBounds();
     this.drawChests(time, { ySortPass: "below" });
     this.drawMapNpcs(time, { ySortPass: "below" });
     this.drawHumanEncounterNpcs(time);
@@ -1288,29 +1287,6 @@ export class MapScreen {
       respawnPoints: this.respawnPoints,
       discoveredRespawnIds: this.discoveredRespawnIds
     });
-  }
-
-  drawWebRespawnDebugBounds() {
-    if (typeof window === "undefined" || window.CascaraNative || this.respawnPoints.length === 0) return;
-    const ctx = this.ctx;
-    ctx.save();
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 3]);
-    this.respawnPoints.filter((point) => point.discoverable).forEach((point) => {
-      const bounds = this.respawnDiscoveryBox(point);
-      const spriteX = Math.round(bounds.x);
-      const spriteY = Math.round(bounds.y);
-      const triggerX = Math.round(bounds.x);
-      const triggerY = Math.round(bounds.y);
-      const triggerWidth = Math.round(bounds.width);
-      const triggerHeight = Math.round(bounds.height);
-
-      ctx.strokeStyle = "rgba(91, 219, 255, 0.95)";
-      ctx.strokeRect(spriteX, spriteY, triggerWidth, triggerHeight);
-      ctx.strokeStyle = "rgba(255, 207, 64, 0.95)";
-      ctx.strokeRect(triggerX, triggerY, triggerWidth, triggerHeight);
-    });
-    ctx.restore();
   }
 
   drawMapNpcs(time, { ySortPass }) {
