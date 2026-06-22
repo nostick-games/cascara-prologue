@@ -27,8 +27,7 @@ import {
   mapCameraZoom,
   npcLayerName,
   respawnSprite,
-  respawnTriggerPaddingX,
-  respawnTriggerPaddingY,
+  respawnDiscoveryBounds,
   tileFlipFlags
 } from "./map/mapConfig.js";
 import { nativeHaptic } from "../utils/nativeBridge.js";
@@ -838,10 +837,7 @@ export class MapScreen {
   checkRespawnDiscovery() {
     const discovered = this.respawnPoints.find((point) => (
       point.discoverable
-      && this.hero.x >= point.x - point.width / 2 - respawnTriggerPaddingX
-      && this.hero.x <= point.x + point.width / 2 + respawnTriggerPaddingX
-      && this.hero.y >= point.y - point.height / 2 - respawnTriggerPaddingY
-      && this.hero.y <= point.y + point.height / 2 + respawnTriggerPaddingY
+      && this.pointInRespawnDiscoveryBounds(this.hero, point)
     ));
     if (!discovered || this.activeRespawnId === discovered.id) return;
     this.activeRespawnId = discovered.id;
@@ -860,6 +856,25 @@ export class MapScreen {
       this.encounterPaused = false;
       this.inputLocked = false;
     });
+  }
+
+  respawnDiscoveryBox(point) {
+    const width = respawnDiscoveryBounds.width;
+    const height = respawnDiscoveryBounds.height;
+    return {
+      x: point.x - width / 2,
+      y: point.y - height / 2 + respawnDiscoveryBounds.offsetY,
+      width,
+      height
+    };
+  }
+
+  pointInRespawnDiscoveryBounds(position, point) {
+    const bounds = this.respawnDiscoveryBox(point);
+    return position.x >= bounds.x
+      && position.x <= bounds.x + bounds.width
+      && position.y >= bounds.y
+      && position.y <= bounds.y + bounds.height;
   }
 
   loadUntypedEncounterZones(objectZones) {
@@ -1281,16 +1296,17 @@ export class MapScreen {
     ctx.save();
     ctx.lineWidth = 2;
     ctx.setLineDash([5, 3]);
-    this.respawnPoints.forEach((point) => {
-      const spriteX = Math.round(point.x - respawnSprite.drawSize / 2);
-      const spriteY = Math.round(point.y - respawnSprite.drawSize / 2);
-      const triggerX = Math.round(point.x - point.width / 2 - respawnTriggerPaddingX);
-      const triggerY = Math.round(point.y - point.height / 2 - respawnTriggerPaddingY);
-      const triggerWidth = Math.round(point.width + respawnTriggerPaddingX * 2);
-      const triggerHeight = Math.round(point.height + respawnTriggerPaddingY * 2);
+    this.respawnPoints.filter((point) => point.discoverable).forEach((point) => {
+      const bounds = this.respawnDiscoveryBox(point);
+      const spriteX = Math.round(bounds.x);
+      const spriteY = Math.round(bounds.y);
+      const triggerX = Math.round(bounds.x);
+      const triggerY = Math.round(bounds.y);
+      const triggerWidth = Math.round(bounds.width);
+      const triggerHeight = Math.round(bounds.height);
 
       ctx.strokeStyle = "rgba(91, 219, 255, 0.95)";
-      ctx.strokeRect(spriteX, spriteY, respawnSprite.drawSize, respawnSprite.drawSize);
+      ctx.strokeRect(spriteX, spriteY, triggerWidth, triggerHeight);
       ctx.strokeStyle = "rgba(255, 207, 64, 0.95)";
       ctx.strokeRect(triggerX, triggerY, triggerWidth, triggerHeight);
     });

@@ -142,8 +142,11 @@ export const doorTriggerCooldownMs = 450;
 export const doorTriggerPaddingX = 8;
 export const doorTriggerPaddingY = 8;
 export const npcTriggerRadius = 28;
-export const respawnTriggerPaddingX = 18;
-export const respawnTriggerPaddingY = 18;
+export const respawnDiscoveryBounds = {
+  width: 32,
+  height: 40,
+  offsetY: 4
+};
 export const heroName = "Houdini";
 export const chadTrainingActionIds = [
   "slash",
