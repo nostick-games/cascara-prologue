@@ -760,6 +760,10 @@
         display: grid;
       }
 
+      body.map-active .map-joystick[hidden] {
+        display: none;
+      }
+
       body.map-active .map-quick-actions {
         right: max(10px, env(safe-area-inset-right));
         bottom: max(8px, env(safe-area-inset-bottom));

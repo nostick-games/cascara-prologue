@@ -22,6 +22,8 @@ export function queryDomNodes(root = document) {
   const optionsSaveStatus = root.querySelector("#optionsSaveStatus");
   const optionsLoadButton = root.querySelector("#optionsLoadButton");
   const optionsLoadStatus = root.querySelector("#optionsLoadStatus");
+  const optionsJoystickFixedButton = root.querySelector("#optionsJoystickFixedButton");
+  const optionsJoystickMovableButton = root.querySelector("#optionsJoystickMovableButton");
   const optionsBackButton = root.querySelector("#optionsBackButton");
   const mapSection = root.querySelector("#mapSection");
   const mapCanvas = root.querySelector("#mapCanvas");
@@ -290,6 +292,8 @@ export function queryDomNodes(root = document) {
     orientationPrompt,
     orientationTitle,
     optionsBackButton,
+    optionsJoystickFixedButton,
+    optionsJoystickMovableButton,
     optionsLoadButton,
     optionsLoadStatus,
     optionsSaveButton,

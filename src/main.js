@@ -39,6 +39,11 @@ import { nativeHaptic, nativeLoad, nativeSave } from "./utils/nativeBridge.js";
 const mapQuickActionsFreezeMs = 650;
 const manualSaveSlot = "manual";
 const manualSaveMinDurationMs = 1200;
+const joystickModeStorageKey = "cascara:joystickMode";
+const joystickModes = {
+  fixed: "fixed",
+  movable: "movable"
+};
 
 const appRoot = document.querySelector("#app");
 mountAppShell(appRoot);
@@ -57,6 +62,7 @@ const i18n = createI18n({
   }
 });
 const { t, validateLocales } = i18n;
+let joystickMode = loadJoystickModePreference();
 let captureEncounterState = createCaptureEncounterState({
   progression: baseProgression,
   defaultCompletedHunts: 3
@@ -202,6 +208,8 @@ const {
   orientationPrompt,
   orientationTitle,
   optionsBackButton,
+  optionsJoystickFixedButton,
+  optionsJoystickMovableButton,
   optionsLoadButton,
   optionsLoadStatus,
   optionsSaveButton,
@@ -458,6 +466,7 @@ mapScreen = new MapScreen({
     joystickStick: mapJoystickStick
   },
   t,
+  joystickMode,
   isMobile: () => mobileFitQuery.matches,
   isEncounterZoneAvailable: (zone) => isMapZoneAvailable(baseProgression, zone),
   isChestOpened: (flag) => baseProgression.openedMapFlags?.includes(flag),
@@ -612,6 +621,32 @@ function renderOptionsStaticText() {
   setPixelButtonLabel(optionsSaveButton, t("ui.options_save"));
   setPixelButtonLabel(optionsLoadButton, t("ui.options_load"));
   setPixelButtonLabel(optionsBackButton, t("ui.options_back"));
+  renderJoystickOptionButtons();
+}
+
+function loadJoystickModePreference() {
+  const storedMode = window.localStorage?.getItem(joystickModeStorageKey);
+  return Object.values(joystickModes).includes(storedMode) ? storedMode : joystickModes.fixed;
+}
+
+function joystickOptionLabel(labelKey, mode) {
+  const label = t(labelKey);
+  return joystickMode === mode ? `${label} - ${t("ui.options_current_suffix")}` : label;
+}
+
+function renderJoystickOptionButtons() {
+  setPixelButtonLabel(optionsJoystickFixedButton, joystickOptionLabel("ui.options_joystick_fixed", joystickModes.fixed));
+  setPixelButtonLabel(optionsJoystickMovableButton, joystickOptionLabel("ui.options_joystick_movable", joystickModes.movable));
+  optionsJoystickFixedButton.setAttribute("aria-pressed", String(joystickMode === joystickModes.fixed));
+  optionsJoystickMovableButton.setAttribute("aria-pressed", String(joystickMode === joystickModes.movable));
+}
+
+function setJoystickMode(mode) {
+  if (!Object.values(joystickModes).includes(mode) || joystickMode === mode) return;
+  joystickMode = mode;
+  window.localStorage?.setItem(joystickModeStorageKey, joystickMode);
+  mapScreen?.setJoystickMode(joystickMode);
+  renderJoystickOptionButtons();
 }
 
 function resetOptionsStatus() {
@@ -793,6 +828,8 @@ bindPress(mapInventoryButton, () => inventoryModal.open({ mode: "map" }));
 bindPress(mapCreaturesButton, () => humanBriefingScreen.openOwnedCreatures());
 bindPress(optionsSaveButton, () => runManualSave());
 bindPress(optionsLoadButton, () => runManualLoad());
+bindPress(optionsJoystickFixedButton, () => setJoystickMode(joystickModes.fixed));
+bindPress(optionsJoystickMovableButton, () => setJoystickMode(joystickModes.movable));
 bindPress(optionsBackButton, async () => {
   resetOptionsStatus();
   screenRouter.show(gameScreens.map);

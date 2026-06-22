@@ -112,6 +112,7 @@ export class MapScreen {
   constructor({
     nodes,
     t,
+    joystickMode = "fixed",
     isMobile = () => false,
     isEncounterZoneAvailable = () => true,
     isChestOpened = () => false,
@@ -127,6 +128,7 @@ export class MapScreen {
     this.nodes = nodes;
     this.nodes.section = nodes.section ?? nodes.mapSection;
     this.t = t;
+    this.joystickMode = joystickMode === "movable" ? "movable" : "fixed";
     this.isMobile = isMobile;
     this.isEncounterZoneAvailable = isEncounterZoneAvailable;
     this.isChestOpened = isChestOpened;
@@ -173,6 +175,7 @@ export class MapScreen {
     this.joystick = {
       active: false,
       pointerId: null,
+      captureTarget: null,
       x: 0,
       y: 0
     };
@@ -204,6 +207,7 @@ export class MapScreen {
     this.handleKeyUp = (event) => this.onKeyUp(event);
     this.handleResize = () => this.resize();
     this.handleJoystickPointerDown = (event) => this.onJoystickPointerDown(event);
+    this.handleMapPointerDown = (event) => this.onMapPointerDown(event);
     this.handleJoystickPointerMove = (event) => this.onJoystickPointerMove(event);
     this.handleJoystickPointerUp = (event) => this.onJoystickPointerUp(event);
     this.bindJoystick();
@@ -328,6 +332,7 @@ export class MapScreen {
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
     window.addEventListener("resize", this.handleResize);
+    this.updateJoystickModeUi();
     this.lastTime = performance.now();
     requestAnimationFrame((time) => this.tick(time));
   }
@@ -344,6 +349,25 @@ export class MapScreen {
     window.removeEventListener("keydown", this.handleKeyDown);
     window.removeEventListener("keyup", this.handleKeyUp);
     window.removeEventListener("resize", this.handleResize);
+  }
+
+  setJoystickMode(mode) {
+    this.joystickMode = mode === "movable" ? "movable" : "fixed";
+    this.resetJoystick();
+    this.updateJoystickModeUi();
+  }
+
+  updateJoystickModeUi() {
+    const joystick = this.nodes.joystick;
+    if (!joystick) return;
+    joystick.classList.toggle("is-movable", this.joystickMode === "movable");
+    joystick.classList.toggle("is-fixed", this.joystickMode !== "movable");
+    joystick.hidden = !this.running || this.joystickMode === "movable";
+    if (this.joystickMode !== "movable") {
+      joystick.style.left = "";
+      joystick.style.top = "";
+      joystick.style.bottom = "";
+    }
   }
 
   placeHeroBottomLeft() {
@@ -591,24 +615,72 @@ export class MapScreen {
     joystick.addEventListener("pointerup", this.handleJoystickPointerUp);
     joystick.addEventListener("pointercancel", this.handleJoystickPointerUp);
     joystick.addEventListener("lostpointercapture", this.handleJoystickPointerUp);
+    this.nodes.section?.addEventListener("pointerdown", this.handleMapPointerDown);
+    this.nodes.section?.addEventListener("pointermove", this.handleJoystickPointerMove);
+    this.nodes.section?.addEventListener("pointerup", this.handleJoystickPointerUp);
+    this.nodes.section?.addEventListener("pointercancel", this.handleJoystickPointerUp);
+    this.nodes.section?.addEventListener("lostpointercapture", this.handleJoystickPointerUp);
   }
 
   onJoystickPointerDown(event) {
+    if (this.joystickMode === "movable") return;
     if (!this.running || this.inputLocked) return;
     event.preventDefault();
     this.joystick.active = true;
     this.joystick.pointerId = event.pointerId;
-    this.nodes.joystick.setPointerCapture?.(event.pointerId);
+    this.joystick.captureTarget = this.nodes.joystick;
+    this.joystick.captureTarget?.setPointerCapture?.(event.pointerId);
     this.updateJoystickFromEvent(event);
   }
 
+  onMapPointerDown(event) {
+    if (this.joystickMode !== "movable" || !this.canStartMovableJoystick(event)) return;
+    event.preventDefault();
+    this.joystick.active = true;
+    this.joystick.pointerId = event.pointerId;
+    this.joystick.captureTarget = this.nodes.section;
+    this.placeMovableJoystick(event);
+    this.nodes.joystick.hidden = false;
+    this.joystick.captureTarget?.setPointerCapture?.(event.pointerId);
+    this.updateJoystickFromEvent(event);
+  }
+
+  canStartMovableJoystick(event) {
+    if (!this.running || this.inputLocked || this.encounterPaused || this.joystick.active) return false;
+    if (event.pointerType && event.pointerType !== "touch") return false;
+    const target = event.target;
+    if (!(target instanceof Element)) return false;
+    if (target.closest("button, a, input, select, textarea, [role='button']")) return false;
+    if (target.closest(".map-quick-actions, .map-dialog-frame, .map-choice-panel, .map-joystick")) return false;
+    return target === this.nodes.canvas || target === this.nodes.section || this.nodes.canvas?.contains(target);
+  }
+
+  placeMovableJoystick(event) {
+    const joystick = this.nodes.joystick;
+    const section = this.nodes.section;
+    if (!joystick || !section) return;
+    const rect = section.getBoundingClientRect();
+    const size = joystick.offsetWidth || 136;
+    const maxLeft = Math.max(0, rect.width - size);
+    const maxTop = Math.max(0, rect.height - size);
+    const left = Math.max(0, Math.min(maxLeft, event.clientX - rect.left - size / 2));
+    const top = Math.max(0, Math.min(maxTop, event.clientY - rect.top - size / 2));
+    joystick.style.left = `${Math.round(left)}px`;
+    joystick.style.top = `${Math.round(top)}px`;
+    joystick.style.bottom = "auto";
+  }
+
   onJoystickPointerMove(event) {
+    if (this.joystickMode === "movable" && event.currentTarget !== this.nodes.section) return;
+    if (this.joystickMode !== "movable" && event.currentTarget !== this.nodes.joystick) return;
     if (!this.joystick.active || event.pointerId !== this.joystick.pointerId) return;
     event.preventDefault();
     this.updateJoystickFromEvent(event);
   }
 
   onJoystickPointerUp(event) {
+    if (this.joystickMode === "movable" && event.currentTarget !== this.nodes.section) return;
+    if (this.joystickMode !== "movable" && event.currentTarget !== this.nodes.joystick) return;
     if (event.pointerId !== this.joystick.pointerId) return;
     event.preventDefault();
     this.resetJoystick();
@@ -632,15 +704,19 @@ export class MapScreen {
   }
 
   resetJoystick() {
-    if (this.joystick.pointerId !== null && this.nodes.joystick?.hasPointerCapture?.(this.joystick.pointerId)) {
-      this.nodes.joystick.releasePointerCapture(this.joystick.pointerId);
+    if (this.joystick.pointerId !== null && this.joystick.captureTarget?.hasPointerCapture?.(this.joystick.pointerId)) {
+      this.joystick.captureTarget.releasePointerCapture(this.joystick.pointerId);
     }
     this.joystick.active = false;
     this.joystick.pointerId = null;
+    this.joystick.captureTarget = null;
     this.joystick.x = 0;
     this.joystick.y = 0;
     if (this.nodes.joystickStick) {
       this.nodes.joystickStick.style.transform = "translate(0, 0)";
+    }
+    if (this.nodes.joystick && this.joystickMode === "movable") {
+      this.nodes.joystick.hidden = true;
     }
   }
 

@@ -23,6 +23,10 @@ const appShellTemplate = `
         <button id="optionsLoadButton" class="secondary" type="button"></button>
         <p class="options-status" id="optionsLoadStatus" aria-live="polite"></p>
       </div>
+      <div class="options-joystick-block">
+        <button id="optionsJoystickFixedButton" class="secondary" type="button"></button>
+        <button id="optionsJoystickMovableButton" class="secondary" type="button"></button>
+      </div>
       <button id="optionsBackButton" class="primary" type="button"></button>
     </div>
   </section>

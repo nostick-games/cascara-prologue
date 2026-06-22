@@ -13,13 +13,19 @@
 }
 
 .options-save-block,
-.options-load-block {
+.options-load-block,
+.options-joystick-block {
   display: grid;
   gap: 8px;
 }
 
 .options-actions button {
   width: 100%;
+}
+
+.options-joystick-block button[aria-pressed="true"] {
+  border-color: var(--ui-orange);
+  color: var(--ui-orange);
 }
 
 .options-save-gauge {
