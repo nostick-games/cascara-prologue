@@ -1243,6 +1243,7 @@ export class MapScreen {
     ctx.translate(-Math.round(this.camera.x), -Math.round(this.camera.y));
     this.drawTileLayers(time, { aboveHero: false });
     this.drawRespawnPoints(time);
+    this.drawWebRespawnDebugBounds();
     this.drawChests(time, { ySortPass: "below" });
     this.drawMapNpcs(time, { ySortPass: "below" });
     this.drawHumanEncounterNpcs(time);
@@ -1272,6 +1273,28 @@ export class MapScreen {
       respawnPoints: this.respawnPoints,
       discoveredRespawnIds: this.discoveredRespawnIds
     });
+  }
+
+  drawWebRespawnDebugBounds() {
+    if (typeof window === "undefined" || window.CascaraNative || this.respawnPoints.length === 0) return;
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 3]);
+    this.respawnPoints.forEach((point) => {
+      const spriteX = Math.round(point.x - respawnSprite.drawSize / 2);
+      const spriteY = Math.round(point.y - respawnSprite.drawSize / 2);
+      const triggerX = Math.round(point.x - point.width / 2 - respawnTriggerPaddingX);
+      const triggerY = Math.round(point.y - point.height / 2 - respawnTriggerPaddingY);
+      const triggerWidth = Math.round(point.width + respawnTriggerPaddingX * 2);
+      const triggerHeight = Math.round(point.height + respawnTriggerPaddingY * 2);
+
+      ctx.strokeStyle = "rgba(91, 219, 255, 0.95)";
+      ctx.strokeRect(spriteX, spriteY, respawnSprite.drawSize, respawnSprite.drawSize);
+      ctx.strokeStyle = "rgba(255, 207, 64, 0.95)";
+      ctx.strokeRect(triggerX, triggerY, triggerWidth, triggerHeight);
+    });
+    ctx.restore();
   }
 
   drawMapNpcs(time, { ySortPass }) {
