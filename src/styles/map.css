@@ -421,6 +421,20 @@
       width: min(420px, 100%);
     }
 
+    .map-healer-continue-indicator {
+      position: absolute;
+      right: 24px;
+      bottom: 18px;
+      color: var(--ink);
+      font-size: 1.35em;
+      line-height: 1;
+      animation: map-dialog-continue-blink 760ms steps(1) infinite;
+    }
+
+    .map-healer-continue-indicator[hidden] {
+      display: none;
+    }
+
     .map-dialog-log {
       position: relative;
       z-index: 1;

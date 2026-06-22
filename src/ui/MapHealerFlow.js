@@ -34,6 +34,7 @@ export class MapHealerFlow {
     this.hpLabelNode = null;
     this.hpTextNode = null;
     this.hpBarNode = null;
+    this.hpContinueIndicator = null;
   }
 
   async run(service, host, { speaker }) {
@@ -129,6 +130,7 @@ export class MapHealerFlow {
       this.render();
       await wait(360);
     }
+    await this.waitForHpPanelContinue();
   }
 
   ensureHpPanel() {
@@ -149,12 +151,18 @@ export class MapHealerFlow {
     this.hpBarNode.className = "bar-fill hp";
     bar.append(this.hpBarNode);
     hpBox.append(head, bar);
-    this.hpPanel.append(hpBox);
+    this.hpContinueIndicator = document.createElement("span");
+    this.hpContinueIndicator.className = "map-healer-continue-indicator";
+    this.hpContinueIndicator.setAttribute("aria-hidden", "true");
+    this.hpContinueIndicator.textContent = "▼";
+    this.hpContinueIndicator.hidden = true;
+    this.hpPanel.append(hpBox, this.hpContinueIndicator);
     this.host.nodes.mapSection.append(this.hpPanel);
   }
 
   showHpPanel() {
     this.ensureHpPanel();
+    if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = true;
     if (this.hpPanel) this.hpPanel.hidden = false;
   }
 
@@ -166,6 +174,25 @@ export class MapHealerFlow {
     if (this.hpLabelNode) this.hpLabelNode.textContent = this.getHeroName();
     if (this.hpTextNode) this.hpTextNode.textContent = this.t("ui.hp", { current: hp, max: maxHp });
     if (this.hpBarNode) this.hpBarNode.style.width = `${Math.max(0, Math.min(100, (hp / maxHp) * 100))}%`;
+  }
+
+  waitForHpPanelContinue() {
+    this.ensureHpPanel();
+    if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = false;
+    const eventName = this.host?.isMobile?.() ? "pointerdown" : "keydown";
+    return new Promise((resolve) => {
+      const handler = (event) => {
+        if (event.repeat) return;
+        event.preventDefault?.();
+        event.stopPropagation?.();
+        window.removeEventListener(eventName, handler, true);
+        if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = true;
+        resolve();
+      };
+      window.setTimeout(() => {
+        window.addEventListener(eventName, handler, true);
+      }, 160);
+    });
   }
 
   ensureGoldCounter() {
