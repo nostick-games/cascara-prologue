@@ -1071,7 +1071,41 @@ Prochaines priorités recommandées :
 - Les textes passent par des clés de localisation.
 - Le mobile paysage est une contrainte de design, pas une adaptation secondaire.
 
-## 20. Glossaire technique
+## 20. App iOS de test
+
+Une app iOS prototype existe dans `ios/Cascara/Cascara.xcodeproj`.
+
+Objectif actuel :
+
+- charger la version GitHub Pages du jeu dans un `WKWebView` ;
+- profiter automatiquement des mises à jour web apres chaque deploiement GitHub Pages ;
+- exposer quelques capacites natives utiles au prototype sans viser l'App Store.
+
+URL chargee :
+
+```text
+https://nostick-games.github.io/cascara-prologue/
+```
+
+Pont natif injecte dans la page :
+
+```js
+await window.CascaraNative.save("autosave", saveState);
+const saveState = await window.CascaraNative.load("autosave");
+await window.CascaraNative.delete("autosave");
+await window.CascaraNative.haptic("success");
+await window.CascaraNative.log("message de debug");
+```
+
+Les sauvegardes natives sont stockees en JSON dans `Application Support/CascaraSaves`.
+
+Build de verification :
+
+```bash
+xcodebuild -project ios/Cascara/Cascara.xcodeproj -scheme Cascara -configuration Debug -sdk iphonesimulator -derivedDataPath /tmp/cascara-ios-derived CODE_SIGNING_ALLOWED=NO build
+```
+
+## 21. Glossaire technique
 
 | Terme | Sens |
 | --- | --- |
