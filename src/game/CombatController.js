@@ -59,8 +59,13 @@ import {
   typeStatusIntensity
 } from "./typeStatuses.js";
 import { applyTypeAdvantageDamage } from "./typeAdvantages.js";
+import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const damageFlashMs = 1120;
+
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
 
 function clampHeroHp(value, maxHp) {
   return Math.max(1, Math.min(maxHp, value));
@@ -208,9 +213,11 @@ export class CombatController {
     return isCombatItemEffective({ combat: this.combat, item });
   }
 
-  applyCombatItem(entry) {
+  async applyCombatItem(entry) {
     const combat = this.combat;
     if (!combat || combat.ended) return;
+    const isHealingItem = entry.item.effect === "halfHeal" || entry.item.effect === "fullHeal";
+    const startHp = combat.hero.hp;
     this.combatScreen.capturePaState(combat, "player");
     applyCombatItemToState({
       combat,
@@ -219,10 +226,27 @@ export class CombatController {
       t: this.t,
       addLog: (message) => this.addLog(message)
     });
+    const targetHp = combat.hero.hp;
 
-    this.inventoryModal?.close();
+    if (isHealingItem && targetHp > startHp) {
+      combat.hero.hp = startHp;
+      combat.displayHp.hero = startHp;
+      this.inventoryModal?.renderItems();
+      for (let hp = startHp + 1; hp <= targetHp; hp += 1) {
+        combat.hero.hp = hp;
+        combat.displayHp.hero = hp;
+        this.inventoryModal?.renderHeader();
+        this.renderCombatUi();
+        this.combatScreen.syncCombat(combat);
+        nativeHaptic("light");
+        await wait(220);
+      }
+      return { waitForClose: true };
+    }
+
     this.renderCombatUi();
     this.combatScreen.syncCombat(combat);
+    return null;
   }
 
   addLog(message, afterTyped = null) {

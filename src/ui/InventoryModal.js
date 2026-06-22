@@ -38,6 +38,8 @@ export class InventoryModal {
     this.mode = "combat";
     this.warningItemId = null;
     this.warningTimer = null;
+    this.applying = false;
+    this.awaitingClose = false;
 
     this.closeButton.addEventListener("click", () => this.applySelectedItem());
     this.optionsButton?.addEventListener("click", () => this.openOptions());
@@ -48,6 +50,10 @@ export class InventoryModal {
     this.mode = mode;
     this.selectedItemId = null;
     this.warningItemId = null;
+    this.applying = false;
+    this.awaitingClose = false;
+    this.closeButton.disabled = false;
+    if (this.optionsButton) this.optionsButton.disabled = false;
     this.renderHeader();
     this.renderStaticText();
     this.renderItems();
@@ -62,6 +68,10 @@ export class InventoryModal {
     this.warningItemId = null;
     this.readOnly = false;
     this.mode = "combat";
+    this.applying = false;
+    this.awaitingClose = false;
+    this.closeButton.disabled = false;
+    if (this.optionsButton) this.optionsButton.disabled = false;
     delete this.itemsNode.dataset.warningKey;
     window.clearTimeout(this.warningTimer);
     this.shield.hidden = true;
@@ -78,6 +88,11 @@ export class InventoryModal {
   }
 
   async applySelectedItem() {
+    if (this.applying) return;
+    if (this.awaitingClose) {
+      this.close();
+      return;
+    }
     if (this.readOnly || !this.selectedItemId) {
       this.close();
       return;
@@ -94,7 +109,28 @@ export class InventoryModal {
       return;
     }
 
-    await this.onApply(entry, { mode: this.mode });
+    this.applying = true;
+    this.closeButton.disabled = true;
+    if (this.optionsButton) this.optionsButton.disabled = true;
+    try {
+      const result = await this.onApply(entry, { mode: this.mode }) ?? {};
+      this.applying = false;
+      if (result.waitForClose) {
+        this.awaitingClose = true;
+        this.selectedItemId = null;
+        this.closeButton.disabled = false;
+        if (this.optionsButton) this.optionsButton.disabled = true;
+        this.renderItems();
+        this.closeButton.focus();
+        return;
+      }
+      this.close();
+    } catch (error) {
+      console.warn("[Cascara] Inventory item failed.", error);
+      this.applying = false;
+      this.closeButton.disabled = false;
+      if (this.optionsButton) this.optionsButton.disabled = false;
+    }
   }
 
   showItemWarning(itemId, messageKey = "ui.inventory_no_effect") {
@@ -184,6 +220,7 @@ export class InventoryModal {
   }
 
   selectItem({ item, block, hasEnoughPa }) {
+    if (this.applying || this.awaitingClose) return;
     if (!hasEnoughPa) {
       this.selectedItemId = null;
       this.showItemWarning(item.id, "ui.inventory_not_enough_pa");

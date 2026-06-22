@@ -694,10 +694,11 @@ async function applyMapInventoryItem(entry) {
   for (let hp = hero.hp + 1; hp <= targetHp; hp += 1) {
     baseProgression.heroHp = hp;
     inventoryModal.renderHeader();
+    nativeHaptic("light");
     await wait(220);
   }
-  inventoryModal.close();
   renderAll();
+  return { waitForClose: true };
 }
 
 function isInventoryCombatContext(mode = inventoryModal?.mode) {
@@ -733,10 +734,9 @@ const inventoryModal = new InventoryModal({
     : isMapInventoryItemEffective(item),
   onApply: (entry, { mode } = {}) => {
     if (isInventoryCombatContext(mode)) {
-      combatController.applyCombatItem(entry);
-      return;
+      return combatController.applyCombatItem(entry);
     }
-    applyMapInventoryItem(entry);
+    return applyMapInventoryItem(entry);
   },
   onOptions: () => openOptionsPage()
 });

@@ -1,4 +1,5 @@
 import { assetPath } from "../utils/assetPath.js";
+import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const goldIconSrc = assetPath("assets/inventaire/or.png");
 
@@ -119,6 +120,7 @@ export class MapHealerFlow {
       this.setHeroHp(hp, maxHp);
       this.updateHpPanel(hp, maxHp);
       this.render();
+      nativeHaptic("light");
       await wait(220);
     }
     if (startHp >= maxHp) {
@@ -127,7 +129,6 @@ export class MapHealerFlow {
       this.render();
       await wait(360);
     }
-    this.hideHpPanel();
   }
 
   ensureHpPanel() {
