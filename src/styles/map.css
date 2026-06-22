@@ -1,0 +1,1299 @@
+    .start-choice-actions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .map-section {
+      position: relative;
+      width: min(960px, 100%);
+      height: min(540px, calc(100dvh - 56px));
+      min-height: 420px;
+      margin: 0 auto;
+      overflow: hidden;
+      background: #101116;
+      border: 1px solid rgba(246, 202, 159, 0.18);
+      border-radius: 8px;
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.32);
+    }
+
+    .map-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      background: #101116;
+    }
+
+    .map-quick-actions {
+      position: absolute;
+      right: clamp(14px, 2.5vw, 24px);
+      bottom: clamp(14px, 2.5vw, 24px);
+      z-index: 70;
+      display: grid;
+      gap: 8px;
+    }
+
+    .map-quick-action {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      image-rendering: pixelated;
+      touch-action: manipulation;
+    }
+
+    .map-quick-action img {
+      width: 38px;
+      height: 38px;
+      image-rendering: pixelated;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .map-quick-action:hover:not(:disabled) {
+        border-color: transparent;
+        transform: translateY(-1px);
+      }
+    }
+
+    .map-quick-action:active {
+      background-image: url("/assets/inventaire/bloc_on.png");
+      transform: translateY(1px);
+    }
+
+    body.map-active:has(.inventory-modal-shield:not([hidden])) .map-quick-actions,
+    body.map-active:has(.roster-modal-shield:not([hidden])) .map-quick-actions,
+    body.map-active:has(.map-population-modal-shield:not([hidden])) .map-quick-actions,
+    body.map-active:has(.map-radar-modal-shield:not([hidden])) .map-quick-actions,
+    body.map-active:has(.map-reward-modal-shield:not([hidden])) .map-quick-actions,
+    body.map-active:has(.map-dialog-frame:not([hidden])) .map-quick-actions {
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    .map-section.is-shop-active .map-quick-actions,
+    .map-section.is-shop-active .map-joystick {
+      pointer-events: none;
+      opacity: 0.22;
+      filter: grayscale(0.7);
+    }
+
+    body.map-active .map-population-modal-shield {
+      z-index: 80;
+    }
+
+    body.map-active .map-population-modal {
+      z-index: 81;
+    }
+
+    body.map-active .map-radar-modal-shield {
+      z-index: 82;
+    }
+
+    body.map-active .map-radar-modal {
+      z-index: 83;
+    }
+
+    body.map-active .map-reward-modal-shield {
+      z-index: 92;
+    }
+
+    body.map-active .map-reward-modal {
+      z-index: 93;
+    }
+
+    body.map-active .inventory-modal-shield,
+    body.map-active .roster-modal-shield {
+      z-index: 80;
+    }
+
+    body.map-active .inventory-modal,
+    body.map-active .roster-modal {
+      z-index: 81;
+    }
+
+    .map-population-modal {
+      width: min(720px, calc(100% - 40px));
+      max-height: calc(100% - 36px);
+    }
+
+    .map-population-content {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      padding: 14px 18px 16px;
+    }
+
+    .map-population-content h3,
+    .map-population-content p {
+      margin: 0;
+    }
+
+    .map-population-content h3 {
+      color: #2f1f18;
+      font-size: 0.92rem;
+      line-height: 1.2;
+    }
+
+    .map-population-content p {
+      color: rgba(47, 31, 24, 0.78);
+      font-size: 0.58rem;
+      line-height: 1.45;
+    }
+
+    .map-population-canvas {
+      width: 100%;
+      height: clamp(260px, 42vh, 360px);
+      min-height: 0;
+      background: #4c9fd0;
+      border: 3px solid #5b3541;
+      box-shadow:
+        inset 3px 3px 0 rgba(255, 232, 183, 0.72),
+        inset -4px -4px 0 rgba(110, 62, 52, 0.35);
+      image-rendering: pixelated;
+    }
+
+    .map-population-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+      color: #2f1f18;
+      font-size: 0.56rem;
+      line-height: 1.2;
+    }
+
+    .map-population-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .map-population-legend i {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border: 2px solid rgba(255, 245, 220, 0.82);
+      flex: 0 0 auto;
+    }
+
+    .minimap-legend-dot {
+      background: #d43b32;
+    }
+
+    .minimap-legend-empty {
+      background: #7f7f7f;
+    }
+
+    .minimap-legend-unknown {
+      background: #07080b;
+    }
+
+    .map-reward-modal {
+      width: min(460px, calc(100% - 40px));
+    }
+
+    .map-reward-content {
+      display: grid;
+      justify-items: center;
+      gap: 18px;
+      padding: 22px 24px 20px;
+      text-align: center;
+    }
+
+    .map-reward-content h3,
+    .map-reward-content p {
+      margin: 0;
+    }
+
+    .map-reward-content h3 {
+      color: #2f1f18;
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+
+    .map-reward-content p {
+      color: rgba(47, 31, 24, 0.82);
+      font-size: 0.64rem;
+      line-height: 1.6;
+    }
+
+    .map-reward-content button {
+      min-width: 120px;
+    }
+
+    .map-radar-modal {
+      width: min(880px, calc(100% - 36px));
+      max-height: calc(100% - 32px);
+    }
+
+    .map-radar-content {
+      display: grid;
+      grid-template-columns: minmax(520px, 1fr) 188px;
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: 14px 18px;
+      align-items: center;
+      justify-items: center;
+      min-height: 0;
+      padding: 14px 18px 16px;
+      background: #17171A;
+    }
+
+    .map-radar-radar-area {
+      --map-radar-offset-x: 42px;
+      --map-radar-offset-y: 34px;
+      position: relative;
+      align-self: center;
+      justify-self: center;
+      min-width: 0;
+      min-height: 0;
+      background: #17171A;
+      transform: translate(var(--map-radar-offset-x), var(--map-radar-offset-y));
+    }
+
+    .map-radar-wrap {
+      width: min(460px, 100%);
+      max-width: none;
+      margin: auto;
+    }
+
+    .map-radar-side-panel {
+      --pixel-button-border-x: 3px;
+      --pixel-button-border-top: 3px;
+      --pixel-button-border-bottom: 5px;
+      position: relative;
+      justify-self: stretch;
+      align-self: start;
+      display: grid;
+      place-items: center;
+      min-height: 96px;
+      padding: 12px;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    .map-radar-gem-control {
+      position: relative;
+      z-index: 1;
+    }
+
+    .map-radar-side-panel .points {
+      color: #2f1f18;
+    }
+
+    .map-radar-ok {
+      grid-column: 1 / -1;
+      justify-self: end;
+      align-self: end;
+      min-width: 140px;
+    }
+
+    .map-radar-radar-area .radar-modal-shield {
+      position: absolute;
+      z-index: 4;
+    }
+
+    .map-joystick {
+      position: absolute;
+      left: clamp(18px, 5vw, 44px);
+      bottom: clamp(18px, 7vh, 42px);
+      z-index: 60;
+      width: 136px;
+      height: 136px;
+      display: none;
+      place-items: center;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .map-joystick[hidden] {
+      display: none;
+    }
+
+    .map-joystick-base {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      border: 3px solid rgba(246, 202, 159, 0.38);
+      background:
+        linear-gradient(90deg, transparent calc(50% - 1px), rgba(246, 202, 159, 0.26) 0 calc(50% + 1px), transparent 0),
+        linear-gradient(0deg, transparent calc(50% - 1px), rgba(246, 202, 159, 0.26) 0 calc(50% + 1px), transparent 0),
+        rgba(16, 17, 22, 0.42);
+      border-radius: 999px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+    }
+
+    .map-joystick-stick {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 34px;
+      height: 34px;
+      margin: -17px 0 0 -17px;
+      border: 3px solid rgba(47, 31, 24, 0.72);
+      background: #f6ca9f;
+      border-radius: 999px;
+      box-shadow:
+        inset 0 -4px 0 rgba(47, 31, 24, 0.16),
+        0 5px 0 rgba(0, 0, 0, 0.18);
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .map-dialog-frame {
+      position: absolute;
+      left: clamp(14px, 4vw, 36px);
+      right: clamp(14px, 4vw, 36px);
+      bottom: clamp(14px, 4vh, 28px);
+      z-index: 90;
+      height: auto;
+      min-height: 118px;
+      max-height: min(42vh, 232px);
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .map-dialog-frame::before,
+    .map-dialog-frame::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .map-dialog-frame::before {
+      inset: 4px;
+      z-index: 0;
+      background: var(--ui-blue);
+    }
+
+    .map-dialog-frame::after {
+      inset: 0;
+      z-index: 2;
+      background:
+        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
+    }
+
+    .map-dialog-frame[hidden] {
+      display: none;
+    }
+
+    .map-healer-hp-panel {
+      position: absolute;
+      left: clamp(14px, 4vw, 36px);
+      right: clamp(14px, 4vw, 36px);
+      bottom: clamp(14px, 4vh, 28px);
+      z-index: 90;
+      min-height: 118px;
+      display: grid;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 18px;
+      background:
+        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
+        linear-gradient(var(--ui-blue), var(--ui-blue)) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
+    }
+
+    .map-healer-hp-panel[hidden] {
+      display: none;
+    }
+
+    .map-healer-hp-panel .inventory-hp {
+      width: min(420px, 100%);
+    }
+
+    .map-dialog-log {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      box-sizing: border-box;
+      height: auto;
+      min-height: 118px;
+      max-height: min(42vh, 232px);
+      overflow: auto;
+      padding: 16px 18px;
+      color: var(--ink);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .map-dialog-log p {
+      color: var(--ink);
+      white-space: pre-line;
+    }
+
+    .map-dialog-log .map-dialog-prompt {
+      color: rgba(16, 17, 22, 0.72);
+    }
+
+    .map-dialog-continue-indicator {
+      display: inline-block;
+      margin-left: 0.45em;
+      color: var(--ink);
+      font-size: 1.35em;
+      line-height: 1;
+      transform: translateY(0.12em);
+      animation: map-dialog-continue-blink 760ms steps(1) infinite;
+    }
+
+    .map-dialog-enemy-name {
+      color: var(--ui-enemy-red);
+    }
+
+    .map-dialog-log .map-dialog-options {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      color: var(--ink);
+    }
+
+    .map-dialog-log .map-dialog-options.vertical {
+      display: grid;
+      gap: 4px;
+      align-items: start;
+      justify-items: start;
+    }
+
+    .map-dialog-option {
+      appearance: none;
+      border: 0;
+      padding: 2px 7px 3px;
+      /* Annule le min-height: 38px global des <button> : sinon chaque option laisse
+         un grand vide vertical (effet « retour chariot ») entre les libellés. */
+      min-height: 28px;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: inherit;
+      font: inherit;
+      line-height: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .map-dialog-option.is-selected {
+      background: var(--ink);
+      color: #f8d1a5;
+    }
+
+    .map-dialog-option-marker {
+      display: inline-block;
+      width: 1.35em;
+      transform: translateY(-0.30em);
+      text-align: left;
+    }
+
+    .map-choice-panel {
+      position: absolute;
+      top: clamp(12px, 3vh, 24px);
+      left: clamp(12px, 3vw, 24px);
+      z-index: 120;
+      width: min(230px, calc(100% - 32px));
+      min-height: 196px;
+      /* Borne verticale : au-delà, la liste défile à l'intérieur du cadre fixe. */
+      max-height: calc(100% - 48px);
+      display: flex;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .map-choice-panel[hidden] {
+      display: none;
+    }
+
+    .map-choice-panel::before,
+    .map-choice-panel::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .map-choice-panel::before {
+      inset: 4px;
+      z-index: 0;
+      background: var(--ui-blue);
+    }
+
+    .map-choice-panel::after {
+      inset: 0;
+      z-index: 2;
+      background:
+        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
+    }
+
+    .map-choice-list {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      /* min-height:0 autorise la liste à se rétrécir et donc à défiler au lieu de
+         pousser le cadre ; align-content:start garde les options en haut quand
+         elles ne remplissent pas la hauteur. */
+      min-height: 0;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+      /* margin 8 (reste dans le cadre 4px → barre de défilement dans la zone bleue)
+         + padding 8 = même retrait visuel que l'ancien padding 16. */
+      margin: 8px;
+      padding: 8px;
+      color: var(--ink);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+
+    .map-choice-panel-option {
+      justify-content: flex-start;
+      text-align: left;
+      /* Un peu d'air autour de chaque option (uniquement dans le pavé). */
+      min-height: 34px;
+      padding: 5px 8px 6px;
+      width: 100%;
+    }
+
+    .map-choice-scroll-controls {
+      position: absolute;
+      z-index: 121;
+      display: grid;
+      gap: 8px;
+      width: 40px;
+      pointer-events: auto;
+    }
+
+    .map-choice-scroll-controls[hidden] {
+      display: none;
+    }
+
+    .map-choice-scroll-button {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      padding: 0 0 2px;
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.78rem;
+      line-height: 1;
+      background:
+        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
+        linear-gradient(var(--ui-blue), var(--ui-blue)) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .map-choice-scroll-button:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .map-choice-scroll-button:disabled {
+      opacity: 0.42;
+      cursor: default;
+    }
+
+    .map-choice-option-price {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding-left: 8px;
+      white-space: nowrap;
+    }
+
+    .map-choice-option-price img,
+    .map-shop-gold-counter img {
+      width: 18px;
+      height: 18px;
+      image-rendering: pixelated;
+      object-fit: contain;
+    }
+
+    .map-shop-gold-counter {
+      position: absolute;
+      top: clamp(12px, 3vh, 24px);
+      right: clamp(12px, 3vw, 24px);
+      z-index: 121;
+      min-width: 106px;
+      min-height: 48px;
+      padding: 13px 18px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--ink);
+      font-size: 0.92rem;
+      background:
+        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
+        linear-gradient(var(--ui-blue), var(--ui-blue)) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
+    }
+
+    .map-shop-gold-counter[hidden] {
+      display: none;
+    }
+
+    .map-shop-quantity {
+      display: grid;
+      gap: 8px;
+      justify-items: start;
+      min-width: 0;
+    }
+
+    .map-shop-quantity-wheel {
+      display: flex;
+      gap: 8px;
+      max-width: 100%;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      overscroll-behavior-x: contain;
+    }
+
+    .map-shop-quantity-option {
+      appearance: none;
+      flex: 0 0 auto;
+      min-width: 38px;
+      min-height: 30px;
+      padding: 4px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      touch-action: manipulation;
+    }
+
+    .map-shop-quantity-option.is-selected {
+      background: var(--ink);
+      color: #f8d1a5;
+    }
+
+    .map-shop-quantity-option.is-disabled {
+      opacity: 0.38;
+      filter: grayscale(1);
+    }
+
+    .map-shop-cancel-option {
+      justify-content: flex-start;
+    }
+
+    .map-dialog-log .log-cursor {
+      display: inline-block;
+      width: 0.6em;
+      height: 1em;
+      margin-left: 0.18em;
+      transform: translateY(0.15em);
+      background: #ffffff;
+      animation: log-cursor-blink 420ms steps(1) infinite;
+    }
+
+    @keyframes map-dialog-continue-blink {
+      0%,
+      58% {
+        opacity: 1;
+      }
+
+      59%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      body.map-active .map-joystick {
+        display: grid;
+      }
+
+      body.map-active .map-quick-actions {
+        right: max(10px, env(safe-area-inset-right));
+        bottom: max(8px, env(safe-area-inset-bottom));
+        gap: 6px;
+      }
+
+      body.map-active .map-quick-action {
+        width: 52px;
+        height: 52px;
+      }
+
+      body.map-active .map-quick-action img {
+        width: 34px;
+        height: 34px;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 560px) {
+      body.map-active:has(.inventory-modal-shield:not([hidden])) .map-quick-actions,
+      body.map-active:has(.roster-modal-shield:not([hidden])) .map-quick-actions,
+      body.map-active:has(.map-population-modal-shield:not([hidden])) .map-quick-actions,
+      body.map-active:has(.map-radar-modal-shield:not([hidden])) .map-quick-actions,
+      body.map-active:has(.map-dialog-frame:not([hidden])) .map-quick-actions {
+        display: none;
+      }
+
+      body.map-active .map-section {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      body.map-active .map-joystick {
+        left: calc(env(safe-area-inset-left) - 50px);
+        bottom: max(8px, env(safe-area-inset-bottom));
+        width: 126px;
+        height: 126px;
+      }
+
+      body.map-active .map-dialog-frame {
+        left: max(10px, env(safe-area-inset-left));
+        right: max(10px, env(safe-area-inset-right));
+        bottom: max(8px, env(safe-area-inset-bottom));
+        height: auto;
+        min-height: 92px;
+        max-height: min(44vh, 176px);
+      }
+
+      body.map-active .map-dialog-log {
+        gap: 4px;
+        align-content: start;
+        box-sizing: border-box;
+        height: auto;
+        min-height: 92px;
+        max-height: min(44vh, 176px);
+        padding: 10px 14px;
+        font-size: 0.7rem;
+        line-height: 1.32;
+      }
+
+      body.map-active .inventory-modal-shield {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 6px;
+      }
+
+      body.map-active .inventory-modal {
+        width: min(calc(100% - 12px), 700px);
+        height: 100%;
+        min-height: 0;
+        max-height: min(calc(100dvh - 12px), 378px);
+        grid-template-columns: 10px minmax(0, 1fr) 10px;
+        grid-template-rows: 10px minmax(0, 1fr) 10px;
+        filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.46));
+      }
+
+      body.map-active .inventory-top,
+      body.map-active .inventory-bottom {
+        background-size: 10px 10px;
+      }
+
+      body.map-active .inventory-left,
+      body.map-active .inventory-right {
+        background-size: 10px 10px;
+      }
+
+      body.map-active .inventory-center {
+        min-height: 0;
+        padding: 16px 18px 54px;
+        overflow: hidden;
+        box-shadow: 0 0 0 1px #E4A672;
+      }
+
+      body.map-active .inventory-ok {
+        right: 14px;
+        bottom: 12px;
+      }
+
+      body.map-active .inventory-options {
+        left: 14px;
+        bottom: 12px;
+      }
+
+      body.map-active .map-population-modal {
+        width: min(560px, calc(100% - 24px));
+        max-height: calc(100dvh - 12px);
+        grid-template-columns: 10px minmax(0, 1fr) 10px;
+        grid-template-rows: 10px minmax(0, 1fr) 10px;
+      }
+
+      body.map-active .map-population-modal .inventory-top,
+      body.map-active .map-population-modal .inventory-bottom {
+        background-size: 10px 10px;
+      }
+
+      body.map-active .map-population-modal .inventory-left,
+      body.map-active .map-population-modal .inventory-right {
+        background-size: 10px 10px;
+      }
+
+      body.map-active .map-population-content {
+        display: grid;
+        grid-template-rows: auto minmax(72px, 1fr) auto auto;
+        gap: 5px;
+        max-height: calc(100dvh - 32px);
+        min-height: 0;
+        padding: 8px 10px 10px;
+        overflow: hidden;
+      }
+
+      body.map-active .map-population-content h3 {
+        font-size: clamp(0.62rem, 4.8dvh, 0.78rem);
+        line-height: 1.1;
+      }
+
+      body.map-active .map-population-canvas {
+        height: 100%;
+        min-height: 72px;
+        max-height: none;
+      }
+
+      body.map-active .map-population-legend {
+        gap: 5px 10px;
+        font-size: clamp(0.42rem, 2.8dvh, 0.5rem);
+        line-height: 1.1;
+      }
+
+      body.map-active .map-population-legend i {
+        width: 8px;
+        height: 8px;
+        border-width: 1px;
+      }
+
+      body.map-active .map-population-modal button {
+        min-height: 30px;
+        padding: 5px 10px 7px;
+      }
+
+      body.map-active .map-radar-modal {
+        width: min(680px, calc(100% - 24px));
+        max-height: calc(100dvh - 12px);
+        grid-template-columns: 10px minmax(0, 1fr) 10px;
+        grid-template-rows: 10px minmax(0, 1fr) 10px;
+      }
+
+      body.map-active .map-radar-modal .inventory-top,
+      body.map-active .map-radar-modal .inventory-bottom {
+        background-size: 10px 10px;
+      }
+
+      body.map-active .map-radar-modal .inventory-left,
+      body.map-active .map-radar-modal .inventory-right {
+        background-size: 10px 10px;
+      }
+
+      body.map-active .map-radar-content {
+        grid-template-columns: minmax(350px, 1fr) 150px;
+        gap: 8px 10px;
+        max-height: calc(100dvh - 32px);
+        padding: 8px 10px 10px;
+      }
+
+      body.map-active .map-radar-wrap {
+        width: min(330px, 100%);
+      }
+
+      body.map-active .map-radar-radar-area {
+        --map-radar-offset-x: 22px;
+        --map-radar-offset-y: 18px;
+      }
+
+      body.map-active .map-radar-side-panel {
+        min-height: 76px;
+        padding: 8px;
+      }
+
+      body.map-active .map-radar-ok {
+        min-height: 30px;
+        padding: 5px 14px 7px;
+      }
+
+      body.map-active .map-joystick-base {
+        width: 78px;
+        height: 78px;
+      }
+    }
+
+    .encounter-transition {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      z-index: 120;
+      display: grid;
+      place-items: stretch;
+      pointer-events: none;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .encounter-transition[hidden] {
+      display: none;
+    }
+
+    .encounter-transition-layer {
+      position: absolute;
+      inset: 0;
+      background: #101116;
+      image-rendering: pixelated;
+    }
+
+    .encounter-transition.is-flash .encounter-transition-layer {
+      background: #000;
+      animation: encounterBlackFlash 420ms steps(2, end) forwards;
+    }
+
+    .encounter-transition.is-white-flash .encounter-transition-layer {
+      background: #fff;
+      animation: encounterWhiteFlash 420ms steps(2, end) forwards;
+    }
+
+    .encounter-transition.is-blackout .encounter-transition-layer {
+      background: #000;
+      opacity: 1;
+    }
+
+    .encounter-transition.is-defeat-fade .encounter-transition-layer {
+      background: #000;
+      animation: defeatFadeToBlack 360ms steps(10, end) forwards;
+    }
+
+    .encounter-transition.is-map-fade-out .encounter-transition-layer {
+      background: #000;
+      animation: mapFadeToBlack 360ms steps(10, end) forwards;
+    }
+
+    .encounter-transition.is-map-fade-in .encounter-transition-layer {
+      background: #000;
+      animation: mapFadeFromBlack 360ms steps(10, end) forwards;
+    }
+
+    .encounter-transition.is-respawn-reveal .encounter-transition-layer {
+      --respawn-reveal-x: 50%;
+      --respawn-reveal-y: 50%;
+      --respawn-reveal-radius: 0px;
+      background:
+        radial-gradient(
+          circle at var(--respawn-reveal-x) var(--respawn-reveal-y),
+          transparent 0 var(--respawn-reveal-radius),
+          #000 calc(var(--respawn-reveal-radius) + 1px)
+        );
+      animation: respawnCircleReveal 1200ms steps(24, end) forwards;
+    }
+
+    .encounter-transition.is-diamond .encounter-transition-layer {
+      background:
+        linear-gradient(45deg, rgba(247, 176, 77, 0.24) 25%, transparent 25% 75%, rgba(247, 176, 77, 0.24) 75%),
+        linear-gradient(45deg, rgba(47, 31, 24, 0.55) 25%, transparent 25% 75%, rgba(47, 31, 24, 0.55) 75%),
+        #101116;
+      background-position: 0 0, 12px 12px, 0 0;
+      background-size: 24px 24px;
+      animation: encounterDiamond 760ms steps(10, end) forwards;
+    }
+
+    .encounter-transition.is-bars .encounter-transition-layer {
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #101116 0 18px,
+          #2a1d27 18px 30px,
+          #f7b04d 30px 34px,
+          #101116 34px 52px
+        );
+      animation: encounterBars 760ms steps(12, end) forwards;
+    }
+
+    .encounter-transition.is-checker .encounter-transition-layer {
+      background:
+        linear-gradient(45deg, rgba(247, 176, 77, 0.85) 25%, transparent 25% 75%, rgba(247, 176, 77, 0.85) 75%),
+        linear-gradient(45deg, rgba(247, 176, 77, 0.85) 25%, transparent 25% 75%, rgba(247, 176, 77, 0.85) 75%),
+        #101116;
+      background-position: 0 0, 16px 16px, 0 0;
+      background-size: 32px 32px;
+      animation: encounterChecker 760ms steps(8, end) forwards;
+    }
+
+    .encounter-transition.will-hold-blackout.is-diamond .encounter-transition-layer {
+      animation-name: encounterDiamondHold;
+    }
+
+    .encounter-transition.will-hold-blackout.is-bars .encounter-transition-layer {
+      animation-name: encounterBarsHold;
+    }
+
+    .encounter-transition.will-hold-blackout.is-checker .encounter-transition-layer {
+      animation-name: encounterCheckerHold;
+    }
+
+    @keyframes encounterBlackFlash {
+      0% {
+        opacity: 0;
+      }
+
+      18% {
+        opacity: 1;
+      }
+
+      34% {
+        opacity: 0;
+      }
+
+      52% {
+        opacity: 1;
+      }
+
+      68% {
+        opacity: 0;
+      }
+
+      86% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes encounterWhiteFlash {
+      0% {
+        opacity: 0;
+      }
+
+      28% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes defeatFadeToBlack {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes mapFadeToBlack {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes mapFadeFromBlack {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+      }
+    }
+
+    @property --respawn-reveal-radius {
+      syntax: "<length>";
+      inherits: false;
+      initial-value: 0px;
+    }
+
+    @keyframes respawnCircleReveal {
+      0% {
+        --respawn-reveal-radius: 0px;
+        opacity: 1;
+      }
+
+      100% {
+        --respawn-reveal-radius: 1600px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes encounterDiamond {
+      0% {
+        clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%);
+        opacity: 0;
+      }
+
+      22% {
+        opacity: 1;
+      }
+
+      72% {
+        clip-path: polygon(50% -70%, 170% 50%, 50% 170%, -70% 50%);
+        opacity: 1;
+      }
+
+      100% {
+        clip-path: polygon(50% -70%, 170% 50%, 50% 170%, -70% 50%);
+        opacity: 0;
+      }
+    }
+
+    @keyframes encounterDiamondHold {
+      0% {
+        clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%);
+        opacity: 0;
+      }
+
+      22% {
+        opacity: 1;
+      }
+
+      72% {
+        clip-path: polygon(50% -70%, 170% 50%, 50% 170%, -70% 50%);
+        opacity: 1;
+      }
+
+      100% {
+        clip-path: inset(0);
+        background: #000;
+        opacity: 1;
+      }
+    }
+
+    @keyframes encounterBars {
+      0% {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+
+      16% {
+        opacity: 1;
+      }
+
+      70% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateX(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes encounterBarsHold {
+      0% {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+
+      16% {
+        opacity: 1;
+      }
+
+      70% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      100% {
+        background: #000;
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes encounterChecker {
+      0% {
+        opacity: 0;
+        transform: scale(1.12);
+        filter: brightness(1.8);
+      }
+
+      26% {
+        opacity: 1;
+      }
+
+      70% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(1);
+        filter: brightness(1);
+      }
+    }
+
+    @keyframes encounterCheckerHold {
+      0% {
+        opacity: 0;
+        transform: scale(1.12);
+        filter: brightness(1.8);
+      }
+
+      26% {
+        opacity: 1;
+      }
+
+      70% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+      }
+
+      100% {
+        background: #000;
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+      }
+    }

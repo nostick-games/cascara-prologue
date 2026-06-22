@@ -1,0 +1,251 @@
+.inventory-modal-shield {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      background: rgba(17, 18, 24, 0.44);
+    }
+
+    .inventory-modal-shield[hidden] {
+      display: none;
+    }
+
+    .inventory-modal {
+      width: min(700px, calc(100% - 64px));
+      min-height: 412px;
+      filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.48));
+    }
+
+    .pixel-modal {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr) 18px;
+      grid-template-rows: 18px minmax(0, 1fr) 18px;
+      image-rendering: pixelated;
+    }
+
+    .pixel-modal-content {
+      grid-column: 2;
+      grid-row: 2;
+      background: #E4A672;
+      margin: -1px;
+    }
+
+    .inventory-corner,
+    .inventory-edge {
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      image-rendering: pixelated;
+    }
+
+    .inventory-top,
+    .inventory-bottom {
+      background-repeat: repeat-x;
+      background-size: 18px 18px;
+    }
+
+    .inventory-left,
+    .inventory-right {
+      background-repeat: repeat-y;
+      background-size: 18px 18px;
+    }
+
+    .inventory-top-left { background-image: url("/assets/inventaire/fond_angle_haut_gauche.png"); }
+    .inventory-top { background-image: url("/assets/inventaire/fond_haut.png"); }
+    .inventory-top-right { background-image: url("/assets/inventaire/fond_angle_haut_droite.png"); }
+    .inventory-left { background-image: url("/assets/inventaire/fond_gauche.png"); }
+    .inventory-center {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 18px;
+      min-height: 376px;
+      padding: 26px 28px 72px;
+      background: #E4A672;
+      color: #2f1f18;
+    }
+    .inventory-right { background-image: url("/assets/inventaire/fond_droite.png"); }
+    .inventory-bottom-left { background-image: url("/assets/inventaire/fond_angle_bas_gauche.png"); }
+    .inventory-bottom { background-image: url("/assets/inventaire/fond_bas.png"); }
+    .inventory-bottom-right { background-image: url("/assets/inventaire/fond_angle_bas_droite.png"); }
+
+    .inventory-options,
+    .inventory-ok {
+      position: absolute;
+      bottom: 18px;
+      min-height: 34px;
+      padding: 8px 18px;
+    }
+
+    .inventory-options {
+      left: 18px;
+    }
+
+    .inventory-ok {
+      right: 18px;
+    }
+
+    .inventory-items {
+      --bag-red: #ba2935;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+      gap: 18px 16px;
+      align-content: start;
+      padding: 8px 2px 2px 0;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .inventory-status-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .inventory-hp {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+      max-width: 280px;
+    }
+
+    .inventory-hp .bar-head {
+      color: #2f1f18;
+    }
+
+    .inventory-hp .bar {
+      height: 12px;
+      background: rgba(47, 31, 24, 0.28);
+      border-color: rgba(47, 31, 24, 0.56);
+    }
+
+    .inventory-currencies {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .inventory-currency {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 28px;
+      padding: 4px 8px;
+      background: rgba(47, 31, 24, 0.12);
+      color: #2f1f18;
+      font-size: 0.62rem;
+      line-height: 1;
+    }
+
+    .inventory-currency img {
+      width: 18px;
+      height: 18px;
+      image-rendering: pixelated;
+      object-fit: contain;
+    }
+
+    .inventory-empty {
+      grid-column: 1 / -1;
+      display: grid;
+      min-height: 230px;
+      place-items: center;
+      color: #2f1f18;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .inventory-item {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+    }
+
+    .inventory-item-block {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      padding: 13px;
+      border: 0;
+      border-radius: 0;
+      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      image-rendering: pixelated;
+      min-height: 0;
+    }
+
+    .inventory-item-block:hover:not(:disabled) {
+      transform: none;
+      border-color: transparent;
+    }
+
+    .inventory-item-block.selected {
+      background-image: url("/assets/inventaire/bloc_on.png");
+    }
+
+    .inventory-item-block.unavailable {
+      cursor: not-allowed;
+      opacity: 0.92;
+    }
+
+    .inventory-item-sprite {
+      width: 52px;
+      height: 52px;
+      image-rendering: pixelated;
+      object-fit: contain;
+    }
+
+    .inventory-item-block.unavailable .inventory-item-sprite {
+      filter: grayscale(1);
+      opacity: 0.68;
+    }
+
+    .inventory-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--bag-red);
+      color: #fff7e7;
+      font-size: 0.64rem;
+      line-height: 1;
+      box-shadow: 0 2px 0 rgba(47, 31, 24, 0.35);
+    }
+
+    .inventory-cost {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      color: #2f1f18;
+      font-size: 0.54rem;
+      line-height: 1;
+    }
+
+    .inventory-item-name {
+      color: #2f1f18;
+      font-size: 0.58rem;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .inventory-warning {
+      position: absolute;
+      inset: 8px;
+      display: grid;
+      place-items: center;
+      padding: 6px;
+      background: rgba(0, 0, 0, 0.9);
+      color: var(--bag-red);
+      font-size: 0.48rem;
+      line-height: 1.45;
+      text-align: center;
+      pointer-events: none;
+    }

@@ -1,0 +1,913 @@
+@media (orientation: landscape) and (max-height: 560px) {
+      body.briefing-active .layout {
+        width: 100%;
+        height: 100%;
+        grid-template-columns: clamp(150px, 24vw, 230px) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: clamp(6px, 1.4vw, 12px);
+        align-items: stretch;
+        padding: clamp(4px, 1.4dvh, 8px);
+        overflow: hidden;
+      }
+
+      .radar-panel,
+      .briefing-panel {
+        padding: 8px;
+      }
+
+      .panel-title {
+        margin-bottom: 6px;
+      }
+
+      body.briefing-active .panel-title {
+        display: grid;
+        justify-content: end;
+        justify-items: end;
+        gap: 2px;
+        min-height: 34px;
+        margin-bottom: 0;
+        padding-right: clamp(8px, 1.4vw, 16px);
+        text-align: right;
+      }
+
+      body.briefing-active .panel-title h2 {
+        line-height: 1;
+      }
+
+      .panel-title h2 {
+        font-size: 0.62rem;
+        line-height: 1.45;
+      }
+
+      .points {
+        font-size: 0.62rem;
+      }
+
+      body.briefing-active .points {
+        display: inline-flex;
+        min-width: 7ch;
+        line-height: 1;
+        justify-content: flex-end;
+      }
+
+      body.briefing-active .gem-counter-control {
+        gap: 4px;
+      }
+
+      body.briefing-active .gem-reset-button {
+        --gem-reset-label-y: -12px;
+        width: 28px;
+        height: 26px;
+        min-height: 26px;
+        font-size: 1.72rem;
+      }
+
+      .radar-wrap {
+        width: min(320px, 100%);
+        max-width: 100%;
+        margin-bottom: 6px;
+      }
+
+      body.briefing-active .radar-wrap {
+        width: min(100%, calc(100dvh - 68px));
+        max-width: calc(100vw - 330px);
+        align-self: center;
+        margin: 0 auto;
+        transform: translateX(clamp(-110px, -8vw, -34px));
+      }
+
+      .radar-canvas {
+        width: 100%;
+        height: auto;
+        max-height: none;
+        margin: 0;
+      }
+
+      .radar-control {
+        grid-template-columns: repeat(3, 26px);
+        gap: 3px;
+      }
+
+      .radar-control-initiative {
+        margin-left: -14px;
+      }
+
+      .radar-control-label {
+        font-size: 0.58rem;
+      }
+
+      .radar-square {
+        position: relative;
+        width: 26px;
+        height: 26px;
+        min-height: 26px;
+        border-radius: 4px;
+        font-size: 0.76rem;
+      }
+
+      button.radar-square::before {
+        content: "";
+        position: absolute;
+        inset: -8px;
+      }
+
+      .radar-modal {
+        width: min(250px, 84%);
+        min-height: 142px;
+        grid-template-columns: 12px minmax(0, 1fr) 12px;
+        grid-template-rows: 12px minmax(0, 1fr) 12px;
+      }
+
+      .radar-modal .inventory-top,
+      .radar-modal .inventory-bottom,
+      .briefing-modal .inventory-top,
+      .briefing-modal .inventory-bottom {
+        background-size: 12px 12px;
+      }
+
+      .radar-modal .inventory-left,
+      .radar-modal .inventory-right,
+      .briefing-modal .inventory-left,
+      .briefing-modal .inventory-right {
+        background-size: 12px 12px;
+      }
+
+      .radar-modal-content {
+        min-height: 118px;
+        padding: 13px;
+      }
+
+      .radar-modal h3 {
+        font-size: 0.9rem;
+      }
+
+      .radar-modal p,
+      .radar-modal .modal-points {
+        font-size: calc(0.76rem - 2px);
+      }
+
+      .stat-meta {
+        display: none;
+      }
+
+      .icon-btn {
+        width: 30px;
+        height: 28px;
+        min-height: 28px;
+      }
+
+      .actions-row {
+        right: 8px;
+        bottom: 8px;
+        width: 132px;
+        gap: 5px;
+      }
+
+      body.briefing-active .actions-row {
+        right: clamp(6px, 1.4vw, 12px);
+        bottom: clamp(6px, 1.4dvh, 12px);
+      }
+
+      .actions-row button {
+        min-height: 27px;
+        padding: 5px 6px;
+        font-size: 0.55rem;
+        line-height: 1.35;
+      }
+
+      .objective-list {
+        gap: 4px;
+        margin-top: 6px;
+      }
+
+      .objective {
+        min-height: 24px;
+        padding: 4px 7px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        max-width: 100%;
+      }
+
+      .encounter-card {
+        margin-bottom: 6px;
+      }
+
+      .briefing-panel {
+        width: 170px;
+        padding: 0;
+      }
+
+      body.briefing-active .briefing-panel {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto;
+        overflow: hidden;
+      }
+
+      body.briefing-active .encounter-card {
+        min-height: 0;
+        margin: 0;
+        display: grid;
+      }
+
+      .creature-stage,
+      .human-stage {
+        width: 170px;
+      }
+
+      body.briefing-active .creature-stage,
+      body.briefing-active .human-stage {
+        width: min(100%, calc(100dvh - 108px));
+        max-height: 100%;
+        align-self: center;
+        justify-self: center;
+      }
+
+      body.briefing-active .human-stage {
+        width: 100%;
+        height: 100%;
+        align-self: stretch;
+        justify-self: stretch;
+      }
+
+      .creature-info-actions {
+        gap: 6px;
+        margin-top: 7px;
+      }
+
+      body.briefing-active .creature-info-actions {
+        gap: 5px;
+        margin-top: 6px;
+      }
+
+      body.briefing-active .hunt-briefing-panel .creature-info-actions {
+        width: 100%;
+        margin-top: 0;
+        transform: none;
+        flex: 0 0 auto;
+      }
+
+      .creature-info-actions button {
+        min-height: 34px;
+        padding: 6px 8px;
+        font-size: 0.62rem;
+      }
+
+      body.briefing-active .creature-info-actions button {
+        width: 100%;
+        min-height: clamp(28px, 9dvh, 38px);
+      }
+
+      body.briefing-active .hunt-briefing-panel .creature-info-actions button {
+        font-size: 0.42rem;
+        line-height: 1.18;
+      }
+
+      body.briefing-active .hunt-briefing-panel .creature-info-actions .pixel-button-label {
+        white-space: normal;
+        overflow-wrap: normal;
+        word-break: keep-all;
+      }
+
+      .creature-sprite {
+        --briefing-sprite-offset: var(--briefing-sprite-mobile-offset, -3072px);
+        --briefing-sprite-active-offset: var(--briefing-sprite-mobile-offset, -3072px);
+        width: var(--briefing-sprite-mobile-width, 512px);
+        height: var(--briefing-sprite-mobile-height, 512px);
+        background-size: var(--briefing-sprite-mobile-background-size, 3072px 512px);
+        transform: var(--briefing-sprite-mobile-transform, translate(0, 14px) translateZ(0));
+      }
+
+      .human-sprite {
+        --human-sprite-active-offset: var(--human-sprite-mobile-offset, -3528px);
+        --human-sprite-transform: var(--human-sprite-mobile-transform, translate(-50%, -50%) translateZ(0));
+        width: var(--human-sprite-mobile-width, 294px);
+        height: var(--human-sprite-mobile-height, 294px);
+        background-size: var(--human-sprite-mobile-background-size, 3528px 294px);
+        position: absolute;
+        left: var(--human-sprite-mobile-left, 35%);
+        top: var(--human-sprite-mobile-top, 25%);
+      }
+
+      @keyframes braiseIdle {
+        from {
+          background-position-x: 0;
+        }
+
+        to {
+          background-position-x: var(--briefing-sprite-active-offset);
+        }
+      }
+
+      .encounter-copy {
+        justify-content: flex-start;
+        padding-top: 0;
+      }
+
+      .encounter-name {
+        margin-bottom: 2px;
+        font-size: 0.98rem;
+      }
+
+      .behavior-card {
+        margin-top: 6px;
+      }
+
+      .behavior-card strong {
+        margin-bottom: 2px;
+      }
+
+      .behavior-card p {
+        font-size: calc(0.74rem - 2px);
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .encounter-sentence {
+        grid-column: 1 / -1;
+        font-size: 0.78rem;
+        line-height: 1.2;
+      }
+
+      body.briefing-active .encounter-sentence {
+        padding: 2px 4px 0;
+      }
+
+      body.briefing-active .radar-panel {
+        height: 100%;
+        min-height: 0;
+        display: grid;
+        grid-template-rows: 34px minmax(0, 1fr);
+        padding-top: 4px;
+        overflow: hidden;
+      }
+
+      /* Briefing humain (mobile) : radar (max) | colonne d'actions fixe.
+         L'ennemi est placé derrière le radar (dont l'extérieur est transparent),
+         pour laisser un maximum de place au radar et garder la colonne entière. */
+      body.briefing-active .human-briefing-layout {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        align-items: center;
+        column-gap: clamp(6px, 1.5vw, 16px);
+      }
+
+      body.briefing-active .hunt-briefing-layout {
+        --hunt-mobile-panel-bottom: clamp(4px, 1.4dvh, 10px);
+        /* + safe-area : évite que le dernier bouton soit rogné par le home indicator / coin arrondi. */
+        --hunt-mobile-actions-bottom: calc(clamp(20px, 6dvh, 30px) + env(safe-area-inset-bottom, 0px));
+        grid-template-columns: 1fr;
+        align-items: center;
+      }
+
+      /* Phrase d'intro compacte (sur deux lignes si besoin) pour gagner de la hauteur. */
+      body.briefing-active .encounter-sentence {
+        font-size: clamp(0.62rem, 2.4vw, 0.86rem);
+        line-height: 1.2;
+        margin: 0 0 2px;
+      }
+
+      body.briefing-active .human-briefing-panel,
+      body.briefing-active .hunt-briefing-panel {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: clamp(110px, 22vw, 200px);
+        z-index: 0;
+        pointer-events: none;
+        align-self: stretch;
+        transform: none;
+      }
+
+      body.briefing-active.human-briefing-active .human-briefing-panel {
+        --human-briefing-block-top: clamp(54px, 14dvh, 96px);
+        --human-briefing-block-left: clamp(8px, 2vw, 24px);
+        --human-briefing-block-width: clamp(132px, 18vw, 172px);
+        --human-briefing-stage-height: clamp(170px, 30dvh, 230px);
+        z-index: 8;
+        pointer-events: auto;
+        top: var(--human-briefing-block-top);
+        left: var(--human-briefing-block-left);
+        bottom: auto;
+        width: var(--human-briefing-block-width);
+        height: auto;
+        overflow: visible;
+        transform: none;
+      }
+
+      body.briefing-active.human-briefing-active .human-briefing-content {
+        display: grid;
+        /* Colonne bornée à la largeur du panneau : sinon le sprite (plus large) gonfle la
+           colonne et décale le bouton Radar vers la droite. */
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: var(--human-briefing-stage-height) auto auto;
+        justify-items: center;
+        gap: clamp(6px, 1.8dvh, 12px);
+        padding: clamp(7px, 1.5vw, 10px);
+      }
+
+      body.briefing-active.human-briefing-active .enemy-team-slots {
+        gap: clamp(4px, 1vw, 8px);
+      }
+
+      body.briefing-active.human-briefing-active .enemy-team-slot.empty {
+        font-size: clamp(0.7rem, 3.4dvh, 1.1rem);
+      }
+
+      body.briefing-active.human-briefing-active .human-briefing-panel .encounter-card {
+        min-height: 0;
+        height: var(--human-briefing-stage-height);
+        display: block;
+      }
+
+      body.briefing-active.human-briefing-active .human-stage,
+      body.briefing-active.human-briefing-active .human-sprite {
+        pointer-events: none;
+      }
+
+      body.briefing-active.human-briefing-active .human-stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        align-self: stretch;
+        justify-self: stretch;
+      }
+
+      body.briefing-active.human-briefing-active .human-sprite {
+        position: absolute;
+        left: 50%;
+        top: calc(var(--human-briefing-stage-height) / 2);
+        transform: translate(-50%, -50%) translateZ(0);
+      }
+
+      body.briefing-active.human-briefing-active .human-enemy-radar-button {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        z-index: 20;
+        pointer-events: auto;
+        justify-self: center;
+        width: min(100%, 118px);
+        max-width: min(100%, 118px);
+        margin-inline: 0;
+      }
+
+      /* Colonne gauche du briefing de chasse : même structure que le briefing adversaire
+         (cadre pixel via .pixel-button-frame + contenu posé par-dessus). */
+      body.briefing-active.hunt-briefing-active .hunt-briefing-panel {
+        --hunt-briefing-block-left: clamp(10px, 2.4vw, 22px);
+        --hunt-briefing-block-width: clamp(124px, 17vw, 156px);
+        --hunt-briefing-stage-height: clamp(116px, 21dvh, 165px);
+        z-index: 8;
+        pointer-events: auto;
+        /* Colonne calée en bas de la fenêtre (même ancrage que le panneau de droite),
+           avec marge latérale pour ne pas empiéter sur la stat Vitesse du radar. */
+        top: auto;
+        bottom: var(--hunt-mobile-panel-bottom, clamp(4px, 1.4dvh, 10px));
+        left: var(--hunt-briefing-block-left);
+        width: var(--hunt-briefing-block-width);
+        height: auto;
+        overflow: visible;
+        background: transparent;
+        border: 0;
+        transform: none;
+      }
+
+      body.briefing-active.hunt-briefing-active .hunt-briefing-content {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: var(--hunt-briefing-stage-height) auto;
+        justify-items: center;
+        gap: clamp(6px, 1.8dvh, 12px);
+        padding: clamp(7px, 1.5vw, 10px);
+      }
+
+      body.briefing-active.hunt-briefing-active .hunt-briefing-panel .encounter-card {
+        width: 100%;
+        min-height: 0;
+        height: var(--hunt-briefing-stage-height);
+        margin: 0;
+        transform: none;
+        display: block;
+      }
+
+      body.briefing-active.hunt-briefing-active .hunt-briefing-panel .creature-stage {
+        width: 100% !important;
+        max-width: none !important;
+        height: 100% !important;
+        aspect-ratio: auto;
+        overflow: visible;
+      }
+
+      body.briefing-active.hunt-briefing-active .hunt-briefing-panel .creature-sprite {
+        position: absolute;
+        left: 50%;
+        top: calc(var(--hunt-briefing-stage-height) * 0.46);
+        bottom: auto;
+        transform-origin: center center;
+        /* Sprite agrandi pour montrer le fawna en entier et déborder un peu du cadre. */
+        transform: translate(-50%, -50%) scale(1.3) translateZ(0);
+      }
+
+      body.briefing-active.hunt-briefing-active .hunt-briefing-panel .creature-info-actions {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        width: 100%;
+        gap: clamp(4px, 1.2dvh, 6px);
+        margin-top: 0;
+        z-index: 20;
+        pointer-events: auto;
+        justify-items: center;
+      }
+
+      body.briefing-active.hunt-briefing-active .hunt-creature-meta-row {
+        width: min(100%, 118px);
+        gap: 5px;
+      }
+
+      body.briefing-active.hunt-briefing-active .hunt-creature-meta-row .roster-meta-block {
+        min-height: clamp(24px, 6.8dvh, 30px);
+        font-size: clamp(0.32rem, 1.35dvh, 0.38rem);
+      }
+
+      body.briefing-active.hunt-briefing-active .hunt-briefing-panel .creature-info-actions button {
+        width: min(100%, 118px);
+        max-width: min(100%, 118px);
+        min-height: clamp(30px, 8.6dvh, 36px);
+        padding-inline: 8px;
+        font-size: clamp(0.34rem, 1.5dvh, 0.42rem);
+      }
+
+      body.briefing-active .human-radar-panel,
+      body.briefing-active .hunt-radar-panel {
+        grid-column: 2;
+        z-index: 1;
+        min-width: 0;
+        padding: 0;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        overflow: visible;
+      }
+
+      body.briefing-active .hunt-radar-panel {
+        grid-column: 1;
+        justify-self: center;
+        pointer-events: none;
+      }
+
+      body.briefing-active .hunt-radar-panel .radar-wrap,
+      body.briefing-active .hunt-radar-panel .radar-canvas,
+      body.briefing-active .hunt-radar-panel .radar-modal-shield,
+      body.briefing-active .hunt-radar-panel .radar-modal {
+        pointer-events: auto;
+      }
+
+      body.briefing-active .hunt-radar-panel .radar-square {
+        pointer-events: auto;
+      }
+
+      /* Radar maximisé : taille basée sur la hauteur disponible. */
+      body.briefing-active .human-radar-panel .radar-wrap,
+      body.briefing-active .hunt-radar-panel .radar-wrap {
+        height: min(calc(100dvh - 44px), 400px);
+        width: auto;
+        max-width: none;
+        aspect-ratio: 1;
+        margin: 0 auto;
+        transform: none;
+      }
+
+      body.briefing-active .human-side-panel,
+      body.briefing-active .hunt-side-panel {
+        grid-column: 3;
+        z-index: 2;
+        width: clamp(116px, 16vw, 146px);
+        align-self: center;
+        justify-self: end;
+      }
+
+      body.briefing-active .hunt-side-panel {
+        position: absolute;
+        right: clamp(4px, 1.4vw, 12px);
+        bottom: var(--hunt-mobile-panel-bottom, clamp(4px, 1.4dvh, 10px));
+        align-self: end;
+        justify-self: auto;
+        transform: none;
+      }
+
+      body.briefing-active .human-side-content {
+        padding: 8px 10px 10px;
+        gap: 6px;
+      }
+
+      /* Blocs dimensionnés selon la hauteur utile : la colonne s'adapte à tout écran. */
+      body.briefing-active .human-side-content .roster-slot {
+        width: clamp(38px, 12dvh, 60px);
+        height: clamp(38px, 12dvh, 60px);
+      }
+
+      .briefing-modal {
+        width: min(430px, 78%);
+        max-height: min(330px, calc(100% - 16px));
+        grid-template-columns: 12px minmax(0, 1fr) 12px;
+        grid-template-rows: 12px minmax(0, 1fr) 12px;
+      }
+
+      /* Correctif définitif et partagé : sur petits écrans, les cadres pixel (cellules
+         d'images en 3×3) peuvent laisser une couture sous-pixel où le shield sombre
+         transparaît (lignes noires). On peint un anneau de 2px de la couleur du fond
+         (#E4A672) PAR-DESSUS le biseau intérieur des bords via box-shadow : c'est de la
+         peinture, pas de la mise en page, donc aucun débordement possible.
+         (On évite expressément margin négative + min-width/height en % : la référence
+         circulaire du % sur un item de grille fait déborder le cadre à droite sous
+         Safari/iOS.) S'applique à TOUTES les modales pixel. */
+      .pixel-modal-content {
+        margin: 0;
+        box-shadow: 0 0 0 2px #E4A672;
+      }
+
+      .briefing-modal-content {
+        padding: 12px;
+      }
+
+      .human-enemy-radar-modal .briefing-modal-content {
+        max-height: calc(100dvh - 12px);
+        padding: 10px 12px;
+        gap: 5px;
+      }
+
+      .human-enemy-radar-modal p {
+        margin-bottom: 2px;
+      }
+
+      .enemy-radar-scroll {
+        max-height: clamp(160px, 52dvh, 250px);
+      }
+
+      .human-enemy-radar-modal #humanEnemyRadarModalClose {
+        min-height: 30px;
+        padding: 6px 12px 8px;
+      }
+
+      .human-enemy-team-modal .briefing-modal-content {
+        gap: 2px;
+        padding: 8px 12px;
+      }
+
+      .human-enemy-team-modal {
+        width: min(560px, calc(100% - 96px));
+        max-height: calc(100% - 48px);
+      }
+
+      .enemy-team-modal-list {
+        gap: 12px;
+        min-height: 150px;
+      }
+
+      .enemy-team-modal-item {
+        grid-template-rows: 100px auto;
+        width: 160px;
+        gap: 0;
+      }
+
+      .enemy-team-modal-item .creature-idle-sprite {
+        transform: translate(-120px, 110px);
+      }
+
+      .enemy-team-modal-name {
+        font-size: clamp(0.48rem, 2.2dvh, 0.58rem);
+        margin-top: -72px;
+        transform: translateX(-120px);
+      }
+
+      .human-enemy-team-modal #humanEnemyTeamModalClose {
+        width: min(100%, 460px);
+        align-self: center;
+        min-height: 30px;
+        padding: 6px 12px 8px;
+      }
+
+      .briefing-modal h3 {
+        font-size: 0.78rem;
+      }
+
+      .briefing-modal p {
+        margin-bottom: 8px;
+        font-size: calc(0.74rem - 2px);
+      }
+
+      .briefing-modal .modal-objectives {
+        margin-bottom: 8px;
+      }
+
+      .affix-dropdown {
+        max-height: 148px;
+        margin-bottom: 8px;
+      }
+
+      .briefing-modal .modal-objectives .objective {
+        font-size: calc(0.74rem - 2px);
+      }
+
+      .affix-row {
+        padding: 6px;
+      }
+
+      .affix-row strong {
+        font-size: 0.66rem;
+      }
+
+      .affix-row small {
+        font-size: 0.56rem;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 560px) {
+      .roster-modal-shield {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        /* Respecte la zone sûre : la modale reste au-dessus du home indicator / coins arrondis. */
+        padding:
+          max(6px, env(safe-area-inset-top))
+          max(6px, env(safe-area-inset-right))
+          max(6px, env(safe-area-inset-bottom))
+          max(6px, env(safe-area-inset-left));
+      }
+
+      .roster-modal {
+        position: relative;
+        left: auto;
+        top: auto;
+        width: min(calc(100% - 12px), 666px);
+        height: 100%;
+        /* Plafonnée : plus basse que le viewport ; la colonne de gauche scrolle si besoin. */
+        max-height: min(calc(100dvh - 12px), 360px);
+        transform: none;
+        filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.46));
+      }
+
+      .roster-modal-content {
+        height: 100%;
+        min-height: 0;
+        padding: 10px 12px;
+        overflow: hidden;
+        /* Anneau anti-couture, voir .pixel-modal-content (peinture, pas de débordement). */
+        box-shadow: 0 0 0 2px #E4A672;
+      }
+
+      .roster-modal-shield.is-browse-only .roster-modal {
+        width: min(calc(100% - 12px), 650px);
+        grid-template-columns: 10px minmax(0, 1fr) 10px;
+        grid-template-rows: 10px minmax(0, 1fr) 10px;
+      }
+
+      .roster-modal-shield.is-browse-only .roster-modal > .inventory-top,
+      .roster-modal-shield.is-browse-only .roster-modal > .inventory-bottom,
+      .roster-modal-shield.is-browse-only .roster-modal > .inventory-left,
+      .roster-modal-shield.is-browse-only .roster-modal > .inventory-right {
+        background-size: 10px 10px;
+      }
+
+      .roster-modal-shield.is-browse-only .roster-modal-content {
+        /* Anneau anti-couture (voir .pixel-modal-content). */
+        box-shadow: 0 0 0 2px #E4A672;
+      }
+
+      .roster-modal-layout {
+        height: 100%;
+        min-height: 0;
+        grid-template-columns: 172px 424px;
+        gap: 10px;
+        align-items: stretch;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .roster-preview-column {
+        height: 100%;
+        min-height: 0;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        padding-right: 3px;
+      }
+
+      .roster-preview-window {
+        aspect-ratio: 1;
+        min-height: 0;
+        flex: none;
+      }
+
+      .roster-name-block,
+      .roster-meta-block {
+        min-height: 28px;
+        padding: 5px;
+        font-size: 0.5rem;
+      }
+
+      .roster-name-block {
+        font-size: 0.52rem;
+      }
+
+      .roster-stats-window {
+        height: auto;
+        min-height: 0;
+        padding: 9px;
+        overflow: visible;
+        flex: none;
+      }
+
+      .roster-stats-list {
+        gap: 5px;
+        font-size: 0.5rem;
+        line-height: 1.22;
+      }
+
+      .roster-instinct-title {
+        padding: 4px 5px;
+      }
+
+      .roster-instinct-description {
+        font-size: 0.38rem;
+        line-height: 1.32;
+      }
+
+      .roster-browser-window {
+        width: 424px;
+        height: 100%;
+        min-height: 0;
+        /* La grille laisse dépasser une 4e ligne (aperçu) ; la dernière rangée occupe
+           l'espace restant pour y centrer le bouton OK. */
+        grid-template-rows: 22px minmax(0, 224px) 1fr;
+        align-content: start;
+        gap: 6px;
+      }
+
+      .roster-sort-controls {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        align-self: start;
+        height: 22px;
+        gap: 3px;
+      }
+
+      .roster-sort-button {
+        min-height: 0;
+        height: 22px;
+        padding: 2px 2px 4px;
+        font-size: 0.42rem;
+      }
+
+      .roster-grid {
+        grid-template-columns: repeat(6, 56px);
+        gap: 10px 14px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 0 0 6px;
+      }
+
+      .roster-cell {
+        width: 56px;
+        height: 56px;
+      }
+
+      .roster-footer-actions {
+        align-self: center;
+        justify-content: flex-end;
+        gap: 4px;
+        margin-top: 0;
+      }
+
+      .roster-footer-actions > button {
+        min-height: 0;
+        height: 26px;
+        padding: 2px 10px 4px;
+        font-size: 0.42rem;
+      }
+
+      .roster-signature {
+        min-width: 112px;
+      }
+
+      .roster-ok {
+        align-self: center;
+        width: 96px;
+        max-width: 60%;
+      }
+    }

@@ -1,0 +1,254 @@
+    .pixel-ui-button {
+      --pixel-button-border-x: 3px;
+      --pixel-button-border-top: 3px;
+      --pixel-button-border-bottom: 5px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #2f1f18;
+      font-weight: 850;
+      padding: 10px 16px 12px;
+      transition: none;
+    }
+
+    .pixel-ui-button.pixel-ui-button {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .pixel-ui-button.pixel-ui-button--combat {
+      color: var(--ink);
+    }
+
+    .pixel-ui-button:active:not(:disabled) {
+      transform: none;
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .pixel-ui-button:is(.is-selected, :active:not(:disabled)) .pixel-button-frame,
+    .pixel-ui-button:is(.is-selected, :active:not(:disabled)) .pixel-button-label {
+      transform: translateY(1px);
+    }
+
+    .pixel-button-frame {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: var(--pixel-button-border-x) 1fr var(--pixel-button-border-x);
+      grid-template-rows: var(--pixel-button-border-top) 1fr var(--pixel-button-border-bottom);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .pixel-button-piece {
+      background-repeat: repeat;
+      background-size: auto;
+      image-rendering: pixelated;
+    }
+
+    .pixel-button-piece.top-left {
+      background-image: url("/assets/UI/bouton_off/angle_haut_gauche.png");
+    }
+
+    .pixel-button-piece.top {
+      background-image: url("/assets/UI/bouton_off/haut.png");
+      background-repeat: repeat-x;
+    }
+
+    .pixel-button-piece.top-right {
+      background-image: url("/assets/UI/bouton_off/angle_haut_droite.png");
+    }
+
+    .pixel-button-piece.left {
+      background-image: url("/assets/UI/bouton_off/gauche.png");
+      background-repeat: repeat-y;
+    }
+
+    .pixel-button-piece.center {
+      background: #F6CA9F;
+    }
+
+    .pixel-button-piece.right {
+      background-image: url("/assets/UI/bouton_off/droite.png");
+      background-repeat: repeat-y;
+    }
+
+    .pixel-button-piece.bottom-left {
+      background-image: url("/assets/UI/bouton_off/angle_bas_gauche.png");
+    }
+
+    .pixel-button-piece.bottom {
+      background-image: url("/assets/UI/bouton_off/bas.png");
+      background-repeat: repeat-x;
+    }
+
+    .pixel-button-piece.bottom-right {
+      background-image: url("/assets/UI/bouton_off/angle_bas_droite.png");
+    }
+
+    .pixel-ui-button:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom-left {
+      background-image: url("/assets/UI/bouton_on/angle_bas_gauche.png");
+    }
+
+    .pixel-ui-button:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom {
+      background-image: url("/assets/UI/bouton_on/bas.png");
+    }
+
+    .pixel-ui-button:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom-right {
+      background-image: url("/assets/UI/bouton_on/angle_bas_droite.png");
+    }
+
+    .pixel-ui-button--combat {
+      --pixel-button-border-x: 5px;
+      --pixel-button-border-top: 3px;
+      --pixel-button-border-bottom: 5px;
+    }
+
+    .pixel-ui-button--combat .pixel-button-frame {
+      display: block;
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece {
+      position: absolute;
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.top-left {
+      left: 0;
+      top: 0;
+      width: 5px;
+      height: 5px;
+      background-image: url("/assets/UI/bouton_combat_off/angle_haut_gauche.png");
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.top {
+      left: 5px;
+      right: 5px;
+      top: 0;
+      height: 3px;
+      background-image: url("/assets/UI/bouton_combat_off/haut.png");
+      background-repeat: repeat-x;
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.top-right {
+      right: 0;
+      top: 0;
+      width: 5px;
+      height: 5px;
+      background-image: url("/assets/UI/bouton_combat_off/angle_haut_droite.png");
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.left {
+      left: 0;
+      top: 5px;
+      bottom: 5px;
+      width: 5px;
+      background-image: url("/assets/UI/bouton_combat_off/gauche.png");
+      background-repeat: repeat-y;
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.center {
+      left: 5px;
+      right: 5px;
+      top: 3px;
+      bottom: 5px;
+      background: var(--ui-orange);
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.right {
+      right: 0;
+      top: 5px;
+      bottom: 5px;
+      width: 5px;
+      background-image: url("/assets/UI/bouton_combat_off/droite.png");
+      background-repeat: repeat-y;
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.bottom-left {
+      left: 0;
+      bottom: 0;
+      width: 5px;
+      height: 5px;
+      background-image: url("/assets/UI/bouton_combat_off/angle_bas_gauche.png");
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.bottom {
+      left: 5px;
+      right: 5px;
+      bottom: 0;
+      height: 5px;
+      background-image: url("/assets/UI/bouton_combat_off/bas.png");
+      background-repeat: repeat-x;
+    }
+
+    .pixel-ui-button--combat .pixel-button-piece.bottom-right {
+      right: 0;
+      bottom: 0;
+      width: 5px;
+      height: 5px;
+      background-image: url("/assets/UI/bouton_combat_off/angle_bas_droite.png");
+    }
+
+    .pixel-ui-button--combat:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom-left {
+      background-image: url("/assets/UI/bouton_combat_on/angle_bas_gauche.png");
+    }
+
+    .pixel-ui-button--combat:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom {
+      background-image: url("/assets/UI/bouton_combat_on/bas.png");
+    }
+
+    .pixel-ui-button--combat:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom-right {
+      background-image: url("/assets/UI/bouton_combat_on/angle_bas_droite.png");
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .pixel-ui-button:hover:not(:disabled) {
+        transform: none;
+        border-color: transparent;
+        background: transparent;
+      }
+
+      .pixel-ui-button:hover:not(:disabled) .pixel-button-frame,
+      .pixel-ui-button:hover:not(:disabled) .pixel-button-label {
+        transform: translateY(1px);
+      }
+
+      .pixel-ui-button:hover:not(:disabled) .pixel-button-piece.bottom-left {
+        background-image: url("/assets/UI/bouton_on/angle_bas_gauche.png");
+      }
+
+      .pixel-ui-button:hover:not(:disabled) .pixel-button-piece.bottom {
+        background-image: url("/assets/UI/bouton_on/bas.png");
+      }
+
+      .pixel-ui-button:hover:not(:disabled) .pixel-button-piece.bottom-right {
+        background-image: url("/assets/UI/bouton_on/angle_bas_droite.png");
+      }
+
+      .pixel-ui-button--combat:hover:not(:disabled) .pixel-button-piece.bottom-left {
+        background-image: url("/assets/UI/bouton_combat_on/angle_bas_gauche.png");
+      }
+
+      .pixel-ui-button--combat:hover:not(:disabled) .pixel-button-piece.bottom {
+        background-image: url("/assets/UI/bouton_combat_on/bas.png");
+      }
+
+      .pixel-ui-button--combat:hover:not(:disabled) .pixel-button-piece.bottom-right {
+        background-image: url("/assets/UI/bouton_combat_on/angle_bas_droite.png");
+      }
+    }
+
+    .pixel-button-label {
+      position: relative;
+      z-index: 1;
+      display: block;
+      max-width: 100%;
+      text-align: center;
+      line-height: 1.35;
+      pointer-events: none;
+    }

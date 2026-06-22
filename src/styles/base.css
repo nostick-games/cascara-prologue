@@ -1,0 +1,115 @@
+    :root {
+      color-scheme: dark;
+      --font-pixel: "Press Start 2P", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --bg: #17171c;
+      --panel: #22232a;
+      --panel-2: #292b33;
+      --line: #3e4250;
+      --text: #f4f0e8;
+      --ui-pink: #F2CBA4;
+      --ui-orange: #F7B04D;
+      --ui-gray: #B6B0A5;
+      --ui-blue: #C0CBDC;
+      --ui-enemy-red: #B51700;
+      --muted: var(--ui-gray);
+      --gold: var(--ui-orange);
+      --red: #eb675d;
+      --blue: #5fb4d9;
+      --green: #65c18c;
+      --ink: #101116;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      touch-action: manipulation;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #17171A;
+      color: var(--text);
+      font-family: var(--font-pixel);
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    button {
+      border: 1px solid transparent;
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 7px;
+      min-height: 38px;
+      padding: 8px 12px;
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        border-color: rgba(247, 176, 77, 0.75);
+      }
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .app {
+      position: relative;
+      width: min(1180px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 22px 0 28px;
+    }
+
+    .app-fit {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: rgba(34, 35, 42, 0.82);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 18px;
+      align-items: start;
+      position: relative;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(34, 35, 42, 0.94);
+      border-radius: 8px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+    }

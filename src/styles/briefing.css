@@ -1,0 +1,1267 @@
+    .briefing-panel {
+      width: 360px;
+      padding: 0;
+      min-height: 0;
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .hunt-briefing-panel {
+      --pixel-button-border-x: 3px;
+      --pixel-button-border-top: 3px;
+      --pixel-button-border-bottom: 5px;
+      width: 248px;
+      position: relative;
+      box-sizing: border-box;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      image-rendering: pixelated;
+    }
+
+    /* Même structure que la colonne gauche du briefing adversaire : contenu (sprite +
+       boutons) posé par-dessus le cadre pixel (.pixel-button-frame). */
+    .hunt-briefing-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: 340px auto;
+      justify-items: center;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .hunt-briefing-content .encounter-card {
+      width: 100%;
+      margin: 0;
+    }
+
+    .human-briefing-panel {
+      --pixel-button-border-x: 3px;
+      --pixel-button-border-top: 3px;
+      --pixel-button-border-bottom: 5px;
+      width: 248px;
+      /* Rapproché du radar pour équilibrer les écarts gauche/droite (illusion de décentrage). */
+      justify-self: end;
+      position: relative;
+      box-sizing: border-box;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      image-rendering: pixelated;
+    }
+
+    .human-briefing-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      box-sizing: border-box;
+      display: grid;
+      /* Colonne bornée à la largeur du panneau : le sprite (plus large) ne doit pas la
+         gonfler, sinon le bouton Radar se décentre. */
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: 340px auto auto;
+      justify-items: center;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .human-briefing-content .encounter-card {
+      width: 100%;
+      margin: 0;
+    }
+
+    /* Équipe de l'adversaire : 3 blocs qui tiennent toujours dans la largeur du panneau. */
+    .enemy-team-slots {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .enemy-team-slot {
+      position: relative;
+      aspect-ratio: 1;
+      min-width: 0;
+      min-height: 0;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      image-rendering: pixelated;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: #7b3a22;
+    }
+
+    .enemy-team-slot:hover:not(:disabled) {
+      transform: none;
+      border-color: transparent;
+    }
+
+    .enemy-team-slot.empty {
+      font-size: 1.4rem;
+      line-height: 1;
+      color: #7b3a22;
+    }
+
+    .start-section {
+      width: min(720px, 100%);
+      margin: min(18vh, 150px) auto 0;
+      padding: 24px;
+      display: grid;
+      gap: 24px;
+      text-align: center;
+    }
+
+    .start-section h1 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .start-choice-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .start-choice-actions button {
+      min-height: 56px;
+    }
+
+    .encounter-card {
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .creature-stage {
+      display: grid;
+      place-items: center;
+      width: 360px;
+      aspect-ratio: 1;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      background:
+        radial-gradient(circle at 46% 72%, rgba(255, 199, 93, 0.44), transparent 20%),
+        radial-gradient(circle at 58% 66%, rgba(235, 103, 93, 0.36), transparent 24%),
+        linear-gradient(180deg, rgba(138, 46, 24, 0.25), rgba(255, 146, 54, 0.12) 48%, rgba(17, 18, 24, 0.86));
+      border-radius: 7px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hunt-briefing-panel .creature-stage {
+      width: 100%;
+      height: 100%;
+      border-color: transparent;
+      background: transparent;
+      border-radius: 0;
+      overflow: visible;
+    }
+
+    .hunt-briefing-panel .creature-stage[data-creature-type] {
+      background: transparent;
+    }
+
+    .hunt-briefing-panel .creature-stage::before,
+    .hunt-briefing-panel .creature-stage::after,
+    .hunt-briefing-panel .creature-stage[data-creature-type]::before,
+    .hunt-briefing-panel .creature-stage[data-creature-type]::after {
+      content: none;
+    }
+
+    .human-stage {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 340px;
+      aspect-ratio: 1;
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: 0;
+      overflow: visible;
+      position: relative;
+    }
+
+    .human-stage::before {
+      content: none;
+    }
+
+    .human-enemy-radar-button {
+      box-sizing: border-box;
+      justify-self: center;
+      width: min(100%, 160px);
+      margin-top: 10px;
+      min-height: 42px;
+    }
+
+    .human-sprite {
+      --human-sprite-offset: -6144px;
+      --human-sprite-active-offset: var(--human-sprite-offset);
+      --human-sprite-transform: translate(-170px, -310px) translateZ(0);
+      width: var(--human-sprite-width, 512px);
+      height: var(--human-sprite-height, 512px);
+      background-repeat: no-repeat;
+      background-size: var(--human-sprite-background-size, 6144px 512px);
+      image-rendering: pixelated;
+      animation: humanBriefingIdle 1.25s steps(var(--human-sprite-steps, 12)) infinite;
+      transform: var(--human-sprite-transform);
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 1;
+      /* Décoratif : son débordement ne doit pas intercepter le survol/clics du radar. */
+      pointer-events: none;
+    }
+
+    .creature-sprite {
+      --briefing-sprite-offset: var(--briefing-sprite-desktop-offset, -4608px);
+      --briefing-sprite-active-offset: var(--briefing-sprite-offset);
+      --briefing-sprite-transform: translate(0, 24px) translateZ(0);
+      width: var(--briefing-sprite-width, 768px);
+      height: var(--briefing-sprite-height, 768px);
+      background-image: url("/assets/creatures/braise-corne.png");
+      background-repeat: no-repeat;
+      background-size: var(--briefing-sprite-background-size, 4608px 768px);
+      image-rendering: pixelated;
+      animation: braiseIdle 900ms steps(var(--briefing-sprite-steps, 6)) infinite;
+      transform: var(--briefing-sprite-transform);
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hunt-briefing-panel .creature-sprite {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) var(--briefing-sprite-transform);
+    }
+
+    .creature-stage::before,
+    .creature-stage::after {
+      content: "";
+      position: absolute;
+      inset: auto 9% 0;
+      height: 66%;
+      background:
+        radial-gradient(ellipse at 24% 80%, rgba(255, 184, 69, 0.42), transparent 42%),
+        radial-gradient(ellipse at 50% 68%, rgba(255, 116, 50, 0.38), transparent 48%),
+        radial-gradient(ellipse at 72% 82%, rgba(255, 217, 112, 0.28), transparent 40%);
+      filter: blur(6px);
+      opacity: 0.75;
+      animation: flameGlow 2.2s ease-in-out infinite alternate;
+    }
+
+    .creature-stage::after {
+      inset: auto 18% 2%;
+      height: 50%;
+      opacity: 0.55;
+      filter: blur(12px);
+      animation-duration: 1.45s;
+      animation-delay: -500ms;
+    }
+
+    .creature-stage[data-creature-type="vent"] {
+      background:
+        linear-gradient(105deg, rgba(110, 194, 118, 0.22), transparent 32%),
+        linear-gradient(180deg, rgba(38, 83, 64, 0.32), rgba(93, 156, 92, 0.16) 52%, rgba(17, 18, 24, 0.86));
+    }
+
+    .creature-stage[data-creature-type="vent"]::before,
+    .creature-stage[data-creature-type="vent"]::after {
+      inset: 10% -28%;
+      height: auto;
+      background:
+        repeating-linear-gradient(
+          172deg,
+          transparent 0 22px,
+          rgba(162, 225, 154, 0.18) 23px 28px,
+          transparent 29px 54px
+        );
+      filter: blur(3px);
+      opacity: 0.52;
+      animation: windDrift 3.4s ease-in-out infinite alternate;
+    }
+
+    .creature-stage[data-creature-type="vent"]::after {
+      inset: 18% -34% 8%;
+      background:
+        repeating-linear-gradient(
+          8deg,
+          transparent 0 18px,
+          rgba(196, 239, 186, 0.14) 19px 23px,
+          transparent 24px 48px
+        );
+      filter: blur(5px);
+      opacity: 0.4;
+      animation-duration: 2.45s;
+      animation-delay: -800ms;
+    }
+
+    .creature-stage[data-creature-type="eau"] {
+      background:
+        radial-gradient(ellipse at 48% 72%, rgba(119, 218, 196, 0.34), transparent 25%),
+        linear-gradient(120deg, rgba(55, 136, 160, 0.28), transparent 38%),
+        linear-gradient(180deg, rgba(25, 69, 92, 0.34), rgba(61, 137, 128, 0.16) 54%, rgba(17, 18, 24, 0.86));
+    }
+
+    .creature-stage[data-creature-type="eau"]::before,
+    .creature-stage[data-creature-type="eau"]::after {
+      inset: 10% -18% 4%;
+      height: auto;
+      background:
+        repeating-radial-gradient(
+          ellipse at 48% 78%,
+          rgba(154, 232, 216, 0.24) 0 3px,
+          transparent 4px 24px
+        ),
+        linear-gradient(92deg, transparent 0 16%, rgba(100, 202, 218, 0.14) 20% 27%, transparent 34% 100%);
+      filter: blur(4px);
+      opacity: 0.58;
+      animation: waterDrift 3.2s ease-in-out infinite alternate;
+    }
+
+    .creature-stage[data-creature-type="eau"]::after {
+      inset: 22% -24% 0;
+      background:
+        repeating-linear-gradient(
+          178deg,
+          transparent 0 20px,
+          rgba(177, 241, 222, 0.16) 21px 26px,
+          transparent 27px 52px
+        );
+      filter: blur(7px);
+      opacity: 0.44;
+      animation-duration: 2.3s;
+      animation-delay: -650ms;
+    }
+
+    .creature-stage[data-creature-type="utilitaire"] {
+      background:
+        radial-gradient(circle at 50% 70%, rgba(188, 222, 232, 0.28), transparent 24%),
+        linear-gradient(135deg, rgba(85, 99, 114, 0.28), transparent 36%),
+        linear-gradient(180deg, rgba(50, 56, 70, 0.34), rgba(64, 74, 87, 0.18) 52%, rgba(17, 18, 24, 0.86));
+    }
+
+    .creature-stage[data-creature-type="utilitaire"]::before,
+    .creature-stage[data-creature-type="utilitaire"]::after {
+      inset: 10% 8% 6%;
+      height: auto;
+      background:
+        radial-gradient(circle at 30% 34%, rgba(235, 249, 255, 0.38) 0 3px, transparent 4px 100%),
+        radial-gradient(circle at 62% 26%, rgba(181, 229, 238, 0.28) 0 2px, transparent 3px 100%),
+        radial-gradient(circle at 72% 66%, rgba(213, 239, 245, 0.3) 0 3px, transparent 4px 100%),
+        repeating-linear-gradient(148deg, transparent 0 30px, rgba(200, 230, 236, 0.12) 31px 35px, transparent 36px 62px);
+      filter: blur(4px);
+      opacity: 0.58;
+      animation: crystalDrift 2.7s ease-in-out infinite alternate;
+    }
+
+    .creature-stage[data-creature-type="utilitaire"]::after {
+      inset: 18% 14% 10%;
+      filter: blur(8px);
+      opacity: 0.36;
+      animation-duration: 1.9s;
+      animation-delay: -500ms;
+    }
+
+    @keyframes braiseIdle {
+      from {
+        background-position-x: 0;
+      }
+
+      to {
+        background-position-x: var(--briefing-sprite-active-offset);
+      }
+    }
+
+    @keyframes humanBriefingIdle {
+      from {
+        background-position-x: 0;
+      }
+
+      to {
+        background-position-x: var(--human-sprite-active-offset);
+      }
+    }
+
+    @keyframes flameGlow {
+      from {
+        transform: translateY(8px) scaleX(0.92) scaleY(0.96);
+        opacity: 0.52;
+      }
+
+      to {
+        transform: translateY(-8px) scaleX(1.08) scaleY(1.05);
+        opacity: 0.86;
+      }
+    }
+
+    @keyframes windDrift {
+      from {
+        transform: translateX(-18px) skewY(-2deg);
+      }
+
+      to {
+        transform: translateX(20px) skewY(2deg);
+      }
+    }
+
+    @keyframes waterDrift {
+      from {
+        transform: translateX(-10px) translateY(5px) scaleX(0.96);
+      }
+
+      to {
+        transform: translateX(12px) translateY(-4px) scaleX(1.04);
+      }
+    }
+
+    @keyframes crystalDrift {
+      from {
+        transform: translateY(7px) scale(0.96);
+      }
+
+      to {
+        transform: translateY(-5px) scale(1.04);
+      }
+    }
+
+    .encounter-copy {
+      display: none;
+    }
+
+    .encounter-name {
+      display: none;
+      margin-bottom: 6px;
+      color: var(--gold);
+      font-weight: 850;
+      font-size: 1.12rem;
+    }
+
+    .behavior-card {
+      margin-top: 16px;
+    }
+
+    .encounter-sentence {
+      grid-column: 1 / -1;
+      color: var(--text);
+      font-size: 1.18rem;
+      line-height: 1.65;
+      font-weight: 780;
+      margin: 0;
+    }
+
+    .encounter-sentence .creature-inline {
+      color: var(--gold);
+    }
+
+    .human-briefing-layout .encounter-sentence,
+    .hunt-briefing-layout .encounter-sentence {
+      text-align: center;
+    }
+
+    /* Briefings : ennemi/créature | radar (centré dans la fenêtre) | colonne d'actions.
+       minmax(0, 1fr) force des colonnes latérales égales pour centrer le radar. */
+    .human-briefing-layout,
+    .hunt-briefing-layout {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .hunt-briefing-layout {
+      align-content: start;
+      align-items: start;
+      row-gap: 8px;
+    }
+
+    .hunt-briefing-layout .hunt-briefing-panel,
+    .hunt-briefing-layout .hunt-radar-panel,
+    .hunt-briefing-layout .hunt-side-panel {
+      align-self: start;
+    }
+
+    .hunt-briefing-layout .hunt-side-panel {
+      align-self: end;
+      transform: translateY(-16px);
+    }
+
+    /* Panneau radar des briefings : plus de fond bleuté sous le bloc radar. */
+    .human-radar-panel,
+    .hunt-radar-panel {
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    body.briefing-active .human-radar-panel .radar-wrap,
+    body.briefing-active .hunt-radar-panel .radar-wrap {
+      margin: 0 auto;
+      transform: none;
+    }
+
+    /* Colonne de droite encadrée comme un bouton standard (purement décoratif). */
+    .human-side-panel {
+      --pixel-button-border-x: 3px;
+      --pixel-button-border-top: 3px;
+      --pixel-button-border-bottom: 5px;
+      position: relative;
+      justify-self: start;
+      align-self: center;
+      display: flex;
+      width: 200px;
+    }
+
+    .human-side-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .human-side-content .points {
+      color: #2f1f18;
+    }
+
+    .human-side-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .human-side-actions > button {
+      width: 100%;
+    }
+
+    .hunt-side-actions {
+      margin-top: 2px;
+    }
+
+    .human-roster-slots {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      justify-self: center;
+    }
+
+    .roster-slot {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      image-rendering: pixelated;
+      cursor: pointer;
+    }
+
+    .roster-slot:hover:not(:disabled) {
+      transform: none;
+      border-color: transparent;
+    }
+
+    .roster-slot:disabled {
+      cursor: default;
+    }
+
+    .roster-slot.filled {
+      background-image: url("/assets/inventaire/bloc_on.png");
+    }
+
+    /* Sprite idle partagé (slots du briefing + cases de la modale).
+       Ancré au centre du cadre : il peut grandir librement sans bouger le cadre,
+       et ne capte pas les clics (la zone cliquable reste le cadre). */
+    .creature-idle-sprite {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: var(--creature-idle-size, 44px);
+      height: var(--creature-idle-size, 44px);
+      background-repeat: no-repeat;
+      background-size: var(--creature-idle-bg-size, 100% 100%);
+      image-rendering: pixelated;
+      animation: creature-idle-loop 900ms steps(var(--creature-idle-steps, 1)) infinite;
+      pointer-events: none;
+    }
+
+    @keyframes creature-idle-loop {
+      from { background-position: 0 0; }
+      to { background-position: var(--creature-idle-offset, 0) 0; }
+    }
+
+    /* Modale de sélection des créatures. */
+    .roster-modal-shield {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      background: rgba(17, 18, 24, 0.44);
+    }
+
+    .roster-modal-shield[hidden] {
+      display: none;
+    }
+
+    .roster-modal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 61;
+      width: min(660px, calc(100% - 48px));
+      max-height: calc(100% - 48px);
+      filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.48));
+      transform: translate(-50%, -50%);
+    }
+
+    @media (min-width: 861px) {
+      .roster-modal {
+        max-height: calc(100dvh - 48px);
+      }
+    }
+
+    .roster-modal-content {
+      position: relative;
+      display: block;
+      min-height: 0;
+      padding: 18px 20px 16px;
+      background: #E4A672;
+      color: #2f1f18;
+    }
+
+    .roster-modal-layout {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 154px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .roster-preview-column {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .roster-preview-window,
+    .roster-stats-window {
+      position: relative;
+      background: #DEAA7A;
+      border: 3px solid #5b3541;
+      box-shadow:
+        inset 3px 3px 0 rgba(255, 232, 183, 0.72),
+        inset -4px -4px 0 rgba(110, 62, 52, 0.35);
+    }
+
+    .roster-preview-window {
+      aspect-ratio: 1;
+      overflow: hidden;
+    }
+
+    .roster-meta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .roster-name-block,
+    .roster-meta-block {
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 6px;
+      background: #DEAA7A;
+      border: 3px solid #5b3541;
+      box-shadow:
+        inset 3px 3px 0 rgba(255, 232, 183, 0.72),
+        inset -4px -4px 0 rgba(110, 62, 52, 0.35);
+      color: #2f1f18;
+      font-size: 0.55rem;
+      line-height: 1.1;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .roster-name-block {
+      font-size: 0.58rem;
+      white-space: nowrap;
+    }
+
+    .roster-preview-sprite {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      width: var(--creature-idle-size, 120px);
+      height: var(--creature-idle-size, 120px);
+      background-repeat: no-repeat;
+      background-size: var(--creature-idle-bg-size, 100% 100%);
+      image-rendering: pixelated;
+      animation: creature-idle-loop 900ms steps(var(--creature-idle-steps, 1)) infinite;
+      transform: translate(-50%, -50%);
+    }
+
+    .roster-preview-sprite.empty {
+      display: none;
+    }
+
+    .roster-preview-prompt {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+      text-align: center;
+      line-height: 1.4;
+      color: rgba(47, 31, 24, 0.62);
+      font-size: 0.62rem;
+    }
+
+    .roster-preview-prompt[hidden] {
+      display: none;
+    }
+
+    .roster-stats-window {
+      height: 124px;
+      padding: 12px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .roster-stats-list {
+      display: grid;
+      gap: 6px;
+      color: #2f1f18;
+      font-size: 0.58rem;
+      line-height: 1.25;
+    }
+
+    .roster-stats-list.empty {
+      min-height: 96px;
+      place-items: center;
+      text-align: center;
+      color: rgba(47, 31, 24, 0.62);
+    }
+
+    .roster-stat-row {
+      white-space: nowrap;
+    }
+
+    .roster-instinct-block {
+      display: grid;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .roster-instinct-title {
+      padding: 5px 6px;
+      background: rgba(91, 53, 65, 0.08);
+      border: 1px solid rgba(91, 53, 65, 0.2);
+      white-space: normal;
+      line-height: 1.2;
+    }
+
+    .roster-instinct-description {
+      font-size: 0.44rem;
+      line-height: 1.35;
+      color: rgba(47, 31, 24, 0.78);
+    }
+
+    .roster-browser-window {
+      display: grid;
+      grid-template-rows: auto minmax(0, 300px) auto;
+      gap: 8px;
+      min-width: 0;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .roster-sort-controls {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 5px;
+      min-width: 0;
+      padding: 0 2px;
+    }
+
+    .roster-sort-button {
+      min-width: 0;
+      min-height: 30px;
+      padding: 6px 4px 8px;
+      font-size: 0.46rem;
+      line-height: 1;
+    }
+
+    .roster-sort-button .pixel-button-label {
+      white-space: nowrap;
+    }
+
+    .roster-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 72px);
+      justify-content: center;
+      gap: 18px 22px;
+      align-content: start;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 0 8px 10px;
+    }
+
+    .roster-empty {
+      grid-column: 1 / -1;
+      display: grid;
+      min-height: 180px;
+      place-items: center;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .roster-cell {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      image-rendering: pixelated;
+      cursor: pointer;
+    }
+
+    .roster-cell:hover:not(:disabled) {
+      transform: none;
+      border-color: transparent;
+    }
+
+    .roster-cell.selected {
+      background-image: url("/assets/inventaire/bloc_on.png");
+    }
+
+    .roster-cell.locked {
+      cursor: not-allowed;
+    }
+
+    .roster-cell.locked .creature-idle-sprite {
+      filter: grayscale(1);
+      opacity: 0.6;
+    }
+
+    .roster-footer-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      min-width: 0;
+    }
+
+    .roster-footer-actions > span {
+      display: none;
+    }
+
+    .roster-footer-actions > button {
+      min-height: 34px;
+      padding: 8px 18px;
+    }
+
+    .roster-signature {
+      min-width: 150px;
+    }
+
+    .roster-ok {
+      width: 100%;
+      max-width: 140px;
+    }
+
+    .creature-info-actions {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      width: 100%;
+      justify-items: center;
+    }
+
+    .hunt-creature-meta-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      width: min(100%, 160px);
+    }
+
+    .hunt-creature-meta-row .roster-meta-block {
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+    }
+
+    .creature-info-actions button {
+      width: min(100%, 160px);
+      min-height: 42px;
+    }
+
+    .briefing-modal-shield {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: rgba(17, 18, 24, 0.42);
+    }
+
+    .briefing-modal-shield[hidden] {
+      display: none;
+    }
+
+    .briefing-modal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 21;
+      width: min(620px, 78%);
+      max-height: min(430px, calc(100% - 32px));
+      filter: drop-shadow(0 18px 42px rgba(0, 0, 0, 0.5));
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #2f1f18;
+    }
+
+    .briefing-modal[hidden] {
+      display: none;
+    }
+
+    body.briefing-active .radar-modal-shield,
+    body.briefing-active .briefing-modal-shield {
+      position: fixed;
+      inset: 0;
+      z-index: 82;
+    }
+
+    body.briefing-active .roster-modal-shield {
+      z-index: 80;
+    }
+
+    body.briefing-active .radar-modal {
+      position: fixed;
+      z-index: 81;
+    }
+
+    body.briefing-active .roster-modal {
+      z-index: 81;
+    }
+
+    body.briefing-active .briefing-modal {
+      z-index: 83;
+    }
+
+    body.combat-active .briefing-modal-shield {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      pointer-events: auto;
+    }
+
+    body.combat-active .briefing-modal {
+      position: fixed;
+      z-index: 1001;
+    }
+
+    body.capture-conditions-modal-open {
+      overflow: hidden;
+    }
+
+    body.combat-active.capture-conditions-modal-open .combat-section {
+      pointer-events: none;
+    }
+
+    body.combat-active.capture-conditions-modal-open .combat-actions button,
+    body.combat-active.capture-conditions-modal-open .combat-objectives {
+      pointer-events: none !important;
+    }
+
+    body.combat-active.capture-conditions-modal-open .briefing-modal-shield,
+    body.combat-active.capture-conditions-modal-open .briefing-modal {
+      pointer-events: auto;
+    }
+
+    body.combat-active:has(.briefing-modal-shield:not([hidden])) .combat-ui,
+    body.combat-active:has(.briefing-modal-shield:not([hidden])) .battle-stage {
+      pointer-events: none;
+    }
+
+    body.briefing-active:has(.radar-modal-shield:not([hidden])) .human-radar-panel,
+    body.briefing-active:has(.radar-modal-shield:not([hidden])) .hunt-radar-panel {
+      z-index: 90;
+      pointer-events: auto;
+    }
+
+    .briefing-modal-content {
+      min-height: 0;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .briefing-modal h3 {
+      margin: 0 0 10px;
+      color: #2f1f18;
+      font-size: 1rem;
+    }
+
+    .briefing-modal p {
+      margin-bottom: 14px;
+      white-space: pre-line;
+      color: #2f1f18;
+    }
+
+    .briefing-modal .modal-objectives {
+      margin: 0 0 14px;
+      text-align: left;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 4px;
+    }
+
+    .briefing-modal .modal-objectives .objective {
+      font-size: calc(0.9rem - 2px);
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      color: #2f1f18;
+      border-color: rgba(91, 52, 64, 0.32);
+      background: rgba(255, 247, 231, 0.24);
+    }
+
+    .briefing-modal .reward-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .briefing-modal .reward-row {
+      color: #2f1f18;
+      padding: 0;
+      font-size: calc(0.9rem - 4px);
+      line-height: 1.35;
+    }
+
+    .briefing-modal .reward-row.centered {
+      text-align: center;
+    }
+
+    .briefing-modal .reward-title {
+      margin-bottom: 3px;
+    }
+
+    .briefing-modal .reward-row.centered .reward-title {
+      margin-bottom: 0;
+    }
+
+    .briefing-modal .reward-amount {
+      color: #7b3a22;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      line-height: 1;
+      vertical-align: -2px;
+    }
+
+    .briefing-modal .reward-token {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .briefing-modal .reward-token img {
+      width: 16px;
+      height: 16px;
+      image-rendering: pixelated;
+      object-fit: contain;
+    }
+
+    .human-enemy-radar-modal {
+      width: min(520px, 78%);
+      max-height: min(520px, calc(100% - 32px));
+    }
+
+    .human-enemy-radar-modal .briefing-modal-content {
+      max-height: min(500px, calc(100vh - 64px));
+      gap: 8px;
+      padding: 16px 18px;
+    }
+
+    .human-enemy-radar-modal h3 {
+      display: none;
+    }
+
+    .human-enemy-radar-modal p {
+      margin-bottom: 4px;
+    }
+
+    .enemy-radar-scroll {
+      min-height: 0;
+      max-height: min(220px, 34vh);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .enemy-radar-canvas {
+      display: block;
+      width: min(330px, 100%);
+      height: auto;
+      margin: -2px auto 0;
+      border: 0;
+      background: transparent;
+      image-rendering: pixelated;
+      transition: filter 120ms ease, opacity 120ms ease;
+    }
+
+    .human-enemy-radar-modal #humanEnemyRadarModalClose {
+      flex: 0 0 auto;
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    .human-enemy-team-modal {
+      width: min(760px, calc(100% - 48px));
+      max-height: min(500px, calc(100% - 32px));
+    }
+
+    .human-enemy-team-modal .briefing-modal-content {
+      gap: 16px;
+    }
+
+    .enemy-team-modal-list {
+      display: flex;
+      justify-content: center;
+      flex-wrap: nowrap;
+      gap: 42px;
+      min-height: 196px;
+      align-items: end;
+      overflow: visible;
+    }
+
+    .enemy-team-modal-item {
+      display: grid;
+      grid-template-rows: 120px auto;
+      justify-items: center;
+      align-items: end;
+      gap: 2px;
+      width: 160px;
+      min-width: 0;
+      color: #2f1f18;
+    }
+
+    .enemy-team-modal-item .creature-idle-sprite {
+      position: relative;
+      left: auto;
+      top: auto;
+      justify-self: center;
+      transform: translate(-120px, 100px);
+    }
+
+    .enemy-team-modal-name {
+      max-width: 100%;
+      min-height: 2.5em;
+      display: grid;
+      place-items: center;
+      font-size: 0.62rem;
+      line-height: 1.25;
+      text-align: center;
+      overflow-wrap: anywhere;
+      margin-top: -48px;
+      transform: translateX(-120px);
+    }
+
+    .human-enemy-team-modal #humanEnemyTeamModalClose {
+      flex: 0 0 auto;
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    .enemy-radar-canvas.is-blurry {
+      filter: blur(5px);
+      opacity: 0.78;
+    }
+
+    .briefing-modal .reward-description {
+      margin-top: 4px;
+      color: rgba(47, 31, 24, 0.72);
+      line-height: 1.3;
+    }
+
+    .briefing-modal .reward-affix-name {
+      color: #bd2634;
+    }
+
+    .briefing-modal .affix-row {
+      color: #2f1f18;
+      border-color: rgba(91, 52, 64, 0.32);
+      background: rgba(255, 247, 231, 0.24);
+    }
+
+    .briefing-modal .affix-row small {
+      color: rgba(47, 31, 24, 0.72);
+    }
+
+    .briefing-modal .affix-type {
+      color: #5a4a9b;
+    }
+
+    .briefing-modal .affix-level {
+      color: #d86b1d;
+    }
+
+    .briefing-modal .signature-plain-list {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .briefing-modal .signature-info-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      color: rgba(47, 31, 24, 0.82);
+      font-size: 0.58rem;
+      line-height: 1.35;
+    }
+
+    .briefing-modal .signature-info-row strong {
+      flex: 0 0 auto;
+      color: #2f1f18;
+    }
+
+    .briefing-modal .signature-info-row p {
+      margin: 0;
+      color: rgba(47, 31, 24, 0.82);
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    .briefing-modal .signature-modal-note {
+      margin: 4px 0 0;
+      color: rgba(47, 31, 24, 0.68);
+      font-size: 0.48rem;
+      line-height: 1.45;
+      white-space: pre-line;
+    }

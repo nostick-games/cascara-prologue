@@ -1,0 +1,646 @@
+@media (orientation: landscape) and (max-height: 560px) {
+      .combat-section {
+        width: 100%;
+        max-width: none;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 276px;
+        grid-template-rows: minmax(0, 1fr) auto auto;
+      }
+
+      body.combat-active .combat-section {
+        width: 100%;
+        height: 100%;
+        grid-template-columns: minmax(0, 1fr) clamp(206px, 30vw, 286px);
+        grid-template-rows: minmax(0, 1fr) auto clamp(104px, 30dvh, 154px);
+        border: 0;
+        border-radius: 0;
+      }
+
+      #game,
+      .battle-stage,
+      .phase-cover {
+        height: 236px;
+        min-height: 236px;
+        overflow: hidden;
+      }
+
+      body.combat-active #game,
+      body.combat-active .battle-stage,
+      body.combat-active .phase-cover {
+        height: 100%;
+        min-height: 0;
+      }
+
+      #game {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .battle-stage {
+        padding: 6px 8px;
+      }
+
+      body.combat-active .battle-stage {
+        padding: clamp(6px, 2dvh, 12px) clamp(8px, 2vw, 18px);
+      }
+
+      .enemy-zone {
+        top: 8px;
+        right: 24px;
+        gap: 4px;
+      }
+
+      body.combat-active .enemy-zone {
+        top: var(--combat-enemy-zone-mobile-top, -2px);
+        right: var(--combat-enemy-zone-mobile-right, -10px);
+        --combat-enemy-aura-bottom: 106px;
+        --combat-enemy-aura-line-bottom: 130px;
+        transform: translateY(-8px);
+      }
+
+      body.combat-active .combat-section.human-combat .enemy-zone {
+        --combat-enemy-zone-mobile-top: 46px;
+        --combat-enemy-zone-mobile-right: clamp(56px, 9vw, 140px);
+        --combat-enemy-aura-bottom: 0px;
+        --combat-enemy-aura-line-bottom: 30px;
+        transform: translateY(-26px);
+      }
+
+      .enemy-gauges {
+        top: 10px;
+        left: 10px;
+        right: auto;
+        width: 40%;
+        gap: 4px;
+      }
+
+      body.combat-active .enemy-gauges {
+        top: clamp(14px, 4dvh, 34px);
+        left: auto;
+        right: clamp(250px, 30vw, 430px);
+        width: auto;
+        min-width: 0;
+      }
+
+      .hero-zone {
+        left: 64px;
+        bottom: 16px;
+        gap: 4px;
+      }
+
+      body.combat-active .hero-zone {
+        left: var(--combat-hero-zone-mobile-left, clamp(-6px, calc(9vw - 40px), 46px));
+        bottom: var(--combat-hero-zone-mobile-bottom, clamp(62px, 16dvh, 116px));
+        transform: translateX(-65px);
+      }
+
+      .hero-gauges {
+        left: auto;
+        right: 10px;
+        bottom: 28px;
+        width: 40%;
+        gap: 4px;
+      }
+
+      body.combat-active .hero-gauges {
+        left: clamp(178px, 24vw, 340px);
+        bottom: clamp(54px, 14dvh, 96px);
+        right: auto;
+        width: auto;
+        min-width: 0;
+      }
+
+      .creature-combat-sprite {
+        --combat-creature-sprite-active-offset: var(--combat-creature-sprite-mobile-offset, -1080px);
+        --idle-animation: creature-idle-responsive 900ms steps(var(--combat-creature-sprite-steps, 6)) infinite;
+        width: var(--combat-creature-sprite-mobile-width, 180px);
+        height: var(--combat-creature-sprite-mobile-height, 180px);
+        background-size: var(--combat-creature-sprite-mobile-background-size, 1080px 180px);
+      }
+
+      body.combat-active .creature-combat-sprite {
+        --combat-creature-sprite-active-offset: var(--combat-creature-sprite-mobile-offset, -1080px);
+        --idle-animation: creature-idle-responsive 900ms steps(var(--combat-creature-sprite-steps, 6)) infinite;
+        width: var(--combat-creature-sprite-mobile-width, 180px);
+        height: var(--combat-creature-sprite-mobile-height, 180px);
+        background-size: var(--combat-creature-sprite-mobile-background-size, 1080px 180px);
+      }
+
+      .hero-combat-sprite {
+        --combat-hero-sprite-width: 275px;
+        --combat-hero-sprite-height: 275px;
+        --combat-hero-sprite-background-size: 3300px 275px;
+        --combat-hero-sprite-offset: -3300px;
+        --combat-hero-hurt-background-size: 1375px 275px;
+        --combat-hero-hurt-offset: -1375px;
+        --combat-hero-entaille-background-size: 1650px 275px;
+        --combat-hero-entaille-offset: -1650px;
+        --combat-hero-death-background-size: 1925px 275px;
+        --combat-hero-death-offset: -1650px;
+        --idle-animation: hero-idle-responsive 1180ms steps(var(--combat-hero-sprite-steps, 12)) infinite;
+        width: var(--combat-hero-sprite-width);
+        height: var(--combat-hero-sprite-height);
+        background-size: var(--combat-hero-sprite-background-size);
+      }
+
+      body.combat-active .hero-combat-sprite {
+        --combat-hero-sprite-width: 275px;
+        --combat-hero-sprite-height: 275px;
+        --combat-hero-sprite-background-size: 3300px 275px;
+        --combat-hero-sprite-offset: -3300px;
+        --combat-hero-hurt-background-size: 1375px 275px;
+        --combat-hero-hurt-offset: -1375px;
+        --combat-hero-entaille-background-size: 1650px 275px;
+        --combat-hero-entaille-offset: -1650px;
+        --combat-hero-sprite-mobile-x: 0px;
+        --combat-hero-sprite-mobile-y: 58px;
+        --combat-hero-death-background-size: 1925px 275px;
+        --combat-hero-death-offset: -1650px;
+        --idle-animation: hero-idle-responsive 1180ms steps(var(--combat-hero-sprite-steps, 12)) infinite;
+        width: var(--combat-hero-sprite-width);
+        height: var(--combat-hero-sprite-height);
+        background-size: var(--combat-hero-sprite-background-size);
+        transform: translate(var(--combat-hero-sprite-mobile-x), var(--combat-hero-sprite-mobile-y));
+      }
+
+      body.combat-active .hero-combat-sprite.hero-entaille {
+        background-image: url("/assets/hero/hero_entaille.png");
+        background-size: var(--combat-hero-entaille-background-size);
+        animation: hero-entaille 560ms steps(6) 1;
+      }
+
+      .enemy-zone::before {
+        width: 182px;
+        height: 58px;
+        bottom: var(--combat-enemy-aura-bottom, 18px);
+      }
+
+      .enemy-zone::after {
+        width: 152px;
+        height: 6px;
+        bottom: var(--combat-enemy-aura-line-bottom, 48px);
+      }
+
+      .hero-zone::before {
+        width: 190px;
+        height: 60px;
+        bottom: -4px;
+      }
+
+      .hero-zone::after {
+        width: 158px;
+        height: 6px;
+        bottom: 26px;
+      }
+
+      .bar-block {
+        padding: 5px 7px;
+        filter: drop-shadow(0 4px 0 rgba(45, 57, 68, 0.2)) drop-shadow(0 9px 12px rgba(17, 18, 24, 0.14));
+      }
+
+      @media (max-width: 760px) {
+        body.combat-active .enemy-zone {
+          top: var(--combat-enemy-zone-mobile-top, -42px);
+          right: var(--combat-enemy-zone-mobile-right, -10px);
+          transform: translateY(-10px);
+        }
+
+        body.combat-active .combat-section.human-combat .enemy-zone {
+          --combat-enemy-zone-mobile-top: 24px;
+          --combat-enemy-zone-mobile-right: clamp(50px, 9vw, 116px);
+          transform: translateY(-28px);
+        }
+
+        body.combat-active .enemy-gauges {
+          top: clamp(8px, 3dvh, 18px);
+          left: clamp(12px, 3vw, 34px);
+          right: clamp(206px, 24vw, 310px);
+          width: auto;
+        }
+
+        body.combat-active .hero-zone {
+          left: var(--combat-hero-zone-mobile-left, clamp(-30px, calc(6vw - 40px), 38px));
+          bottom: var(--combat-hero-zone-mobile-bottom, clamp(42px, 11dvh, 74px));
+        }
+
+        body.combat-active .hero-gauges {
+          left: clamp(136px, 24vw, 300px);
+          right: clamp(14px, 3vw, 42px);
+          bottom: clamp(48px, 13dvh, 82px);
+          width: auto;
+        }
+      }
+
+      @media (orientation: landscape) and (max-height: 560px) {
+        body.combat-active .enemy-zone {
+          top: var(--combat-enemy-zone-mobile-top, -72px);
+          right: var(--combat-enemy-zone-mobile-right, -60px);
+          --combat-enemy-aura-bottom: 100px;
+          --combat-enemy-aura-line-bottom: 174px;
+          transform: translateY(-12px);
+        }
+
+        body.combat-active .combat-section.human-combat .enemy-zone {
+          --combat-enemy-zone-mobile-top: 18px;
+          --combat-enemy-zone-mobile-right: clamp(48px, 8vw, 120px);
+          --combat-enemy-aura-bottom: 0px;
+          --combat-enemy-aura-line-bottom: 30px;
+          transform: translateY(-30px);
+        }
+
+        body.combat-active .enemy-gauges {
+          top: clamp(8px, 2dvh, 16px);
+          left: clamp(18px, 6vw, 70px);
+          right: auto;
+          width: clamp(148px, 23vw, 212px);
+          gap: 3px;
+        }
+
+        body.combat-active .hero-zone {
+          left: var(--combat-hero-zone-mobile-compact-left, clamp(1px, 3vw, 0px));
+          bottom: var(--combat-hero-zone-mobile-compact-bottom, clamp(42px, 10dvh, 64px));
+        }
+
+        body.combat-active .hero-gauges {
+          left: clamp(118px, 18vw, 196px);
+          right: auto;
+          bottom: clamp(32px, 8dvh, 52px);
+          width: clamp(154px, 24vw, 218px);
+          gap: 3px;
+        }
+
+        body.combat-active .enemy-gauges .bar-block,
+        body.combat-active .hero-gauges .bar-block {
+          gap: 3px;
+          padding: 4px 5px;
+        }
+
+        body.combat-active .enemy-gauges .bar-head,
+        body.combat-active .hero-gauges .bar-head {
+          gap: 5px;
+          font-size: 0.45rem;
+          line-height: 1;
+        }
+
+        body.combat-active .enemy-gauges .bar,
+        body.combat-active .hero-gauges .bar {
+          height: 6px;
+          border-width: 1px;
+        }
+
+        body.combat-active .enemy-gauges .pa-row,
+        body.combat-active .hero-gauges .pa-row {
+          gap: 4px;
+          padding: 0 5px;
+        }
+
+        body.combat-active .enemy-gauges .pa-dot,
+        body.combat-active .hero-gauges .pa-dot {
+          width: 14px;
+          height: 14px;
+          border-width: 1px;
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.58);
+        }
+
+        body.combat-active .enemy-gauges .pa-dot.denied::after,
+        body.combat-active .hero-gauges .pa-dot.denied::after {
+          font-size: 11px;
+        }
+      }
+
+      @keyframes creature-idle {
+        from { background-position: 0 0; }
+        to { background-position: var(--combat-creature-sprite-mobile-offset, -1080px) 0; }
+      }
+
+      @keyframes hero-idle {
+        from { background-position: 0 0; }
+        to { background-position: var(--combat-hero-sprite-offset, -1104px) 0; }
+      }
+
+      @keyframes creature-idle-responsive {
+        from { background-position: 0 0; }
+        to { background-position: var(--combat-creature-sprite-active-offset, var(--combat-creature-sprite-mobile-offset, -1080px)) 0; }
+      }
+
+      @keyframes hero-idle-responsive {
+        from { background-position: 0 0; }
+        to { background-position: var(--combat-hero-sprite-offset, -1104px) 0; }
+      }
+
+      .combat-ui {
+        display: grid;
+        grid-column: 2;
+        grid-row: 1 / 4;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: 6px;
+        min-height: 0;
+        padding: 0;
+        border-top: 0;
+        background: transparent;
+      }
+
+      .combat-actions {
+        grid-column: 1;
+        grid-row: 2;
+        display: grid;
+        padding: 6px;
+        border-top: 0;
+        border-left: 1px solid var(--line);
+        align-content: stretch;
+        grid-auto-rows: minmax(0, 1fr);
+        min-height: 0;
+        overflow: hidden;
+        background: rgba(23, 23, 28, 0.96);
+      }
+
+      body.combat-active .combat-actions {
+        border-left: 0;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+
+      body.combat-active .inventory-modal-shield {
+        position: absolute;
+        inset: 0;
+        z-index: 65;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) clamp(206px, 30vw, 286px);
+        grid-template-rows: minmax(0, 1fr) auto clamp(78px, 24dvh, 118px);
+        min-height: 0;
+        place-items: stretch;
+        background: transparent;
+      }
+
+      body.combat-active .inventory-modal-shield[hidden] {
+        display: none;
+      }
+
+      body.combat-active .inventory-modal {
+        grid-column: 2;
+        grid-row: 1 / 4;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        grid-template-columns: 10px minmax(0, 1fr) 10px;
+        grid-template-rows: 10px minmax(0, 1fr) 10px;
+        filter: none;
+      }
+
+      body.combat-active .inventory-top,
+      body.combat-active .inventory-bottom {
+        background-size: 10px 10px;
+      }
+
+      body.combat-active .inventory-left,
+      body.combat-active .inventory-right {
+        background-size: 10px 10px;
+      }
+
+      body.combat-active .inventory-center {
+        min-height: 0;
+        padding: 16px 12px 58px;
+        gap: 12px;
+      }
+
+      body.combat-active .inventory-status-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      body.combat-active .inventory-hp {
+        max-width: none;
+      }
+
+      body.combat-active .inventory-currencies {
+        justify-content: flex-start;
+        gap: 6px;
+      }
+
+      body.combat-active .inventory-currency {
+        min-height: 24px;
+        padding: 3px 6px;
+        font-size: 0.54rem;
+      }
+
+      body.combat-active .inventory-items {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 14px;
+        padding-top: 8px;
+      }
+
+      body.combat-active .inventory-empty {
+        min-height: 0;
+        align-self: stretch;
+        padding: 0 8px;
+        font-size: 0.56rem;
+        line-height: 1.5;
+      }
+
+      body.combat-active .inventory-ok {
+        right: 12px;
+        bottom: 12px;
+        width: calc(50% - 18px);
+        min-height: 34px;
+      }
+
+      body.combat-active .inventory-options {
+        left: 12px;
+        bottom: 12px;
+        width: calc(50% - 18px);
+        min-height: 34px;
+      }
+
+      .bars {
+        gap: 5px;
+      }
+
+      .bar {
+        height: 8px;
+      }
+
+      .bar-head {
+        align-items: center;
+        font-size: 0.56rem;
+        line-height: 1.08;
+        white-space: nowrap;
+      }
+
+      .bar-head span:first-child,
+      .bar-head span:last-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .bar-head span:first-child {
+        min-width: 0;
+        max-width: 68%;
+      }
+
+      .bar-head span:last-child {
+        flex-shrink: 0;
+      }
+
+      .pa-dot {
+        width: 18px;
+        height: 18px;
+      }
+
+      .pa-dot.denied::after {
+        font-size: 13px;
+      }
+
+      .combat-actions {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .combat-actions button {
+        height: 100%;
+        min-height: 0;
+        padding: 6px 8px;
+        font-size: 0.62rem;
+      }
+
+      body.combat-active .combat-actions button {
+        min-height: 0;
+      }
+
+      .action-main {
+        gap: 6px;
+      }
+
+      .action-main > span:first-child {
+        white-space: nowrap;
+      }
+
+      .combat-objectives {
+        grid-column: 1;
+        grid-row: 1;
+        padding: 5px 8px;
+        border-top: 1px solid var(--line);
+        background: rgba(34, 35, 42, 0.94);
+      }
+
+      body.combat-active .combat-objectives {
+        border-top: 0;
+        cursor: pointer;
+        min-height: 0;
+        overflow: hidden;
+        overscroll-behavior: contain;
+      }
+
+      body.combat-active .combat-objectives-summary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 28px;
+        color: var(--gold);
+        font-size: 0.62rem;
+        line-height: 1;
+        text-align: center;
+      }
+
+      body.combat-active .combat-objective-block {
+        width: 16px;
+        height: 12px;
+        border-width: 1px;
+      }
+
+      body.combat-active .combat-objectives .objective {
+        display: none;
+      }
+
+      .combat-objectives-title {
+        display: none;
+      }
+
+      .combat-objectives .objective-list {
+        display: block;
+        margin-top: 0;
+      }
+
+      .log-frame {
+        grid-column: 1;
+        grid-row: 3;
+        height: 82px;
+      }
+
+      .log {
+        padding: 12px 14px;
+        font-size: 0.66rem;
+        line-height: 1.35;
+      }
+
+      body.combat-active .log-frame {
+        border-top: 0;
+        height: auto;
+        min-height: 0;
+      }
+    }
+
+    @media (orientation: landscape) and (min-height: 430px) and (max-height: 560px) {
+      body.combat-active .enemy-zone {
+        top: var(--combat-enemy-zone-mobile-tall-top, -190px);
+        right: var(--combat-enemy-zone-mobile-tall-right, -60px);
+        --combat-enemy-aura-bottom: 158px;
+        --combat-enemy-aura-line-bottom: 184px;
+        transform: translateY(-10px);
+      }
+
+      body.combat-active .combat-section.human-combat .enemy-zone {
+        --combat-enemy-zone-mobile-tall-top: 36px;
+        --combat-enemy-zone-mobile-tall-right: clamp(58px, 9vw, 140px);
+        --combat-enemy-aura-bottom: 0px;
+        --combat-enemy-aura-line-bottom: 30px;
+        transform: translateY(-30px);
+      }
+
+      body.combat-active .creature-combat-sprite {
+        --combat-creature-sprite-active-offset: var(--combat-creature-sprite-mobile-tall-offset, -1320px);
+        --idle-animation: creature-idle-responsive 900ms steps(var(--combat-creature-sprite-steps, 6)) infinite;
+        width: var(--combat-creature-sprite-mobile-tall-width, 220px);
+        height: var(--combat-creature-sprite-mobile-tall-height, 220px);
+        background-size: var(--combat-creature-sprite-mobile-tall-background-size, 1320px 220px);
+      }
+
+      body.combat-active .hero-combat-sprite {
+        --combat-hero-sprite-width: 275px;
+        --combat-hero-sprite-height: 275px;
+        --combat-hero-sprite-background-size: 3300px 275px;
+        --combat-hero-sprite-offset: -3300px;
+        --combat-hero-hurt-background-size: 1375px 275px;
+        --combat-hero-hurt-offset: -1375px;
+        --combat-hero-entaille-background-size: 1650px 275px;
+        --combat-hero-entaille-offset: -1650px;
+        --combat-hero-sprite-mobile-x: 0px;
+        --combat-hero-sprite-mobile-y: 78px;
+        --combat-hero-death-background-size: 1925px 275px;
+        --combat-hero-death-offset: -1650px;
+        --idle-animation: hero-idle-responsive 1180ms steps(var(--combat-hero-sprite-steps, 12)) infinite;
+        width: var(--combat-hero-sprite-width);
+        height: var(--combat-hero-sprite-height);
+        background-size: var(--combat-hero-sprite-background-size);
+        transform: translate(var(--combat-hero-sprite-mobile-x), var(--combat-hero-sprite-mobile-y));
+      }
+
+      body.combat-active .hero-combat-sprite.hero-entaille {
+        background-image: url("/assets/hero/hero_entaille.png");
+        background-size: var(--combat-hero-entaille-background-size);
+        animation: hero-entaille 560ms steps(6) 1;
+      }
+
+      @keyframes creature-idle-responsive {
+        from { background-position: 0 0; }
+        to { background-position: var(--combat-creature-sprite-active-offset, var(--combat-creature-sprite-mobile-offset, -1080px)) 0; }
+      }
+
+      @keyframes hero-idle-responsive {
+        from { background-position: 0 0; }
+        to { background-position: var(--combat-hero-sprite-offset, -1344px) 0; }
+      }
+    }
