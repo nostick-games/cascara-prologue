@@ -41,7 +41,7 @@
       padding: 0;
       border: 0;
       border-radius: 0;
-      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      background: url("../../assets/inventaire/bloc.png") center / 100% 100% no-repeat;
       image-rendering: pixelated;
       touch-action: manipulation;
     }
@@ -61,7 +61,7 @@
     }
 
     .map-quick-action:active {
-      background-image: url("/assets/inventaire/bloc_on.png");
+      background-image: url("../../assets/inventaire/bloc_on.png");
       transform: translateY(1px);
     }
 
@@ -376,14 +376,14 @@
       inset: 0;
       z-index: 2;
       background:
-        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
-        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
+        url("../../assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
     }
 
     .map-dialog-frame[hidden] {
@@ -402,14 +402,14 @@
       box-sizing: border-box;
       padding: 18px;
       background:
-        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
-        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
         linear-gradient(var(--ui-blue), var(--ui-blue)) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
     }
 
@@ -540,14 +540,14 @@
       inset: 0;
       z-index: 2;
       background:
-        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
-        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
+        url("../../assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
     }
 
     .map-choice-list {
@@ -607,14 +607,14 @@
       font-size: 0.78rem;
       line-height: 1;
       background:
-        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
-        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
         linear-gradient(var(--ui-blue), var(--ui-blue)) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
       cursor: pointer;
       touch-action: manipulation;
@@ -661,14 +661,14 @@
       color: var(--ink);
       font-size: 0.92rem;
       background:
-        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
-        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat,
         linear-gradient(var(--ui-blue), var(--ui-blue)) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
     }
 

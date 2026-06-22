@@ -1,3 +1,5 @@
+import { assetPath } from "../utils/assetPath.js";
+
 const appShellTemplate = `
   <section class="start-section panel" id="startSection">
     <h1 id="startChoiceTitle"></h1>
@@ -12,16 +14,16 @@ const appShellTemplate = `
     <canvas class="map-canvas" id="mapCanvas" width="960" height="540"></canvas>
     <div class="map-quick-actions" aria-label="Raccourcis de la map">
       <button class="map-quick-action" id="mapPopulationButton" type="button" hidden>
-        <img src="/assets/inventaire/minimap.png" alt="">
+        <img src="${assetPath("assets/inventaire/minimap.png")}" alt="">
       </button>
       <button class="map-quick-action" id="mapRadarButton" type="button" hidden>
-        <img src="/assets/inventaire/gemme.png" alt="">
+        <img src="${assetPath("assets/inventaire/gemme.png")}" alt="">
       </button>
       <button class="map-quick-action" id="mapInventoryButton" type="button">
-        <img src="/assets/inventaire/inventory.png" alt="">
+        <img src="${assetPath("assets/inventaire/inventory.png")}" alt="">
       </button>
       <button class="map-quick-action" id="mapCreaturesButton" type="button">
-        <img src="/assets/inventaire/creatures.png" alt="">
+        <img src="${assetPath("assets/inventaire/creatures.png")}" alt="">
       </button>
     </div>
     <div class="map-joystick" id="mapJoystick" hidden aria-hidden="true">
@@ -447,9 +449,9 @@ const appShellTemplate = `
               <div class="bar"><div class="bar-fill hp" id="inventoryHeroHpBar"></div></div>
             </div>
             <div class="inventory-currencies">
-              <span class="inventory-currency"><img src="/assets/inventaire/or.png" alt=""><span id="inventoryGoldText">0</span></span>
-              <span class="inventory-currency"><img src="/assets/inventaire/XP.png" alt=""><span id="inventoryStarsText">0</span></span>
-              <span class="inventory-currency"><img src="/assets/inventaire/gemme.png" alt=""><span id="inventoryGemsText">0</span></span>
+              <span class="inventory-currency"><img src="${assetPath("assets/inventaire/or.png")}" alt=""><span id="inventoryGoldText">0</span></span>
+              <span class="inventory-currency"><img src="${assetPath("assets/inventaire/XP.png")}" alt=""><span id="inventoryStarsText">0</span></span>
+              <span class="inventory-currency"><img src="${assetPath("assets/inventaire/gemme.png")}" alt=""><span id="inventoryGemsText">0</span></span>
             </div>
           </div>
           <div class="inventory-items" id="inventoryItems"></div>

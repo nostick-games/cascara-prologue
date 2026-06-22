@@ -94,7 +94,7 @@
       padding: 0;
       border: 0;
       border-radius: 0;
-      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      background: url("../../assets/inventaire/bloc.png") center / 100% 100% no-repeat;
       image-rendering: pixelated;
       display: grid;
       place-items: center;
@@ -229,7 +229,7 @@
       --briefing-sprite-transform: translate(0, 24px) translateZ(0);
       width: var(--briefing-sprite-width, 768px);
       height: var(--briefing-sprite-height, 768px);
-      background-image: url("/assets/creatures/braise-corne.png");
+      background-image: url("../../assets/creatures/braise-corne.png");
       background-repeat: no-repeat;
       background-size: var(--briefing-sprite-background-size, 4608px 768px);
       image-rendering: pixelated;
@@ -568,7 +568,7 @@
       padding: 0;
       border: 0;
       border-radius: 0;
-      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      background: url("../../assets/inventaire/bloc.png") center / 100% 100% no-repeat;
       image-rendering: pixelated;
       cursor: pointer;
     }
@@ -583,7 +583,7 @@
     }
 
     .roster-slot.filled {
-      background-image: url("/assets/inventaire/bloc_on.png");
+      background-image: url("../../assets/inventaire/bloc_on.png");
     }
 
     /* Sprite idle partagé (slots du briefing + cases de la modale).
@@ -842,7 +842,7 @@
       padding: 0;
       border: 0;
       border-radius: 0;
-      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      background: url("../../assets/inventaire/bloc.png") center / 100% 100% no-repeat;
       image-rendering: pixelated;
       cursor: pointer;
     }
@@ -853,7 +853,7 @@
     }
 
     .roster-cell.selected {
-      background-image: url("/assets/inventaire/bloc_on.png");
+      background-image: url("../../assets/inventaire/bloc_on.png");
     }
 
     .roster-cell.locked {

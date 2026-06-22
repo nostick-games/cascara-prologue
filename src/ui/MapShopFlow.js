@@ -1,6 +1,7 @@
 import { itemDefinitions } from "../data/items.js";
+import { assetPath } from "../utils/assetPath.js";
 
-const goldIconSrc = "/assets/inventaire/or.png";
+const goldIconSrc = assetPath("assets/inventaire/or.png");
 const maxQuantityWheelItems = 5;
 
 function clampIndex(index, length) {

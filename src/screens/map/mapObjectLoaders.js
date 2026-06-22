@@ -19,6 +19,7 @@ import {
   normalizeLayerName,
   propertiesFromObject
 } from "./mapUtils.js";
+import { assetPath } from "../../utils/assetPath.js";
 
 export function tileOverlapsZone({ tileX, tileY, zone, tileWidth, tileHeight }) {
   const left = tileX * tileWidth;
@@ -177,7 +178,7 @@ export function loadMapNpcs(map) {
         y: object.y + (object.height || 0),
         triggerRadius: finiteNumber(properties.triggerRadius, npcTriggerRadius),
         sprite: {
-          src: `/assets/pnj/${spriteId}.png`,
+          src: assetPath(`assets/pnj/${spriteId}.png`),
           frameSize,
           frames,
           drawSize: finiteNumber(properties.drawSize ?? defaults.drawSize, frameSize),

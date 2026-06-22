@@ -103,15 +103,15 @@
     }
 
     .gem-reset-button:disabled:is(:hover, .is-selected) .pixel-button-piece.bottom-left {
-      background-image: url("/assets/UI/bouton_off/angle_bas_gauche.png");
+      background-image: url("../../assets/UI/bouton_off/angle_bas_gauche.png");
     }
 
     .gem-reset-button:disabled:is(:hover, .is-selected) .pixel-button-piece.bottom {
-      background-image: url("/assets/UI/bouton_off/bas.png");
+      background-image: url("../../assets/UI/bouton_off/bas.png");
     }
 
     .gem-reset-button:disabled:is(:hover, .is-selected) .pixel-button-piece.bottom-right {
-      background-image: url("/assets/UI/bouton_off/angle_bas_droite.png");
+      background-image: url("../../assets/UI/bouton_off/angle_bas_droite.png");
     }
 
     .radar-canvas {

@@ -53,20 +53,20 @@
     }
 
     .pixel-button-piece.top-left {
-      background-image: url("/assets/UI/bouton_off/angle_haut_gauche.png");
+      background-image: url("../../assets/UI/bouton_off/angle_haut_gauche.png");
     }
 
     .pixel-button-piece.top {
-      background-image: url("/assets/UI/bouton_off/haut.png");
+      background-image: url("../../assets/UI/bouton_off/haut.png");
       background-repeat: repeat-x;
     }
 
     .pixel-button-piece.top-right {
-      background-image: url("/assets/UI/bouton_off/angle_haut_droite.png");
+      background-image: url("../../assets/UI/bouton_off/angle_haut_droite.png");
     }
 
     .pixel-button-piece.left {
-      background-image: url("/assets/UI/bouton_off/gauche.png");
+      background-image: url("../../assets/UI/bouton_off/gauche.png");
       background-repeat: repeat-y;
     }
 
@@ -75,33 +75,33 @@
     }
 
     .pixel-button-piece.right {
-      background-image: url("/assets/UI/bouton_off/droite.png");
+      background-image: url("../../assets/UI/bouton_off/droite.png");
       background-repeat: repeat-y;
     }
 
     .pixel-button-piece.bottom-left {
-      background-image: url("/assets/UI/bouton_off/angle_bas_gauche.png");
+      background-image: url("../../assets/UI/bouton_off/angle_bas_gauche.png");
     }
 
     .pixel-button-piece.bottom {
-      background-image: url("/assets/UI/bouton_off/bas.png");
+      background-image: url("../../assets/UI/bouton_off/bas.png");
       background-repeat: repeat-x;
     }
 
     .pixel-button-piece.bottom-right {
-      background-image: url("/assets/UI/bouton_off/angle_bas_droite.png");
+      background-image: url("../../assets/UI/bouton_off/angle_bas_droite.png");
     }
 
     .pixel-ui-button:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom-left {
-      background-image: url("/assets/UI/bouton_on/angle_bas_gauche.png");
+      background-image: url("../../assets/UI/bouton_on/angle_bas_gauche.png");
     }
 
     .pixel-ui-button:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom {
-      background-image: url("/assets/UI/bouton_on/bas.png");
+      background-image: url("../../assets/UI/bouton_on/bas.png");
     }
 
     .pixel-ui-button:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom-right {
-      background-image: url("/assets/UI/bouton_on/angle_bas_droite.png");
+      background-image: url("../../assets/UI/bouton_on/angle_bas_droite.png");
     }
 
     .pixel-ui-button--combat {
@@ -123,7 +123,7 @@
       top: 0;
       width: 5px;
       height: 5px;
-      background-image: url("/assets/UI/bouton_combat_off/angle_haut_gauche.png");
+      background-image: url("../../assets/UI/bouton_combat_off/angle_haut_gauche.png");
     }
 
     .pixel-ui-button--combat .pixel-button-piece.top {
@@ -131,7 +131,7 @@
       right: 5px;
       top: 0;
       height: 3px;
-      background-image: url("/assets/UI/bouton_combat_off/haut.png");
+      background-image: url("../../assets/UI/bouton_combat_off/haut.png");
       background-repeat: repeat-x;
     }
 
@@ -140,7 +140,7 @@
       top: 0;
       width: 5px;
       height: 5px;
-      background-image: url("/assets/UI/bouton_combat_off/angle_haut_droite.png");
+      background-image: url("../../assets/UI/bouton_combat_off/angle_haut_droite.png");
     }
 
     .pixel-ui-button--combat .pixel-button-piece.left {
@@ -148,7 +148,7 @@
       top: 5px;
       bottom: 5px;
       width: 5px;
-      background-image: url("/assets/UI/bouton_combat_off/gauche.png");
+      background-image: url("../../assets/UI/bouton_combat_off/gauche.png");
       background-repeat: repeat-y;
     }
 
@@ -165,7 +165,7 @@
       top: 5px;
       bottom: 5px;
       width: 5px;
-      background-image: url("/assets/UI/bouton_combat_off/droite.png");
+      background-image: url("../../assets/UI/bouton_combat_off/droite.png");
       background-repeat: repeat-y;
     }
 
@@ -174,7 +174,7 @@
       bottom: 0;
       width: 5px;
       height: 5px;
-      background-image: url("/assets/UI/bouton_combat_off/angle_bas_gauche.png");
+      background-image: url("../../assets/UI/bouton_combat_off/angle_bas_gauche.png");
     }
 
     .pixel-ui-button--combat .pixel-button-piece.bottom {
@@ -182,7 +182,7 @@
       right: 5px;
       bottom: 0;
       height: 5px;
-      background-image: url("/assets/UI/bouton_combat_off/bas.png");
+      background-image: url("../../assets/UI/bouton_combat_off/bas.png");
       background-repeat: repeat-x;
     }
 
@@ -191,19 +191,19 @@
       bottom: 0;
       width: 5px;
       height: 5px;
-      background-image: url("/assets/UI/bouton_combat_off/angle_bas_droite.png");
+      background-image: url("../../assets/UI/bouton_combat_off/angle_bas_droite.png");
     }
 
     .pixel-ui-button--combat:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom-left {
-      background-image: url("/assets/UI/bouton_combat_on/angle_bas_gauche.png");
+      background-image: url("../../assets/UI/bouton_combat_on/angle_bas_gauche.png");
     }
 
     .pixel-ui-button--combat:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom {
-      background-image: url("/assets/UI/bouton_combat_on/bas.png");
+      background-image: url("../../assets/UI/bouton_combat_on/bas.png");
     }
 
     .pixel-ui-button--combat:is(.is-selected, :active:not(:disabled)) .pixel-button-piece.bottom-right {
-      background-image: url("/assets/UI/bouton_combat_on/angle_bas_droite.png");
+      background-image: url("../../assets/UI/bouton_combat_on/angle_bas_droite.png");
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -219,27 +219,27 @@
       }
 
       .pixel-ui-button:hover:not(:disabled) .pixel-button-piece.bottom-left {
-        background-image: url("/assets/UI/bouton_on/angle_bas_gauche.png");
+        background-image: url("../../assets/UI/bouton_on/angle_bas_gauche.png");
       }
 
       .pixel-ui-button:hover:not(:disabled) .pixel-button-piece.bottom {
-        background-image: url("/assets/UI/bouton_on/bas.png");
+        background-image: url("../../assets/UI/bouton_on/bas.png");
       }
 
       .pixel-ui-button:hover:not(:disabled) .pixel-button-piece.bottom-right {
-        background-image: url("/assets/UI/bouton_on/angle_bas_droite.png");
+        background-image: url("../../assets/UI/bouton_on/angle_bas_droite.png");
       }
 
       .pixel-ui-button--combat:hover:not(:disabled) .pixel-button-piece.bottom-left {
-        background-image: url("/assets/UI/bouton_combat_on/angle_bas_gauche.png");
+        background-image: url("../../assets/UI/bouton_combat_on/angle_bas_gauche.png");
       }
 
       .pixel-ui-button--combat:hover:not(:disabled) .pixel-button-piece.bottom {
-        background-image: url("/assets/UI/bouton_combat_on/bas.png");
+        background-image: url("../../assets/UI/bouton_combat_on/bas.png");
       }
 
       .pixel-ui-button--combat:hover:not(:disabled) .pixel-button-piece.bottom-right {
-        background-image: url("/assets/UI/bouton_combat_on/angle_bas_droite.png");
+        background-image: url("../../assets/UI/bouton_combat_on/angle_bas_droite.png");
       }
     }
 

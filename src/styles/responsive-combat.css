@@ -164,7 +164,7 @@
       }
 
       body.combat-active .hero-combat-sprite.hero-entaille {
-        background-image: url("/assets/hero/hero_entaille.png");
+        background-image: url("../../assets/hero/hero_entaille.png");
         background-size: var(--combat-hero-entaille-background-size);
         animation: hero-entaille 560ms steps(6) 1;
       }
@@ -629,7 +629,7 @@
       }
 
       body.combat-active .hero-combat-sprite.hero-entaille {
-        background-image: url("/assets/hero/hero_entaille.png");
+        background-image: url("../../assets/hero/hero_entaille.png");
         background-size: var(--combat-hero-entaille-background-size);
         animation: hero-entaille 560ms steps(6) 1;
       }

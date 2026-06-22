@@ -1,4 +1,6 @@
-const goldIconSrc = "/assets/inventaire/or.png";
+import { assetPath } from "../utils/assetPath.js";
+
+const goldIconSrc = assetPath("assets/inventaire/or.png");
 
 function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));

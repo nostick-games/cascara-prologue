@@ -256,7 +256,7 @@
       --idle-animation: creature-idle 900ms steps(var(--combat-creature-sprite-steps, 6)) infinite;
       width: var(--combat-creature-sprite-width, 320px);
       height: var(--combat-creature-sprite-height, 320px);
-      background-image: url("/assets/creatures/braise-corne.png");
+      background-image: url("../../assets/creatures/braise-corne.png");
       background-size: var(--combat-creature-sprite-background-size, 1920px 320px);
       animation: var(--idle-animation);
     }
@@ -278,7 +278,7 @@
       --idle-animation: hero-idle 1180ms steps(var(--combat-hero-sprite-steps, 12)) infinite;
       width: var(--combat-hero-sprite-width);
       height: var(--combat-hero-sprite-height);
-      background-image: url("/assets/hero/hero_idle.png");
+      background-image: url("../../assets/hero/hero_idle.png");
       background-size: var(--combat-hero-sprite-background-size);
       animation: var(--idle-animation);
       position: relative;
@@ -322,7 +322,7 @@
     }
 
     .hero-combat-sprite.hero-hurt.damage-flash {
-      background-image: url("/assets/hero/hero_hurt.png");
+      background-image: url("../../assets/hero/hero_hurt.png");
       background-size: var(--combat-hero-hurt-background-size);
       animation:
         damage-flash 360ms steps(2) 3,
@@ -330,13 +330,13 @@
     }
 
     .hero-combat-sprite.hero-entaille {
-      background-image: url("/assets/hero/hero_entaille.png");
+      background-image: url("../../assets/hero/hero_entaille.png");
       background-size: var(--combat-hero-entaille-background-size);
       animation: hero-entaille 560ms steps(6) 1;
     }
 
     .battle-stage.hero-dying .hero-combat-sprite {
-      background-image: url("/assets/hero/hero_death.png");
+      background-image: url("../../assets/hero/hero_death.png");
       background-size: var(--combat-hero-death-background-size);
       animation: hero-death 820ms steps(6, end) 1 forwards;
     }
@@ -433,14 +433,14 @@
       inset: 0;
       z-index: 2;
       background:
-        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
-        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
+        url("../../assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
     }
 
     .bar-block > * {
@@ -735,14 +735,14 @@
       inset: 0;
       z-index: 2;
       background:
-        url("/assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
-        url("/assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
-        url("/assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
-        url("/assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
+        url("../../assets/UI/encart_journal/angle_haut_gauche.png") left top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_haut_droite.png") right top / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_gauche.png") left bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/angle_bas_droite.png") right bottom / 4px 4px no-repeat,
+        url("../../assets/UI/encart_journal/haut.png") left 4px top / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/bas.png") left 4px bottom / calc(100% - 8px) 4px no-repeat,
+        url("../../assets/UI/encart_journal/gauche.png") left top 4px / 4px calc(100% - 8px) no-repeat,
+        url("../../assets/UI/encart_journal/droite.png") right top 4px / 4px calc(100% - 8px) no-repeat;
     }
 
     .log {

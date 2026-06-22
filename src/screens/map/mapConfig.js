@@ -1,16 +1,18 @@
+import { assetPath } from "../../utils/assetPath.js";
+
 export const defaultMapId = "prologue";
-export const mapBasePath = "/assets/maps/";
+export const mapBasePath = assetPath("assets/maps/");
 
 export const heroAnimations = {
-  idleDown: { src: "/assets/hero/hero_idle_down.png", frames: 12 },
-  idleLeft: { src: "/assets/hero/hero_idle_left.png", frames: 12 },
-  idleRight: { src: "/assets/hero/hero_idle_right.png", frames: 12 },
-  idleUp: { src: "/assets/hero/hero_idle_up.png", frames: 4 },
-  walkDown: { src: "/assets/hero/hero_walk_down.png", frames: 6 },
-  walkLeft: { src: "/assets/hero/hero_walk_left.png", frames: 6 },
-  walkRight: { src: "/assets/hero/hero_walk_right.png", frames: 6 },
-  walkUp: { src: "/assets/hero/hero_walk_up.png", frames: 6 },
-  respawn: { src: "/assets/hero/hero_respawn.png", frames: 4 }
+  idleDown: { src: assetPath("assets/hero/hero_idle_down.png"), frames: 12 },
+  idleLeft: { src: assetPath("assets/hero/hero_idle_left.png"), frames: 12 },
+  idleRight: { src: assetPath("assets/hero/hero_idle_right.png"), frames: 12 },
+  idleUp: { src: assetPath("assets/hero/hero_idle_up.png"), frames: 4 },
+  walkDown: { src: assetPath("assets/hero/hero_walk_down.png"), frames: 6 },
+  walkLeft: { src: assetPath("assets/hero/hero_walk_left.png"), frames: 6 },
+  walkRight: { src: assetPath("assets/hero/hero_walk_right.png"), frames: 6 },
+  walkUp: { src: assetPath("assets/hero/hero_walk_up.png"), frames: 6 },
+  respawn: { src: assetPath("assets/hero/hero_respawn.png"), frames: 4 }
 };
 
 export const heroRespawnFrameTimeline = [
@@ -77,7 +79,7 @@ export const humanEncounterConfigs = [
     id: aragorObjectName,
     objectName: aragorObjectName,
     sprite: {
-      src: "/assets/enemys/aragor/aragor_idle.png",
+      src: assetPath("assets/enemys/aragor/aragor_idle.png"),
       frames: 5,
       frameSize: 32,
       drawSize: 32
@@ -87,7 +89,7 @@ export const humanEncounterConfigs = [
     id: "ilda",
     objectName: "ilda",
     sprite: {
-      src: "/assets/enemys/ilda/ilda.png",
+      src: assetPath("assets/enemys/ilda/ilda.png"),
       frames: 7,
       frameSize: 32,
       drawSize: 32
@@ -97,7 +99,7 @@ export const humanEncounterConfigs = [
     id: "ranbu",
     objectName: "ranbu",
     sprite: {
-      src: "/assets/enemys/ranbu/ranbu.png",
+      src: assetPath("assets/enemys/ranbu/ranbu.png"),
       frames: 12,
       frameSize: 32,
       drawSize: 32
@@ -122,14 +124,14 @@ export const heroCollisionBox = {
 export const mapDialogTypeDelayMs = 12;
 export const mapDialogLinePauseMs = 360;
 export const chestSprite = {
-  src: "/assets/objects/coffre1.png",
+  src: assetPath("assets/objects/coffre1.png"),
   frameSize: 32,
   frames: 4,
   drawSize: 32,
   frameDurationMs: 360
 };
 export const respawnSprite = {
-  src: "/assets/objects/teleport.png",
+  src: assetPath("assets/objects/teleport.png"),
   frameSize: 48,
   frames: 6,
   drawSize: 48,

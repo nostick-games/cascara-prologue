@@ -50,10 +50,10 @@
       background-size: 18px 18px;
     }
 
-    .inventory-top-left { background-image: url("/assets/inventaire/fond_angle_haut_gauche.png"); }
-    .inventory-top { background-image: url("/assets/inventaire/fond_haut.png"); }
-    .inventory-top-right { background-image: url("/assets/inventaire/fond_angle_haut_droite.png"); }
-    .inventory-left { background-image: url("/assets/inventaire/fond_gauche.png"); }
+    .inventory-top-left { background-image: url("../../assets/inventaire/fond_angle_haut_gauche.png"); }
+    .inventory-top { background-image: url("../../assets/inventaire/fond_haut.png"); }
+    .inventory-top-right { background-image: url("../../assets/inventaire/fond_angle_haut_droite.png"); }
+    .inventory-left { background-image: url("../../assets/inventaire/fond_gauche.png"); }
     .inventory-center {
       position: relative;
       display: grid;
@@ -64,10 +64,10 @@
       background: #E4A672;
       color: #2f1f18;
     }
-    .inventory-right { background-image: url("/assets/inventaire/fond_droite.png"); }
-    .inventory-bottom-left { background-image: url("/assets/inventaire/fond_angle_bas_gauche.png"); }
-    .inventory-bottom { background-image: url("/assets/inventaire/fond_bas.png"); }
-    .inventory-bottom-right { background-image: url("/assets/inventaire/fond_angle_bas_droite.png"); }
+    .inventory-right { background-image: url("../../assets/inventaire/fond_droite.png"); }
+    .inventory-bottom-left { background-image: url("../../assets/inventaire/fond_angle_bas_gauche.png"); }
+    .inventory-bottom { background-image: url("../../assets/inventaire/fond_bas.png"); }
+    .inventory-bottom-right { background-image: url("../../assets/inventaire/fond_angle_bas_droite.png"); }
 
     .inventory-options,
     .inventory-ok {
@@ -172,7 +172,7 @@
       padding: 13px;
       border: 0;
       border-radius: 0;
-      background: url("/assets/inventaire/bloc.png") center / 100% 100% no-repeat;
+      background: url("../../assets/inventaire/bloc.png") center / 100% 100% no-repeat;
       image-rendering: pixelated;
       min-height: 0;
     }
@@ -183,7 +183,7 @@
     }
 
     .inventory-item-block.selected {
-      background-image: url("/assets/inventaire/bloc_on.png");
+      background-image: url("../../assets/inventaire/bloc_on.png");
     }
 
     .inventory-item-block.unavailable {

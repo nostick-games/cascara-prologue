@@ -2,6 +2,7 @@ import {
   mapDialogLinePauseMs,
   mapDialogTypeDelayMs
 } from "./mapConfig.js";
+import { assetPath } from "../../utils/assetPath.js";
 
 export function showDialog(host, { message, prompt, messageHighlights = [], promptHighlights = [], showContinueIndicator = false }) {
   const { mapDialogFrame, mapDialogLog } = host.nodes;
@@ -233,7 +234,7 @@ export function activateMapChoicePanel(host, options) {
           const price = document.createElement("span");
           price.className = "map-choice-option-price";
           const icon = document.createElement("img");
-          icon.src = option.iconSrc ?? "/assets/inventaire/or.png";
+          icon.src = option.iconSrc ?? assetPath("assets/inventaire/or.png");
           icon.alt = "";
           const amount = document.createElement("span");
           amount.textContent = String(option.price);
