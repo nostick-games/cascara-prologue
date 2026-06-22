@@ -40,12 +40,23 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
             });
           }
 
+          function notifyNative(type, payload) {
+            if (!window.webkit || !window.webkit.messageHandlers || !window.webkit.messageHandlers.cascaraNative) {
+              return false;
+            }
+            window.webkit.messageHandlers.cascaraNative.postMessage({
+              type: type,
+              payload: payload || {}
+            });
+            return true;
+          }
+
           window.CascaraNative = {
             isAvailable: true,
             save: function (slot, data) { return callNative("save", { slot: slot, data: data }); },
             load: function (slot) { return callNative("load", { slot: slot }); },
             delete: function (slot) { return callNative("delete", { slot: slot }); },
-            haptic: function (type) { return callNative("haptic", { type: type }); },
+            haptic: function (type) { return Promise.resolve(notifyNative("haptic", { type: type })); },
             log: function (message) { return callNative("log", { message: message }); }
           };
 
@@ -58,6 +69,7 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
 
     private let saveStore = NativeSaveStore()
     private weak var webView: WKWebView?
+    private var lastHapticAt: TimeInterval = 0
 
     func attach(_ webView: WKWebView) {
         self.webView = webView
@@ -86,7 +98,6 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
                 sendResponse(requestId: requestId, ok: true, value: true, error: nil)
             case "haptic":
                 triggerHaptic(payload)
-                sendResponse(requestId: requestId, ok: true, value: true, error: nil)
             case "log":
                 print("[Cascara JS]", payload["message"] ?? "")
                 sendResponse(requestId: requestId, ok: true, value: true, error: nil)
@@ -116,6 +127,9 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
 
     private func triggerHaptic(_ payload: [String: Any]) {
         DispatchQueue.main.async {
+            let now = Date.timeIntervalSinceReferenceDate
+            guard now - self.lastHapticAt >= 0.12 else { return }
+            self.lastHapticAt = now
             self.haptic(payload)
         }
     }
@@ -159,6 +173,7 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
     }
 
     private func sendResponse(requestId: String?, ok: Bool, value: Any?, error: String?) {
+        guard let requestId else { return }
         let response: [String: Any?] = [
             "requestId": requestId,
             "ok": ok,
