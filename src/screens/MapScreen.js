@@ -190,6 +190,8 @@ export class MapScreen {
     this.heroRespawnAnimationTimeout = null;
     this.camera = { x: 0, y: 0 };
     this.lastEncounterTileKey = null;
+    this.lastCaptureZoneHapticTileKey = null;
+    this.lastCaptureZoneHapticAt = 0;
     this.lastHumanEncounterTileKey = null;
     this.lastHumanEncounterId = null;
     this.lastChestTriggerId = null;
@@ -650,6 +652,7 @@ export class MapScreen {
     this.checkDoorInteraction();
     this.checkNpcDialogInteraction();
     this.checkHumanEncounter(dx !== 0 || dy !== 0);
+    this.checkCaptureZoneStepHaptic(dx !== 0 || dy !== 0);
     this.checkEncounter(dx !== 0 || dy !== 0);
   }
 
@@ -888,6 +891,29 @@ export class MapScreen {
 
   zoneForTile(tileX, tileY) {
     return this.encounterZones.find((zone) => this.tileOverlapsZone(tileX, tileY, zone)) ?? null;
+  }
+
+  checkCaptureZoneStepHaptic(isMoving) {
+    if (!isMoving || this.encounterPaused || !this.encounterLayer) return;
+    const tileKey = this.heroTileKey();
+    if (!tileKey || tileKey === this.lastCaptureZoneHapticTileKey) return;
+    const [tileX, tileY] = tileKey.split(":").map(Number);
+    const gid = this.encounterLayer.data[tileY * this.encounterLayer.width + tileX] ?? 0;
+    const hasEncounterTile = (gid & ~tileFlipFlags) !== 0;
+    const zone = this.zoneForHero() ?? (hasEncounterTile ? this.zoneForTile(tileX, tileY) : null);
+    if (!hasEncounterTile && !zone) {
+      this.lastCaptureZoneHapticTileKey = null;
+      return;
+    }
+    if (zone && !this.isEncounterZoneAvailable(zone)) {
+      this.lastCaptureZoneHapticTileKey = null;
+      return;
+    }
+    this.lastCaptureZoneHapticTileKey = tileKey;
+    const now = performance.now();
+    if (now - this.lastCaptureZoneHapticAt < 180) return;
+    this.lastCaptureZoneHapticAt = now;
+    nativeHaptic("light");
   }
 
   checkEncounter(isMoving) {
