@@ -15,6 +15,14 @@ export function queryDomNodes(root = document) {
   const chooseCreatureHuntButton = root.querySelector("#chooseCreatureHunt");
   const chooseHumanCombatButton = root.querySelector("#chooseHumanCombat");
   const chooseMapButton = root.querySelector("#chooseMap");
+  const optionsSection = root.querySelector("#optionsSection");
+  const optionsSaveButton = root.querySelector("#optionsSaveButton");
+  const optionsSaveGauge = root.querySelector("#optionsSaveGauge");
+  const optionsSaveGaugeFill = root.querySelector("#optionsSaveGaugeFill");
+  const optionsSaveStatus = root.querySelector("#optionsSaveStatus");
+  const optionsLoadButton = root.querySelector("#optionsLoadButton");
+  const optionsLoadStatus = root.querySelector("#optionsLoadStatus");
+  const optionsBackButton = root.querySelector("#optionsBackButton");
   const mapSection = root.querySelector("#mapSection");
   const mapCanvas = root.querySelector("#mapCanvas");
   const mapPopulationButton = root.querySelector("#mapPopulationButton");
@@ -281,6 +289,14 @@ export function queryDomNodes(root = document) {
     mapSection,
     orientationPrompt,
     orientationTitle,
+    optionsBackButton,
+    optionsLoadButton,
+    optionsLoadStatus,
+    optionsSaveButton,
+    optionsSaveGauge,
+    optionsSaveGaugeFill,
+    optionsSaveStatus,
+    optionsSection,
     phaseCover,
     pointsLeftNode,
     pointsUnitNode,

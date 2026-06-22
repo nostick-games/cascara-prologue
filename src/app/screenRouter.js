@@ -3,6 +3,7 @@ export const gameScreens = {
   huntBriefing: "huntBriefing",
   humanBriefing: "humanBriefing",
   combat: "combat",
+  options: "options",
   map: "map"
 };
 

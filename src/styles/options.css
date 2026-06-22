@@ -1,0 +1,49 @@
+.options-section {
+  min-height: min(540px, 100dvh);
+  width: 100%;
+  display: grid;
+  place-items: center;
+  background: #000;
+}
+
+.options-actions {
+  width: min(360px, calc(100vw - 32px));
+  display: grid;
+  gap: 18px;
+}
+
+.options-save-block,
+.options-load-block {
+  display: grid;
+  gap: 8px;
+}
+
+.options-actions button {
+  width: 100%;
+}
+
+.options-save-gauge {
+  width: 100%;
+  height: 12px;
+  border: 2px solid var(--ui-blue);
+  background: #101116;
+  overflow: hidden;
+}
+
+.options-save-gauge-fill {
+  width: 0%;
+  height: 100%;
+  background: var(--ui-orange);
+  transition: width 90ms linear;
+}
+
+.options-status {
+  min-height: 2.8em;
+  font-size: 8px;
+  color: var(--ui-blue);
+  text-align: center;
+}
+
+body.options-active {
+  background: #000;
+}

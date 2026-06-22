@@ -10,6 +10,23 @@ const appShellTemplate = `
     </div>
   </section>
 
+  <section class="options-section" id="optionsSection" hidden>
+    <div class="options-actions">
+      <div class="options-save-block">
+        <button id="optionsSaveButton" class="secondary" type="button"></button>
+        <div class="options-save-gauge" id="optionsSaveGauge" hidden>
+          <div class="options-save-gauge-fill" id="optionsSaveGaugeFill"></div>
+        </div>
+        <p class="options-status" id="optionsSaveStatus" aria-live="polite"></p>
+      </div>
+      <div class="options-load-block">
+        <button id="optionsLoadButton" class="secondary" type="button"></button>
+        <p class="options-status" id="optionsLoadStatus" aria-live="polite"></p>
+      </div>
+      <button id="optionsBackButton" class="primary" type="button"></button>
+    </div>
+  </section>
+
   <section class="map-section game-panel" id="mapSection" hidden>
     <canvas class="map-canvas" id="mapCanvas" width="960" height="540"></canvas>
     <div class="map-quick-actions" aria-label="Raccourcis de la map">

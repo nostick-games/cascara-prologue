@@ -194,6 +194,25 @@ export class HumanBriefingScreen {
     this.render();
   }
 
+  saveState() {
+    return {
+      team: [...this.team],
+      selectedAffixId: this.selectedAffixId
+    };
+  }
+
+  restoreState(state = {}) {
+    this.team = Array.isArray(state.team)
+      ? [state.team[0] ?? null, state.team[1] ?? null, state.team[2] ?? null]
+      : [null, null, null];
+    this.selectedAffixId = state.selectedAffixId ?? null;
+    this.updateCreatureBonus();
+    this.updateBuildType();
+    this.updateAdaptiveEnemy();
+    this.syncSelectedInstinct();
+    this.render();
+  }
+
   openOwnedCreatures() {
     this.rosterModal.openBrowser();
   }

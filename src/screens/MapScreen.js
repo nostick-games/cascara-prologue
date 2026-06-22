@@ -405,6 +405,47 @@ export class MapScreen {
     this.updateCamera();
   }
 
+  saveState() {
+    return {
+      mapId: this.currentMapId,
+      hero: { ...this.hero },
+      activeRespawnId: this.activeRespawnId,
+      completedNpcDialogIds: [...this.completedNpcDialogIds],
+      clearedHumanEncounterIds: [...this.clearedHumanEncounterIds],
+      defeatedHumanEncounterIds: [...this.defeatedHumanEncounterIds],
+      discoveredTiles: [...this.discoveredTiles],
+      discoveredRespawnIds: [...this.discoveredRespawnIds]
+    };
+  }
+
+  restoreState(state = {}) {
+    if (state.hero) {
+      this.hero.x = Number.isFinite(state.hero.x) ? state.hero.x : this.hero.x;
+      this.hero.y = Number.isFinite(state.hero.y) ? state.hero.y : this.hero.y;
+      this.hero.direction = state.hero.direction ?? this.hero.direction;
+    }
+    this.activeRespawnId = state.activeRespawnId ?? this.defaultRespawnPoint()?.id ?? null;
+    this.completedNpcDialogIds = new Set(state.completedNpcDialogIds ?? []);
+    this.clearedHumanEncounterIds = new Set(state.clearedHumanEncounterIds ?? []);
+    this.defeatedHumanEncounterIds = new Set(state.defeatedHumanEncounterIds ?? []);
+    this.discoveredTiles = new Set(state.discoveredTiles ?? []);
+    this.discoveredRespawnIds = new Set(state.discoveredRespawnIds ?? []);
+    this.lastEncounterTileKey = this.heroTileKey();
+    this.lastHumanEncounterTileKey = this.heroTileKey();
+    this.lastCaptureZoneHapticTileKey = null;
+    this.lastChestTriggerId = null;
+    this.lastDoorTriggerId = null;
+    this.lastNpcDialogId = null;
+    this.encounterPaused = false;
+    this.heroMoving = false;
+    this.heroNudge = null;
+    this.inputLocked = false;
+    this.keys.clear();
+    this.resetJoystick();
+    this.updateCamera();
+    this.onMapChange(this.currentMapId);
+  }
+
   clearHeroRespawnAnimation() {
     window.clearTimeout(this.heroRespawnAnimationTimeout);
     this.heroRespawnAnimationTimeout = null;

@@ -34,8 +34,11 @@ import { MapPopulationModal } from "./ui/MapPopulationModal.js";
 import { MapHealerFlow } from "./ui/MapHealerFlow.js";
 import { MapShopFlow } from "./ui/MapShopFlow.js";
 import { setPixelButtonLabel } from "./ui/PixelButton.js";
+import { nativeLoad, nativeSave } from "./utils/nativeBridge.js";
 
 const mapQuickActionsFreezeMs = 650;
+const manualSaveSlot = "manual";
+const manualSaveMinDurationMs = 1200;
 
 const appRoot = document.querySelector("#app");
 mountAppShell(appRoot);
@@ -198,6 +201,14 @@ const {
   mapSection,
   orientationPrompt,
   orientationTitle,
+  optionsBackButton,
+  optionsLoadButton,
+  optionsLoadStatus,
+  optionsSaveButton,
+  optionsSaveGauge,
+  optionsSaveGaugeFill,
+  optionsSaveStatus,
+  optionsSection,
   pointsLeftNode,
   pointsUnitNode,
   prepSection,
@@ -225,6 +236,7 @@ const screenRouter = createScreenRouter({
   screens: {
     [gameScreens.start]: startSection,
     [gameScreens.map]: mapSection,
+    [gameScreens.options]: optionsSection,
     [gameScreens.huntBriefing]: prepSection,
     [gameScreens.humanBriefing]: humanBriefingSection,
     [gameScreens.combat]: combatSection
@@ -232,6 +244,7 @@ const screenRouter = createScreenRouter({
   bodyClassByScreen: {
     [gameScreens.start]: "start-active",
     [gameScreens.map]: "map-active",
+    [gameScreens.options]: "options-active",
     [gameScreens.huntBriefing]: "briefing-active hunt-briefing-active",
     [gameScreens.humanBriefing]: "briefing-active human-briefing-active",
     [gameScreens.combat]: "combat-active"
@@ -558,6 +571,113 @@ function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
+function cloneState(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function createManualSaveState() {
+  return {
+    version: 1,
+    savedAt: new Date().toISOString(),
+    progression: cloneState(baseProgression),
+    build: cloneState(build),
+    committedBuild: cloneState(committedBuild),
+    map: mapScreen.saveState(),
+    humanBriefing: humanBriefingScreen.saveState()
+  };
+}
+
+async function restoreManualSaveState(saveState) {
+  if (!saveState?.progression) return false;
+  Object.keys(baseProgression).forEach((key) => {
+    delete baseProgression[key];
+  });
+  Object.assign(baseProgression, cloneState(saveState.progression));
+  Object.assign(build, saveState.build ?? baseHero.stats);
+  Object.assign(committedBuild, saveState.committedBuild ?? saveState.build ?? baseHero.stats);
+  humanBriefingScreen.restoreState(saveState.humanBriefing);
+  prepareNextHunt();
+  prepareNextHumanCombat();
+  combatController.configureEncounter({ creature, encounter, encounterAffix, objectivesData });
+  const mapState = saveState.map ?? {};
+  await mapScreen.loadMap(mapState.mapId ?? "prologue");
+  mapScreen.restoreState(mapState);
+  screenRouter.show(gameScreens.map);
+  renderAll();
+  await mapScreen.start();
+  return true;
+}
+
+function renderOptionsStaticText() {
+  setPixelButtonLabel(optionsSaveButton, t("ui.options_save"));
+  setPixelButtonLabel(optionsLoadButton, t("ui.options_load"));
+  setPixelButtonLabel(optionsBackButton, t("ui.options_back"));
+}
+
+function resetOptionsStatus() {
+  optionsSaveGauge.hidden = true;
+  optionsSaveGaugeFill.style.width = "0%";
+  optionsSaveStatus.textContent = "";
+  optionsLoadStatus.textContent = "";
+}
+
+function openOptionsPage() {
+  resetOptionsStatus();
+  renderOptionsStaticText();
+  screenRouter.show(gameScreens.options);
+  optionsSaveButton.focus({ preventScroll: true });
+}
+
+async function runManualSave() {
+  optionsSaveButton.disabled = true;
+  optionsLoadButton.disabled = true;
+  optionsSaveStatus.textContent = t("ui.options_saving_warning");
+  optionsLoadStatus.textContent = "";
+  optionsSaveGauge.hidden = false;
+  optionsSaveGaugeFill.style.width = "0%";
+  try {
+    await wait(40);
+    optionsSaveGaugeFill.style.width = "12%";
+    const startedAt = performance.now();
+    const savePromise = nativeSave(manualSaveSlot, createManualSaveState());
+    optionsSaveGaugeFill.style.width = "58%";
+    await savePromise;
+    const remaining = Math.max(0, manualSaveMinDurationMs - (performance.now() - startedAt));
+    optionsSaveGaugeFill.style.width = "82%";
+    await wait(remaining);
+    optionsSaveGaugeFill.style.width = "100%";
+    await wait(220);
+    optionsSaveStatus.textContent = t("ui.options_save_done");
+  } catch (error) {
+    console.warn("[Cascara] Manual save failed.", error);
+    optionsSaveStatus.textContent = t("ui.options_save_failed");
+  } finally {
+    optionsSaveButton.disabled = false;
+    optionsLoadButton.disabled = false;
+  }
+}
+
+async function runManualLoad() {
+  optionsSaveButton.disabled = true;
+  optionsLoadButton.disabled = true;
+  optionsSaveStatus.textContent = "";
+  optionsLoadStatus.textContent = "";
+  try {
+    const saveState = await nativeLoad(manualSaveSlot);
+    if (!saveState) {
+      optionsLoadStatus.textContent = t("ui.options_no_save");
+      return;
+    }
+    await restoreManualSaveState(saveState);
+  } catch (error) {
+    console.warn("[Cascara] Manual load failed.", error);
+    optionsLoadStatus.textContent = t("ui.options_load_failed");
+  } finally {
+    optionsSaveButton.disabled = false;
+    optionsLoadButton.disabled = false;
+  }
+}
+
 async function applyMapInventoryItem(entry) {
   if (!entry || !isMapInventoryItemEffective(entry.item)) {
     inventoryModal.showItemWarning(entry?.item?.id);
@@ -618,7 +738,7 @@ const inventoryModal = new InventoryModal({
     }
     applyMapInventoryItem(entry);
   },
-  onOptions: () => screenRouter.show(gameScreens.start)
+  onOptions: () => openOptionsPage()
 });
 combatController.setInventoryModal(inventoryModal);
 
@@ -671,6 +791,14 @@ bindPress(mapPopulationButton, () => mapPopulationModal.open());
 bindPress(mapRadarButton, () => mapRadarModalController.open());
 bindPress(mapInventoryButton, () => inventoryModal.open({ mode: "map" }));
 bindPress(mapCreaturesButton, () => humanBriefingScreen.openOwnedCreatures());
+bindPress(optionsSaveButton, () => runManualSave());
+bindPress(optionsLoadButton, () => runManualLoad());
+bindPress(optionsBackButton, async () => {
+  resetOptionsStatus();
+  screenRouter.show(gameScreens.map);
+  renderAll();
+  await mapScreen.start();
+});
 
 function hasCompletedChadTrainingCombat() {
   return baseProgression.completedTrainerBattleIds?.includes("chad") ?? false;
@@ -791,6 +919,7 @@ staticTextRenderer = createStaticTextRenderer({
 function renderAll() {
   briefingScreen.render();
   humanBriefingScreen.render();
+  renderOptionsStaticText();
   mapRadarModalController?.setTotalPoints(baseProgression.availableXp);
   mapRadarModalController?.render();
   syncMapQuickActions();
