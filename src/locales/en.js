@@ -469,7 +469,7 @@ export const en = {
   "map.npc.nora.home_intro.2": "For some time now, fawnas have been acting aggressively. I think it is connected to events that took place at Cascara Sanctuary…",
   "map.npc.nora.home_intro.3": "I have not heard from the Sanctuary. I need you to go there and investigate. I am convinced everything is connected.",
   "map.npc.nora.home_intro.4": "The Sanctuary is north of here. To help you, here is a map showing where you can find fawnas. You will be able to use it outdoors.",
-  "map.npc.nora.home_intro.5": "Your mission will be dangerous, but by teaming up with fawnas, I am sure you can unravel this mystery. Good luck!",
+  "map.npc.nora.home_intro.5": "Your mission will be dangerous, but by trusting fawnas, I am sure you can unravel this mystery. Good luck!",
   "map.npc.nora.home_repeat.1": "I will stay here to continue my studies of fawnas. But I will always be close to you…",
   "map.npc.chad.name": "Chad",
   "map.npc.chad.before_nora.1": "Nora wants to talk to you. She's in the house next door. Come back and see me after!",

@@ -469,7 +469,7 @@ export const fr = {
   "map.npc.nora.home_intro.2": "Depuis quelque temps, les fawnas ont des comportements agressifs. Je pense que c'est lié à des événements qui se sont déroulés au Sanctuaire de Cascara…",
   "map.npc.nora.home_intro.3": "Je n'ai plus de nouvelles du Sanctuaire. J'ai besoin que tu y ailles pour enquêter. J'ai la conviction que tout est lié.",
   "map.npc.nora.home_intro.4": "Le Sanctuaire est au nord d'ici. Pour t'aider, voici une carte qui va t'indiquer où tu peux trouver des fawnas. Tu pourras l'utiliser en extérieur.",
-  "map.npc.nora.home_intro.5": "Ta mission sera périlleuse, mais en faisant équipe avec les fawnas, je suis sûre que tu peux percer ce mystère. Bonne chance !",
+  "map.npc.nora.home_intro.5": "Ta mission sera périlleuse, mais en faisant confiance aux fawnas, je suis sûre que tu peux percer ce mystère. Bonne chance !",
   "map.npc.nora.home_repeat.1": "Je reste ici pour poursuivre mes études des fawnas. Mais je serai toujours près de toi…",
   "map.npc.chad.name": "Chad",
   "map.npc.chad.before_nora.1": "Nora veut te parler, elle est dans la maison à côté. Repasse me voir après !",
