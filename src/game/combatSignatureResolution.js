@@ -47,12 +47,12 @@ export function resolveSignatureEffect(controller, side) {
     effects.push(controller.t("log.signature_effect_fire_damage", { damage: fireDamage, target: targetName }));
   }
 
-  if (components.direct.includes("water")) {
+  if (target.hp > 0 && components.direct.includes("water")) {
     const deniedPa = controller.denySignaturePa(isEnemy ? "hero" : "enemy", 1);
     effects.push(controller.t("log.signature_effect_water_pa", { ap: deniedPa, target: targetName }));
   }
 
-  if (components.direct.includes("wind") && !directEffectMitigated) {
+  if (target.hp > 0 && components.direct.includes("wind") && !directEffectMitigated) {
     const guardLoss = signature.rank >= 2 ? 5 : 4;
     const reducedGuardLoss = components.reducedDirect ? Math.max(1, Math.round(guardLoss * 0.75)) : guardLoss;
     const { lostGuard, ruptureDamage } = controller.applyGuardRupture(target, reducedGuardLoss);
@@ -64,22 +64,22 @@ export function resolveSignatureEffect(controller, side) {
     }));
   }
 
-  if (components.secondary.includes("fire")) {
+  if (target.hp > 0 && components.secondary.includes("fire")) {
     controller.applySignatureBurn(target, signature.rank >= 2 ? 3 : 2);
     effects.push(controller.t("log.signature_effect_burn"));
   }
 
-  if (components.secondary.includes("water")) {
+  if (target.hp > 0 && components.secondary.includes("water")) {
     controller.applySignatureParalysis(target);
     effects.push(controller.t("log.signature_effect_paralysis"));
   }
 
-  if (components.secondary.includes("wind")) {
+  if (target.hp > 0 && components.secondary.includes("wind")) {
     controller.applySignatureExposed(target, signature.rank >= 2 ? 3 : 2);
     effects.push(controller.t("log.signature_effect_exposed"));
   }
 
-  if (components.utility) {
+  if (target.hp > 0 && components.utility) {
     const gain = controller.grantSignaturePa(source, 1);
     effects.push(controller.t("log.signature_effect_utility_pa", { creature: sourceName, gain }));
   }

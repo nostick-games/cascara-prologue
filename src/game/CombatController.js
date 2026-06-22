@@ -1125,6 +1125,7 @@ export class CombatController {
 
   endCombat(won, message, outcome = won ? "capture" : "defeat") {
     const combat = this.combat;
+    if (!combat || combat.ended) return;
     const isTrainingCombat = this.context === "human" && this.creature?.training;
     combat.ended = true;
     combat.phase = "done";
