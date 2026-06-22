@@ -3,7 +3,7 @@ export const itemDefinitions = {
     id: "potion_50",
     type: "combat",
     nameKey: "item.potion_50.name",
-    sprite: "assets/inventaire/objets/potion_100.png",
+    sprite: "assets/inventaire/objets/potion_50.png",
     paCost: 1,
     effect: "halfHeal"
   },
@@ -35,7 +35,7 @@ export const itemDefinitions = {
     id: "attelle",
     type: "combat",
     nameKey: "item.attelle.name",
-    sprite: "assets/inventaire/objets/pommade.png",
+    sprite: "assets/inventaire/objets/attelle.png",
     paCost: 2,
     effect: "cureExposed"
   }
