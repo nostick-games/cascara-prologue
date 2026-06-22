@@ -34,7 +34,7 @@ import { MapPopulationModal } from "./ui/MapPopulationModal.js";
 import { MapHealerFlow } from "./ui/MapHealerFlow.js";
 import { MapShopFlow } from "./ui/MapShopFlow.js";
 import { setPixelButtonLabel } from "./ui/PixelButton.js";
-import { nativeLoad, nativeSave } from "./utils/nativeBridge.js";
+import { nativeHaptic, nativeLoad, nativeSave } from "./utils/nativeBridge.js";
 
 const mapQuickActionsFreezeMs = 650;
 const manualSaveSlot = "manual";
@@ -832,6 +832,7 @@ function collectMapChestReward(chest) {
 }
 
 async function discoverMapRelay(mapId) {
+  nativeHaptic("success");
   await playWhiteFlash(encounterTransition, { boundsNode: mapSection });
   await openMapRewardModal({
     title: t("map.relay.discovery_title"),

@@ -1019,6 +1019,7 @@ export class MapScreen {
     if (this.lastDoorTriggerId === door.id || now - this.lastDoorTriggeredAt < doorTriggerCooldownMs) return;
     this.lastDoorTriggerId = door.id;
     this.lastDoorTriggeredAt = now;
+    nativeHaptic("medium");
     this.encounterPaused = true;
     this.stop();
     this.onDoor({
