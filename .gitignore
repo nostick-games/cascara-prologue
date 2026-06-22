@@ -3,3 +3,5 @@ dist/
 .DS_Store
 Working Files/
 .claude/
+*.xcuserstate
+xcuserdata/

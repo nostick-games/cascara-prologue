@@ -4,19 +4,25 @@
 <dict>
 	<key>CFBundleDisplayName</key>
 	<string>Cascara</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleName</key>
 	<string>Cascara</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.nostickgames.cascara.test</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
 		<string></string>
 	</dict>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
@@ -29,4 +35,3 @@
 	</array>
 </dict>
 </plist>
-
