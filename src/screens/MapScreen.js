@@ -31,6 +31,7 @@ import {
   respawnTriggerPaddingY,
   tileFlipFlags
 } from "./map/mapConfig.js";
+import { nativeHaptic } from "../utils/nativeBridge.js";
 import {
   encounterZoneSummaries as summarizeEncounterZones,
   loadChests as loadMapChests,
@@ -1008,6 +1009,7 @@ export class MapScreen {
       return;
     }
     await this.playChestOpeningAnimation(chest);
+    nativeHaptic("success");
     await this.onChestReward(chest);
     this.encounterPaused = false;
     this.inputLocked = false;
