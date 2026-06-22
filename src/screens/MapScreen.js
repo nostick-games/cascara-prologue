@@ -175,10 +175,7 @@ export class MapScreen {
       active: false,
       pointerId: null,
       x: 0,
-      y: 0,
-      pastDeadZone: false,
-      atEdge: false,
-      hapticDirection: null
+      y: 0
     };
     this.hero = {
       x: 32,
@@ -602,10 +599,8 @@ export class MapScreen {
     event.preventDefault();
     this.joystick.active = true;
     this.joystick.pointerId = event.pointerId;
-    this.resetJoystickHaptics();
-    nativeHaptic("light");
     this.nodes.joystick.setPointerCapture?.(event.pointerId);
-    this.updateJoystickFromEvent(event, { initial: true });
+    this.updateJoystickFromEvent(event);
   }
 
   onJoystickPointerMove(event) {
@@ -620,7 +615,7 @@ export class MapScreen {
     this.resetJoystick();
   }
 
-  updateJoystickFromEvent(event, { initial = false } = {}) {
+  updateJoystickFromEvent(event) {
     const base = this.nodes.joystickBase;
     const rect = base.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -634,36 +629,7 @@ export class MapScreen {
     const y = distance > 0 ? Math.sin(angle) * clampedDistance : 0;
     this.joystick.x = x / joystickMaxDistance;
     this.joystick.y = y / joystickMaxDistance;
-    this.updateJoystickHaptics({ distance, initial });
     this.nodes.joystickStick.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
-  }
-
-  updateJoystickHaptics({ distance, initial = false }) {
-    const normalizedDistance = Math.hypot(this.joystick.x, this.joystick.y);
-    const pastDeadZone = normalizedDistance >= joystickDeadZone;
-    const atEdge = distance >= joystickMaxDistance * 0.96;
-    const direction = pastDeadZone ? this.joystickDirection(this.joystick.x, this.joystick.y) : null;
-
-    if (!initial && pastDeadZone && !this.joystick.pastDeadZone) {
-      nativeHaptic("selection");
-    }
-    if (!initial && direction && this.joystick.hapticDirection && direction !== this.joystick.hapticDirection) {
-      nativeHaptic("selection");
-    }
-    if (!initial && atEdge && !this.joystick.atEdge) {
-      nativeHaptic("medium");
-    }
-
-    this.joystick.pastDeadZone = pastDeadZone;
-    this.joystick.hapticDirection = direction;
-    if (atEdge) this.joystick.atEdge = true;
-    else if (distance <= joystickMaxDistance * 0.82) this.joystick.atEdge = false;
-  }
-
-  resetJoystickHaptics() {
-    this.joystick.pastDeadZone = false;
-    this.joystick.atEdge = false;
-    this.joystick.hapticDirection = null;
   }
 
   resetJoystick() {
@@ -674,7 +640,6 @@ export class MapScreen {
     this.joystick.pointerId = null;
     this.joystick.x = 0;
     this.joystick.y = 0;
-    this.resetJoystickHaptics();
     if (this.nodes.joystickStick) {
       this.nodes.joystickStick.style.transform = "translate(0, 0)";
     }
