@@ -65,6 +65,15 @@
         will-change: auto;
       }
 
+      body.map-active .app-fit {
+        inset: 0;
+      }
+
+      body.map-active .app {
+        width: 100vw;
+        height: 100dvh;
+      }
+
       .start-section {
         width: min(520px, calc(100% - 16px));
         margin: clamp(18px, 8dvh, 46px) auto 0;

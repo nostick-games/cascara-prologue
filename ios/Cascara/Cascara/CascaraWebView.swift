@@ -19,6 +19,7 @@ struct CascaraWebView: UIViewRepresentable {
         webView.navigationDelegate = context.coordinator
         webView.scrollView.isScrollEnabled = false
         webView.scrollView.bounces = false
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
         webView.isOpaque = false
         webView.backgroundColor = .black
         webView.load(URLRequest(url: gameURL, cachePolicy: .reloadIgnoringLocalCacheData))
@@ -40,4 +41,3 @@ struct CascaraWebView: UIViewRepresentable {
         }
     }
 }
-
