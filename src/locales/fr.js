@@ -416,7 +416,7 @@ export const fr = {
   "log.enemy_affix_elan_de_survie_fail": "L'Instinct d'élan de survie de {creature} échoue à donner 1 PA supplémentaire…",
   "log.enemy_affix_retour_de_geste_success": "L'Instinct de retour de geste de {creature} lui donne {gain} PA supplémentaire !",
   "log.enemy_affix_retour_de_geste_fail": "L'Instinct de retour de geste de {creature} échoue à donner 1 PA supplémentaire…",
-  "log.art_remove_ap": "L'art tactique retire 1 PA à {creature}.",
+  "log.art_remove_ap": "{art} retire {ap} PA à {creature} !",
   "log.art_self_guard": "Votre art vous confère {guard} de Garde.",
   "log.art_refund_pa": "Votre art vous rend {ap} PA.",
   "log.feinte_interrupt": "La feinte interrompt la charge flamboyante",

@@ -306,6 +306,11 @@
         body.combat-active .hero-gauges .pa-dot.denied::after {
           font-size: 11px;
         }
+
+        body.combat-active .enemy-gauges .pa-dot.temporary::after,
+        body.combat-active .hero-gauges .pa-dot.temporary::after {
+          font-size: 10px;
+        }
       }
 
       @keyframes creature-idle {

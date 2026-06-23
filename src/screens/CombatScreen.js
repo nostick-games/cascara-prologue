@@ -214,7 +214,9 @@ export class CombatScreen {
     this.previousPaState = {
       phase,
       heroPa: combat.hero.pa,
-      enemyPa: combat.enemy.pa
+      heroTemporaryPa: combat.hero.temporaryPa ?? 0,
+      enemyPa: combat.enemy.pa,
+      enemyTemporaryPa: combat.enemy.temporaryPa ?? 0
     };
   }
 
@@ -245,8 +247,12 @@ export class CombatScreen {
       phase: combat.phase,
       activePhase: "player",
       spentFrom: this.previousPaState?.phase === "player" ? this.previousPaState.heroPa : hero.pa,
-      deniedCount: combat.paDenied?.hero ?? 0
+      deniedCount: combat.paDenied?.hero ?? 0,
+      temporaryCount: hero.temporaryPa ?? 0,
+      temporarySpentFlashCount: hero.temporaryPaSpentFlash ?? 0,
+      previousTemporaryCount: this.previousPaState?.phase === "player" ? this.previousPaState.heroTemporaryPa ?? 0 : hero.temporaryPa ?? 0
     });
+    hero.temporaryPaSpentFlash = 0;
 
     this.renderPaDots({
       node: nodes.enemyPaDots,
@@ -255,21 +261,50 @@ export class CombatScreen {
       phase: combat.phase,
       activePhase: "enemy",
       spentFrom: this.previousPaState?.phase === "enemy" ? this.previousPaState.enemyPa : enemy.pa,
-      deniedCount: combat.paDenied?.enemy ?? 0
+      deniedCount: combat.paDenied?.enemy ?? 0,
+      temporaryCount: enemy.temporaryPa ?? 0,
+      temporarySpentFlashCount: enemy.temporaryPaSpentFlash ?? 0,
+      previousTemporaryCount: this.previousPaState?.phase === "enemy" ? this.previousPaState.enemyTemporaryPa ?? 0 : enemy.temporaryPa ?? 0
     });
+    enemy.temporaryPaSpentFlash = 0;
 
     this.capturePaState(combat, combat.phase);
     this.renderObjectives(combat);
     this.renderActionStates(combat);
   }
 
-  renderPaDots({ node, maxPa, pa, phase, activePhase, spentFrom, deniedCount }) {
+  renderPaDots({
+    node,
+    maxPa,
+    pa,
+    phase,
+    activePhase,
+    spentFrom,
+    deniedCount,
+    temporaryCount = 0,
+    temporarySpentFlashCount = 0,
+    previousTemporaryCount = temporaryCount
+  }) {
     node.innerHTML = "";
+    const visibleTemporaryCount = phase === activePhase ? Math.min(pa, temporaryCount) : 0;
+    for (let index = 0; index < visibleTemporaryCount; index += 1) {
+      const dot = document.createElement("span");
+      dot.className = "pa-dot on temporary";
+      node.append(dot);
+    }
+    for (let index = 0; index < temporarySpentFlashCount; index += 1) {
+      const dot = document.createElement("span");
+      dot.className = "pa-dot temporary spent temporary-spent";
+      node.append(dot);
+    }
+
+    const regularPa = Math.max(0, pa - visibleTemporaryCount);
+    const previousRegularPa = Math.max(0, spentFrom - previousTemporaryCount);
     for (let index = 0; index < maxPa; index += 1) {
       const dot = document.createElement("span");
       const denied = index >= maxPa - deniedCount;
-      const active = phase === activePhase && index < pa;
-      const spent = !denied && phase === activePhase && index >= pa && index < spentFrom;
+      const active = phase === activePhase && index < regularPa;
+      const spent = !denied && phase === activePhase && index >= regularPa && index < previousRegularPa;
       dot.className = `pa-dot${active ? " on" : ""}${spent ? " spent" : ""}${denied ? " denied" : ""}`;
       node.append(dot);
     }

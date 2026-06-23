@@ -447,7 +447,16 @@ export class CombatController {
   }
 
   spendPa(cost) {
-    return spendActionPoints(this.combat.hero, cost);
+    const hero = this.combat.hero;
+    const before = hero.pa;
+    const temporaryBefore = hero.temporaryPa ?? 0;
+    const spent = spendActionPoints(hero, cost);
+    if (spent && hero.temporaryPa > 0) {
+      const consumedTemporaryPa = Math.min(temporaryBefore, Math.max(0, before - hero.pa));
+      hero.temporaryPa = Math.max(0, temporaryBefore - consumedTemporaryPa);
+      hero.temporaryPaSpentFlash = consumedTemporaryPa;
+    }
+    return spent;
   }
 
   heroHitChance() {
@@ -1010,7 +1019,10 @@ export class CombatController {
       const before = combat.hero.pa;
       combat.hero.pa = Math.min(combat.hero.maxPa, combat.hero.pa + paRefund);
       const gained = combat.hero.pa - before;
-      if (gained > 0) this.addLog(this.t("log.art_refund_pa", { ap: gained }));
+      if (gained > 0) {
+        combat.hero.temporaryPa = Math.min(combat.hero.pa, (combat.hero.temporaryPa ?? 0) + gained);
+        this.addLog(this.t("log.art_refund_pa", { ap: gained }));
+      }
     }
   }
 
@@ -1091,10 +1103,20 @@ export class CombatController {
         const hit = this.damageEnemy(playerActionDefinition);
         signatureEvent = { ...signatureEvent, hit: hit.hit, damage: hit.damage };
         if (!hit.hit) return;
-        const enemyPaBefore = combat.enemy.pa;
-        combat.enemy.pa = Math.max(0, combat.enemy.pa - (playerActionDefinition.enemyPaDamage ?? 0));
-        combat.paDenied.enemy = Math.max(combat.paDenied.enemy ?? 0, enemyPaBefore - combat.enemy.pa);
-        this.addLog(this.t("log.art_remove_ap", { creature: this.creatureName() }));
+        const paDenial = playerActionDefinition.enemyPaDamage ?? 0;
+        if (paDenial > 0) {
+          const enemyPaBefore = combat.enemy.pa;
+          combat.enemy.pa = Math.max(0, combat.enemy.pa - paDenial);
+          const removed = enemyPaBefore - combat.enemy.pa;
+          combat.paDenied.enemy = Math.max(combat.paDenied.enemy ?? 0, removed);
+          if (removed > 0) {
+            this.addLog(this.t("log.art_remove_ap", {
+              art: this.actionName(playerActionDefinition.id),
+              creature: this.creatureName(),
+              ap: removed
+            }));
+          }
+        }
         if (combat.enemy.charging) this.interruptCharge(this.t("log.art_interrupt"));
       },
       capture: () => {

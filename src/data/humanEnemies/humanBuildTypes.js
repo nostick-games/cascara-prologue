@@ -97,8 +97,9 @@ export const humanBuildTypeProfiles = {
         patternKey: "combat.pattern.human_wind_art"
       }
     },
-    // Tempo vent : la Feinte gagne en taux de crit (3/6/9 % selon le rang), et l'Art
-    // rembourse du PA au lanceur (1/1/2) — efficience pure, sans casser l'alternance.
+    // Tempo vent : l'Art garde le déni de -1 PA de base (commun à tous les Arts) et y
+    // ajoute un remboursement de PA au lanceur (1/1/2). Identité = « Art de base, mais
+    // efficient ». L'eau, elle, se distingue par le déni renforcé (-2). Feinte +crit.
     actionBonusesPerRank: {
       feinte: { critChance: 0.03 }
     },

@@ -311,6 +311,7 @@ export class CombatTurns {
     combat.paDenied.hero = Math.min(hero.nextPaPenalty, hero.maxPa);
     combat.paDenied.enemy = 0;
     hero.pa = Math.max(0, hero.maxPa - hero.nextPaPenalty);
+    hero.temporaryPa = 0;
     enemy.pa = enemy.maxPa;
     hero.nextPaPenalty = 0;
     hero.guarding = false;

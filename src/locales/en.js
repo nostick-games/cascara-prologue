@@ -416,7 +416,7 @@ export const en = {
   "log.enemy_affix_elan_de_survie_fail": "{creature}'s Survival Surge Instinct fails to give 1 extra AP…",
   "log.enemy_affix_retour_de_geste_success": "{creature}'s Gesture Return Instinct gives it {gain} extra AP!",
   "log.enemy_affix_retour_de_geste_fail": "{creature}'s Gesture Return Instinct fails to give 1 extra AP…",
-  "log.art_remove_ap": "The tactical art removes 1 AP from {creature}.",
+  "log.art_remove_ap": "{art} removes {ap} AP from {creature}!",
   "log.art_self_guard": "Your art grants you {guard} Guard.",
   "log.art_refund_pa": "Your art refunds you {ap} AP.",
   "log.feinte_interrupt": "The feint interrupts the flame charge",

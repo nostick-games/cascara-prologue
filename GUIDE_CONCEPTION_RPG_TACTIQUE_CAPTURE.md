@@ -10,7 +10,7 @@ Le joueur controle directement un heros qui combat avec :
 - ses competences ;
 - ses statistiques ;
 - les creatures qu'il equipe ;
-- les affixes portes par ces creatures.
+- les instincts portes par ces creatures.
 
 Contrairement a un jeu de capture classique, les creatures ne combattent pas directement. Elles servent de modificateurs de gameplay, de sources de synergies, de specialisations tactiques et d'outils utilitaires.
 
@@ -64,7 +64,7 @@ La boucle principale :
 2. Il rencontre des PNJ, des secrets, des ressources et des traces de creatures.
 3. Il participe a des combats standards pour tester son build.
 4. Il declenche des combats de capture pour obtenir de nouvelles creatures.
-5. Une capture reussie peut debloquer une creature equipable avec son affixe individuel.
+5. Une capture reussie peut debloquer une creature equipable avec son instinct individuel.
 6. Le joueur ajuste ses creatures equipees et ses capacites.
 7. Le radar de statistiques montre immediatement la transformation du build.
 8. Le joueur tente des zones, des boss ou des arenes qui encouragent d'autres styles.
@@ -374,32 +374,32 @@ Pour la premiere verticale, une seule arme est recommandee :
 
 Le bouclier sert de support defensif et peut porter des capacites de garde ou de parade.
 
-## 9. Affixes de creatures
+## 9. Instincts de creatures
 
-Les affixes sont des effets associes a des creatures individuelles capturees.
+Les instincts sont des effets associes a des creatures individuelles capturees.
 
-Quand le joueur equipe une creature, il equipe aussi l'affixe de cette creature.
+Quand le joueur equipe une creature, il equipe aussi l'instinct de cette creature.
 
 Principe :
 
-> Une espece donne une identite de type. L'affixe donne une identite individuelle.
+> Une espece donne une identite de type. L'instinct donne une identite individuelle.
 
-Deux creatures de la meme espece peuvent donc avoir des affixes differents. Le joueur peut vouloir capturer plusieurs fois une meme espece pour obtenir l'affixe le plus adapte a son futur build.
+Deux creatures de la meme espece peuvent donc avoir des instincts differents. Le joueur peut vouloir capturer plusieurs fois une meme espece pour obtenir l'instinct le plus adapte a son futur build.
 
-Les affixes de creatures ont une incidence en combat standard :
+Les instincts de creatures ont une incidence en combat standard :
 
 - ils sont actifs si la creature qui les porte est equipee ;
 - ils modifient le radar de build ;
 - ils renforcent l'identite de la composition ;
 - ils progressent avec l'evolution de la creature.
 
-En combat de capture, les creatures equipees sont retirees. Leurs affixes ne sont donc pas automatiquement actifs. Le joueur s'appuie alors sur le heros, ses competences de base, sa progression permanente, ses objets de chasse, ses runes de Perception et les informations obtenues.
+En combat de capture, les creatures equipees sont retirees. Leurs instincts ne sont donc pas automatiquement actifs. Le joueur s'appuie alors sur le heros, ses competences de base, sa progression permanente, ses objets de chasse, ses runes de Perception et les informations obtenues.
 
 Exception recommandee :
 
-> Le joueur peut preparer un affixe de creature comme trace de chasse pour une capture, sans equiper la creature elle-meme.
+> Le joueur peut preparer un instinct de creature comme trace de chasse pour une capture, sans equiper la creature elle-meme.
 
-Un affixe de chasse prepare :
+Un instinct de chasse prepare :
 
 - provient d'une creature deja capturee ;
 - est choisi avant le briefing complet ;
@@ -414,21 +414,21 @@ Cette regle permet aux captures precedentes d'aider les captures futures sans ca
 
 Limites recommandees :
 
-- 1 affixe de chasse prepare au debut ;
+- 1 instinct de chasse prepare au debut ;
 - 2 maximum plus tard, via amelioration rare ou outil specialise ;
 - choix verrouille avant la revelation complete des objectifs caches ;
-- certains affixes peuvent etre marques `combat`, `capture` ou `mixte`.
+- certains instincts peuvent etre marques `combat`, `capture` ou `mixte`.
 
 Hierarchie recommandee :
 
 - heros : base stable ;
 - competences du heros : progression permanente ;
-- affixe de chasse prepare : outil ponctuel de capture ;
+- instinct de chasse prepare : outil ponctuel de capture ;
 - creatures equipees : specialisation temporaire ;
-- affixes de creatures : micro-identite et comportement individuel ;
+- instincts de creatures : micro-identite et comportement individuel ;
 - bonus 12 : transformation majeure.
 
-Les affixes doivent encourager des comportements, pas seulement donner des bonus plats.
+Les instincts doivent encourager des comportements, pas seulement donner des bonus plats.
 
 Mauvais exemple :
 
@@ -438,15 +438,15 @@ Meilleur exemple :
 
 - apres un deplacement, la prochaine Entaille gagne +15 % critique.
 
-Faire evoluer une creature ameliore son affixe. Cela donne du poids au choix de la creature exacte que le joueur decide de garder dans son equipe.
+Faire evoluer une creature ameliore son instinct. Cela donne du poids au choix de la creature exacte que le joueur decide de garder dans son equipe.
 
 Exemple :
 
-- Braise-Corne A : affixe de critique ;
-- Braise-Corne B : affixe d'interruption ;
-- Braise-Corne C : affixe defensif contre le Feu.
+- Braise-Corne A : instinct de critique ;
+- Braise-Corne B : instinct d'interruption ;
+- Braise-Corne C : instinct defensif contre le Feu.
 
-Un build Feu pur peut donc contenir plusieurs creatures Feu, mais demander un vrai choix entre leurs affixes.
+Un build Feu pur peut donc contenir plusieurs creatures Feu, mais demander un vrai choix entre leurs instincts.
 
 ## 10. Progression permanente du heros
 
@@ -525,7 +525,7 @@ Regle PA :
 
 Cet achat doit rester rare. Il ne doit pas transformer les PA en progression ouverte.
 
-Les gains de PA, maximums de PA, reductions de cout importantes et effets d'economie d'action doivent rester principalement le privilege des creatures utilitaires, de quelques affixes tres limites ou de bonus temporaires specifiques. Cela protege l'equilibrage du combat et donne une identite forte aux utilitaires.
+Les gains de PA, maximums de PA, reductions de cout importantes et effets d'economie d'action doivent rester principalement le privilege des creatures utilitaires, de quelques instincts tres limites ou de bonus temporaires specifiques. Cela protege l'equilibrage du combat et donne une identite forte aux utilitaires.
 
 La Perception doit utiliser une economie separee, liee a la preparation de chasse : runes, objets, services ou creatures specialisees. Cela evite qu'un joueur puisse investir des points d'XP pendant un briefing, reveler un objectif cache, puis reinitialiser ses choix.
 
@@ -623,7 +623,7 @@ Principe :
 Le joueur peut modifier librement son build temporaire :
 
 - creatures equipees ;
-- affixes de creatures equipes avec elles ;
+- instincts de creatures equipes avec elles ;
 - preparation avant combat ou capture.
 
 En revanche, la reattribution des points d'XP investis dans la progression permanente doit etre encadree.
@@ -715,7 +715,7 @@ Les creatures modifient :
 - les capacites ;
 - les synergies ;
 - le rythme du combat ;
-- les affixes actifs en combat standard ;
+- les instincts actifs en combat standard ;
 - la forme et les animations du radar.
 
 Deux categories existent :
@@ -832,7 +832,9 @@ Regle recommandee :
 
 Le telegraphe est obligatoire pour les ennemis. Il donne au joueur une vraie reponse : monter sa Garde, garder des PA, tenter une Feinte, interrompre, purger un statut ou accepter le risque.
 
-Pendant le telegraphe d'une Signature ennemie, Feinte doit avoir un contre-effet minimal lorsqu'il existe un effet direct a attenuer. Dans le prototype, une Feinte reussie n'annule pas toute la Signature : elle supprime l'effet direct classique de la resolution, par exemple les degats directs ou la perte immediate de Garde, mais conserve l'effet secondaire comme Brulure, Paralysie, A decouvert ou perte de PA au prochain tour. Les Signatures de controle pur, comme un deni de PA sans degats ni rupture de Garde, ne doivent pas consommer la Feinte ni afficher de message d'attenuation. La Garde absorbe aussi les degats directs d'une Signature, mais ne bloque pas automatiquement son effet secondaire.
+Pendant le telegraphe d'une Signature ennemie, Feinte doit avoir un contre-effet minimal lorsqu'il existe un effet direct a attenuer. Une Feinte reussie n'annule pas toute la Signature : elle supprime ou attenue la partie directe de la resolution, par exemple les degats directs, la rupture immediate de Garde ou un deni de PA direct, mais conserve l'effet secondaire comme Brulure, Paralysie ou Blessure.
+
+Dans le prototype actuel, la mitigation est surtout branchee sur les parties directes Feu et Vent. Les Signatures de controle Eau pur ne doivent pas consommer la Feinte ni afficher de message d'attenuation tant que le deni de PA n'est pas explicitement traite comme partie directe mitigable. La Garde absorbe les degats directs d'une Signature, mais ne bloque pas automatiquement son effet secondaire.
 
 La Signature est determinee par la composition de l'equipe equipee. Elle doit rester issue d'une petite table de profils connus plutot que d'une generation procedurale trop fine.
 
@@ -871,7 +873,7 @@ La resolution doit suivre une grammaire d'effets atomiques :
 | ------- | --------------- | ------------------ |
 | Feu | degats | Brulure |
 | Eau | retrait de `1 PA` au prochain tour | Paralysie |
-| Vent | rupture de Garde, avec degats d'excedent | A decouvert |
+| Vent | rupture de Garde, avec degats d'excedent | Blessure |
 | Utilitaire | - | rider : `+1 PA` au lanceur |
 
 La composition applique ensuite ces briques :
@@ -894,11 +896,11 @@ Exemples d'effets dans le prototype :
 | Signature utilitaire simple | 1 Utilitaire | donne `+1 PA`, sans depasser le maximum de PA sauf effet special |
 | Signature Feu renforcee | 2 Feu ou majorite Feu | inflige des degats et Brulure avec une valeur plus forte |
 | Signature Eau renforcee | 2 Eau ou majorite Eau | retire `1 PA` au prochain tour et applique Paralysie |
-| Signature Vent renforcee | 2 Vent ou majorite Vent | reduit fortement la Garde, convertit l'excedent en degats de rupture et applique A decouvert |
+| Signature Vent renforcee | 2 Vent ou majorite Vent | reduit fortement la Garde, convertit l'excedent en degats de rupture et applique Blessure |
 | Triade instable | Feu + Eau + Vent | utilise l'element actif courant : Feu, Eau ou Vent |
 | Alchimie de guerre | Feu + Eau + Utilitaire | degats + Brulure, `+1 PA` lanceur et `-1 PA` cible au prochain tour |
-| Assaut fulgurant | Feu + Vent + Utilitaire | inflige plus de degats si la cible finit le tour de telegraphe avec `0 PA` |
-| Verrou mouvant | Eau + Vent + Utilitaire | `-1 PA` au prochain tour, Paralysie, rupture de Garde et A decouvert |
+| Assaut fulgurant | Feu + Vent + Utilitaire | degats Feu, rupture Vent, Brulure, `+1 PA` lanceur et bonus si la cible est a `0 PA` |
+| Verrou mouvant | Eau + Vent + Utilitaire | `-1 PA` au prochain tour, Paralysie, rupture de Garde et Blessure |
 
 La Triade instable affiche toujours son element actif. Cet element peut changer selon le dernier element joue par le combattant ; si l'action precedente n'a pas d'element, l'element actif precedent est conserve. Pour rendre la Triade jouable meme sans type dominant sur les actions de base, le prototype peut lire Entaille comme Feu, Garde comme Eau et Feinte comme Vent. Art conserve l'element actif courant, sauf variante explicitement typee.
 
@@ -908,7 +910,7 @@ Effets recommandes pour Triade instable :
 | ------------- | ----- |
 | Feu | inflige des degats et Brulure |
 | Eau | retire `1 PA` au prochain tour de la cible et applique Paralysie |
-| Vent | reduit la Garde de `X`, convertit l'excedent en degats de rupture legers si la cible n'a pas assez de Garde, et applique A decouvert |
+| Vent | reduit la Garde de `X`, convertit l'excedent en degats de rupture legers si la cible n'a pas assez de Garde, et applique Blessure |
 
 Messages de charge :
 
@@ -927,7 +929,7 @@ Exemples de resolution :
 ```txt
 La Triade instable de Miguel inflige 8 degats et brule Aragor !
 La Triade instable de Miguel retire 1 PA et paralyse Aragor !
-La Triade instable de Miguel reduit la Garde d'Aragor de 4 points, inflige 2 degats de rupture et lui inflige A decouvert !
+La Triade instable de Miguel reduit la Garde d'Aragor de 4 points, inflige 2 degats de rupture et lui inflige Blessure !
 La signature tactique de Miguel donne +1 PA !
 ```
 
@@ -1052,20 +1054,20 @@ Le joueur possede un inventaire de creatures accessible dans l'interface.
 Cet inventaire sert a :
 
 - consulter toutes les creatures capturees ;
-- voir leur espece, type, niveau, effort et affixe individuel ;
-- distinguer les creatures avec affixe, sans affixe, affixe I ou affixe II ;
+- voir leur espece, type, niveau, effort et instinct individuel ;
+- distinguer les creatures avec instinct, sans instinct, instinct I ou instinct II ;
 - consulter les informations connues sur leur comportement ;
 - comparer plusieurs creatures d'une meme espece ;
 - choisir les creatures equipees avant un combat standard ;
-- choisir un affixe de chasse prepare avant un combat de capture.
+- choisir un instinct de chasse prepare avant un combat de capture.
 
 L'inventaire doit permettre de filtrer ou trier par :
 
 - type ;
 - espece ;
 - niveau ;
-- presence ou absence d'affixe ;
-- niveau d'affixe ;
+- presence ou absence d'instinct ;
+- niveau d'instinct ;
 - role tactique ;
 - statut equipe ou stocke.
 
@@ -1110,8 +1112,8 @@ Si le comportement d'une espece est connu a 100 %, liberer une creature suppleme
 
 Le Sanctuaire donne une fonction aux doublons :
 
-- creature sans affixe ;
-- creature avec affixe faible ;
+- creature sans instinct ;
+- creature avec instinct faible ;
 - creature remplacee par une meilleure capture ;
 - creature d'une espece deja connue ;
 - creature capturee surtout pour l'XP.
@@ -1206,6 +1208,23 @@ Le joueur ne choisit donc pas seulement une espece ou un type : il choisit une c
 Objectif :
 
 > Faire evoluer une creature doit se voir dans le radar, se sentir dans le combat et renforcer l'attachement a cette capture precise.
+
+Etat actuel du prototype :
+
+- une creature equipee gagne `+1` progression quand le joueur remporte un combat non entrainement ;
+- Niveau I -> Niveau II : `3` combats gagnes en equipe ;
+- Niveau II -> Niveau III : `7` combats gagnes supplementaires ;
+- les combats d'entrainement ne comptent pas pour eviter le farm sans enjeu ;
+- le compteur est attache a la creature capturee individuellement, pas a l'espece ;
+- la fiche de creature affiche l'avancement vers le prochain niveau.
+
+Exemple :
+
+```txt
+Flamillon capture niveau I : 0 / 3
+Apres 3 victoires equipe : niveau II, compteur 0 / 7
+Apres 7 victoires supplementaires : niveau III, niveau maximum atteint
+```
 
 ### Evolution et niveau d'instinct
 
@@ -1370,7 +1389,7 @@ Le combat est :
 - au tour par tour ;
 - base sur les points d'action ;
 - centre sur les choix de tempo ;
-- influence par les creatures, affixes et statistiques.
+- influence par les creatures, instincts et statistiques.
 
 Le heros agit directement. Les creatures ne sont pas des unites autonomes.
 
@@ -1425,7 +1444,40 @@ Les deux joueurs ont le meme niveau de scaling de base.
 Leur build differe, mais la chasse ne baisse pas de niveau parce que les gemmes ont ete depensees autrement.
 ```
 
-Pour les futurs adversaires humains, la meme logique s'applique : ils doivent etre proches du niveau du joueur, mais leur difficulte peut venir davantage de leur build, de leurs affixes, de leurs creatures equipees et de leurs synergies.
+Pour les futurs adversaires humains, la meme logique s'applique : ils doivent etre proches du niveau du joueur, mais leur difficulte peut venir davantage de leur build, de leurs instincts, de leurs creatures equipees et de leurs synergies.
+
+### Etat actuel d'equilibrage du prototype
+
+Le prototype vise une difficulte challengeante mais juste : le joueur doit gagner en pretant attention aux intentions, aux PA, aux statuts et a sa preparation, sans devoir resoudre chaque combat comme une enigme punitive.
+
+Regles actuellement retenues :
+
+- les combats de capture sont calibres autour du heros seul, de ses objets et de sa preparation ;
+- les combats humains expriment le build complet : heros, fawnas equipes, instinct choisi, type dominant, Art type et Signature ;
+- les combats d'entrainement ne doivent pas devenir une source principale de progression ;
+- quand l'adversaire humain agit en premier grace a sa Vitesse, le joueur gagne un coussin de `+3 Garde` afin que l'initiative adverse soit un avantage de tempo, pas un bouton de victoire automatique ;
+- les adversaires humains doivent recevoir les PV issus de la Vitalite de leurs fawnas equipes, afin que leurs equipes ne soient pas seulement offensives ;
+- un boss humain doit garder un plan de PV explicite, par exemple autour de `60-70 PV` pour un gardien de prologue.
+
+Equilibrage defensif actuel :
+
+| Element | Valeur prototype | Intention |
+| ------- | ---------------- | --------- |
+| Reduction par Defense du heros | `0.55` par point | eviter que Defense trivialise les fawnas de debut |
+| Reduction par Defense ennemie | `0.70` par point | garder l'armure ennemie sensible aux multi-coups |
+| Garde de base du heros | `round(2 + Defense * 0.5)` | limiter le double effet Defense passive + Garde |
+| Persistance de Garde | environ `45 %` par tour | recompenser la defense sans empiler a l'infini |
+| Bonus d'initiative adverse | `+3 Garde` au joueur | amortir les ouvertures adverses rapides |
+
+Equilibrage offensif actuel :
+
+- Entaille reste le coup simple efficace en degats par PA ;
+- Feinte coute plus cher, mais apporte lecture, attenuation et interruption ;
+- Art coute `3 PA`, inflige moins de degats purs qu'un spam d'Entaille, mais retire `1 PA` si elle touche ;
+- le retrait de PA de l'Art est volontairement fort : il justifie un degat brut plus faible ;
+- les builds de type modifient les actions pour donner une identite forte sans remplacer les quatre boutons fondamentaux.
+
+Le statut Vent s'appelle maintenant `Blessure` dans l'interface. Il garde l'effet de fragilisation de posture : perte de Garde au debut du tour, avec degats de rupture si la Garde ne suffit pas.
 
 ## 27. Arsenal de base du heros
 
@@ -1436,7 +1488,7 @@ Pour la premiere verticale, le heros possede un arsenal tres simple :
 - quelques competences de base ;
 - une action de capture disponible uniquement contre les creatures.
 
-Les noms de base doivent rester sobres et fonctionnels. Les creatures equipees, le type dominant ou l'affixe de chasse prepare peuvent enrichir ces noms et leurs effets.
+Les noms de base doivent rester sobres et fonctionnels. Les creatures equipees, le type dominant ou l'instinct de chasse prepare peuvent enrichir ces noms et leurs effets.
 
 Actions de base en combat standard :
 
@@ -1465,13 +1517,13 @@ Entaille :
 
 - action offensive simple ;
 - sert a infliger des degats fiables ;
-- peut declencher des affixes lies aux attaques rapides ou aux actions a 1 PA.
+- peut declencher des instincts lies aux attaques rapides ou aux actions a 1 PA.
 
 Garde :
 
 - action defensive simple ;
 - sert a reduire les degats, preparer une parade ou survivre a une attaque annoncee ;
-- peut alimenter des affixes defensifs ou de contre.
+- peut alimenter des instincts defensifs ou de contre.
 - la Defense passive du heros retire environ `0.55` degat par point de Defense sur les coups recus.
 - dans le prototype, la Garde du heros vaut `round(2 + Defense * 0.5)`.
 - la Garde restante persiste partiellement d'un tour a l'autre, a hauteur d'environ 45 %, ce qui impose de limiter son double effet avec la Defense passive.
@@ -1490,12 +1542,52 @@ Art :
 - s'adapte naturellement au type dominant des creatures equipees.
 - en capture, l'Art du heros inflige moins de degats purs qu'une sequence d'Entailles, mais son retrait de PA est volontairement punitif.
 
+Formule de degats du heros :
+
+```txt
+Degats bruts = degats de base de l'action + Puissance * coefficient de l'action
+Degats critiques = degats bruts * multiplicateur critique
+Degats finaux = max(1, round(degats critiques - Defense ennemie * 0.70))
+```
+
+Valeurs de base actuelles :
+
+| Action | Degats de base | Coefficient Puissance | Particularite |
+| ------ | -------------- | --------------------- | ------------- |
+| Entaille | `1` | `1.20` | meilleur rendement simple |
+| Feinte | `1` | `1.80` | coute `2 PA`, pose l'attenuation si elle touche |
+| Art | `1` | `0.95` | coute `3 PA`, retire `1 PA` si elle touche |
+
+### Arts de type dominant
+
+Quand le build humain possede un type dominant, ses actions gardent leur role mais gagnent une teinte mecanique.
+
+| Type dominant | Bonus de stats par rang | Effet sur les actions |
+| ------------- | ----------------------- | --------------------- |
+| Feu | `+2 Puissance`, `-1 Defense` | Entaille, Feinte et Art gagnent `+1 degat de base` par rang ; Art gagne encore `+1` au rang III |
+| Eau | `+2 Defense`, `-1 Vitesse` | Garde est renforcee ; Art donne de la Garde au lanceur et retire un PA supplementaire au rang III |
+| Vent | `+1 Vitesse`, `+5 Critique`, `-1 Puissance` | Feinte gagne du critique ; Art rembourse du PA au lanceur |
+
+Details actuels :
+
+| Type | Rang I | Rang II | Rang III |
+| ---- | ------ | ------- | -------- |
+| Feu - Art | `+1` degat de base | `+2` degats de base | `+4` degats de base |
+| Eau - Art | `+2 Garde` | `+3 Garde` | `+3 Garde`, `-2 PA` cible si touche |
+| Vent - Feinte | `+3 %` critique | `+6 %` critique | `+9 %` critique |
+| Vent - Art | rembourse `1 PA` | rembourse `1 PA` | rembourse `2 PA` |
+
+Ces valeurs sont volontairement expressives. Les deux points a surveiller sont :
+
+- l'Art Vent rang III, qui devient tres efficient avec un cout effectif proche de `1 PA` ;
+- l'Art Eau rang III, qui combine defense personnelle et controle de PA.
+
 Capture :
 
 - action propre aux combats de creatures ;
 - permet de tenter une capture ;
-- peut etre transformee par un affixe de chasse prepare ;
-- peut echouer ou ne pas donner l'affixe vise si la tentative est trop precoce.
+- peut etre transformee par un instinct de chasse prepare ;
+- peut echouer ou ne pas donner l'instinct vise si la tentative est trop precoce.
 
 ### Variantes de noms par type
 
@@ -1519,9 +1611,9 @@ Art du reflux
 Art - 3 PA
 ```
 
-### Affixes et icones de competences
+### Instincts et icones de competences
 
-Un affixe ne doit pas modifier le heros de maniere abstraite. Il doit declarer une cible claire :
+Un instinct ne doit pas modifier le heros de maniere abstraite. Il doit declarer une cible claire :
 
 - une competence precise ;
 - une famille de competences ;
@@ -1529,14 +1621,14 @@ Un affixe ne doit pas modifier le heros de maniere abstraite. Il doit declarer u
 
 Exemples :
 
-| Type d'affixe | Cible | Exemple |
+| Type d'instinct | Cible | Exemple |
 | ------------- | ----- | ------- |
-| Affixe de competence | Entaille | apres une esquive, Entaille gagne du critique |
-| Affixe de famille | actions a 1 PA | les actions a 1 PA gagnent un bonus apres deplacement |
-| Affixe de condition | prochaine action | apres parade, la prochaine action coute moins cher |
-| Affixe de capture | Capture | Capture gagne un bonus si un objectif est accompli |
+| Instinct de competence | Entaille | apres une esquive, Entaille gagne du critique |
+| Instinct de famille | actions a 1 PA | les actions a 1 PA gagnent un bonus apres deplacement |
+| Instinct de condition | prochaine action | apres parade, la prochaine action coute moins cher |
+| Instinct de capture | Capture | Capture gagne un bonus si un objectif est accompli |
 
-L'interface peut illustrer un affixe avec l'icone de la competence qu'il modifie. Si un affixe affecte Entaille, son badge apparait sur l'icone d'Entaille. S'il affecte Capture, son badge apparait sur l'icone de Capture pendant les combats de creatures.
+L'interface peut illustrer un instinct avec l'icone de la competence qu'il modifie. Si un instinct affecte Entaille, son badge apparait sur l'icone d'Entaille. S'il affecte Capture, son badge apparait sur l'icone de Capture pendant les combats de creatures.
 
 Exemple :
 
@@ -1594,9 +1686,9 @@ Art :
 - peut appliquer un statut au heros ;
 - doit etre annoncee assez clairement pour permettre une reponse tactique.
 
-### Statuts provoques par les Arts
+### Statuts provoques par les actions de creatures
 
-Les Arts offensifs des creatures peuvent provoquer un changement de statut chez le joueur.
+Les Arts offensifs des creatures sont la source principale de statuts. Les Coups forts peuvent aussi en appliquer, mais avec une chance reduite. Les Coups simples n'en appliquent pas dans le prototype actuel.
 
 Objectif :
 
@@ -1607,7 +1699,7 @@ Objectif :
 
 Regle recommandee :
 
-> Quand l'Art offensif d'une creature touche, il a une chance d'appliquer un statut lie au type de la creature. L'intensite du statut depend du niveau de la creature.
+> Quand une action speciale ou engageante d'une creature touche, elle peut appliquer un statut lie au type de la creature. L'intensite du statut depend du niveau de la creature.
 
 Chance de base recommandee pour la verticale :
 
@@ -1619,13 +1711,23 @@ Chance de base recommandee pour la verticale :
 
 Ces valeurs doivent rester lisibles et previsibles. Les creatures rares, les boss ou certains instincts peuvent modifier ces chances, mais l'interface doit le signaler lorsque cela compte.
 
+Multiplicateurs actuels selon le type d'action :
+
+| Action creature | Multiplicateur de chance |
+| --------------- | ------------------------ |
+| Coup simple | `0 %` |
+| Coup fort | `60 %` de la chance de type |
+| Art | `100 %` de la chance de type |
+
+Exemple : une creature niveau I avec `40 %` de chance de statut applique son statut a `24 %` sur un Coup fort, et `40 %` sur un Art.
+
 Exemples par type :
 
 | Type | Statut possible | Effet |
 | ---- | --------------- | ----- |
 | Feu | Brulure | degats automatiques au debut de chaque tour du joueur |
 | Eau | Paralysie | chance d'empecher la prochaine action du joueur a chaque tour |
-| Vent | A decouvert | perte de Garde au debut de chaque tour du joueur, avec degats de rupture legers si la Garde est insuffisante |
+| Vent | Blessure | perte de Garde au debut de chaque tour du joueur, avec degats de rupture legers si la Garde est insuffisante |
 
 Exemple Feu :
 
@@ -1651,13 +1753,13 @@ Cela conserve la tension sans retirer completement le controle.
 
 Exemple Vent :
 
-| Niveau de creature | A decouvert applique |
-| ------------------ | ------------------- |
+| Niveau de creature | Blessure appliquee |
+| ------------------ | ------------------ |
 | Niveau 1 | -1 Garde au debut de chaque tour du joueur |
 | Niveau 2 | -2 Garde au debut de chaque tour du joueur |
 | Niveau 3 | -3 Garde au debut de chaque tour du joueur |
 
-A decouvert ne bloque jamais les actions du joueur. Il fragilise sa posture defensive et rend les creatures Vent dangereuses contre les strategies qui accumulent de la Garde.
+Blessure ne bloque jamais les actions du joueur. Elle fragilise sa posture defensive et rend les creatures Vent dangereuses contre les strategies qui accumulent de la Garde.
 
 Si la cible n'a pas assez de Garde pour absorber toute la reduction, l'excedent peut devenir des degats de rupture legers. Cette conversion permet aux effets Vent de rester utiles contre une cible sans Garde, sans leur donner le role de degats directs du Feu.
 
@@ -1667,7 +1769,7 @@ La Feinte doit rester une reponse forte, mais elle ne doit pas donner une immuni
 
 Tous les statuts sont supprimes a la fin du combat. Ils ne doivent pas suivre le joueur dans l'exploration ou dans le combat suivant, sauf regle speciale explicitement introduite plus tard.
 
-Le joueur pourra aussi annuler un statut pendant le combat avec un objet pris dans son sac. Cette partie n'est pas prioritaire pour la premiere implementation du systeme de statuts, mais elle doit etre prevue dans les donnees : certains objets pourront purger Brulure, Paralysie, A decouvert ou tous les statuts.
+Le joueur pourra aussi annuler un statut pendant le combat avec un objet pris dans son sac. Cette partie n'est pas prioritaire pour la premiere implementation du systeme de statuts, mais elle doit etre prevue dans les donnees : certains objets pourront purger Brulure, Paralysie, Blessure ou tous les statuts.
 
 ### Feinte contre actions de creatures
 
@@ -1931,7 +2033,7 @@ Les builds critiques peuvent etre :
 - tres dynamiques ;
 - dependants de conditions.
 
-Les affixes et utilitaires peuvent modifier les effets des critiques, mais il faut eviter qu'un build critique devienne automatiquement optimal dans toutes les situations.
+Les instincts et utilitaires peuvent modifier les effets des critiques, mais il faut eviter qu'un build critique devienne automatiquement optimal dans toutes les situations.
 
 ## 34. Les deux types de combat
 
@@ -1946,7 +2048,7 @@ Le joueur :
 
 - prepare son build ;
 - equipe ses creatures ;
-- choisit les creatures dont les affixes correspondent a sa strategie ;
+- choisit les creatures dont les instincts correspondent a sa strategie ;
 - optimise ses synergies.
 
 Ces combats servent a :
@@ -1961,9 +2063,9 @@ En combat standard, le heros beneficie :
 - de ses statistiques permanentes ;
 - de ses capacites ;
 - de ses creatures equipees ;
-- des affixes portes par ces creatures.
+- des instincts portes par ces creatures.
 
-Les affixes de creatures peuvent donc influencer un combat normal, mais uniquement si la creature qui les porte est equipee. Ils servent a differencier deux creatures d'une meme espece, a corriger une faiblesse, a activer une condition ou a creer une passerelle entre deux strategies.
+Les instincts de creatures peuvent donc influencer un combat normal, mais uniquement si la creature qui les porte est equipee. Ils servent a differencier deux creatures d'une meme espece, a corriger une faiblesse, a activer une condition ou a creer une passerelle entre deux strategies.
 
 Les combats standards utilisent les plafonds de build complet : ils peuvent autoriser des valeurs plus hautes que les captures, car les creatures equipees et les bonus de specialisation doivent s'y exprimer pleinement.
 
@@ -1976,7 +2078,7 @@ Le joueur entre :
 - sans creatures equipees ;
 - avec uniquement son heros ;
 - avec sa progression permanente ;
-- avec eventuellement un affixe de chasse prepare.
+- avec eventuellement un instinct de chasse prepare.
 
 Objectif :
 
@@ -1985,7 +2087,7 @@ Objectif :
 - tester la maitrise du joueur ;
 - enseigner les mecaniques des creatures.
 
-Les combats de capture utilisent des plafonds plus bas que les combats standards. Ils sont concus autour du heros, de ses competences, de ses objets de chasse, de sa Perception preparee, de son eventuel affixe de chasse et de sa progression permanente, pas autour des creatures equipees.
+Les combats de capture utilisent des plafonds plus bas que les combats standards. Ils sont concus autour du heros, de ses competences, de ses objets de chasse, de sa Perception preparee, de son eventuel instinct de chasse et de sa progression permanente, pas autour des creatures equipees.
 
 Les captures ne reposent pas principalement sur l'epuisement des PV.
 
@@ -1997,7 +2099,7 @@ Consequences :
 - la creature ne peut plus etre capturee pendant cette rencontre ;
 - elle laisse une petite recompense derriere elle ;
 - le joueur recoit seulement les recompenses minimales prevues ;
-- aucun affixe n'est obtenu ;
+- aucun instinct n'est obtenu ;
 - aucune presence capturable n'est consommee dans la zone ;
 - cela ajoute une tension entre affaiblir la creature et ne pas la pousser a fuir.
 
@@ -2016,7 +2118,7 @@ Le joueur peut tenter une capture meme si la creature possede encore des PV.
 Cette tentative comporte des risques :
 
 - la capture peut echouer si la creature est encore trop stable, trop dangereuse ou si les objectifs principaux ne sont pas assez avances ;
-- la creature peut etre capturee sans donner l'affixe vise ;
+- la creature peut etre capturee sans donner l'instinct vise ;
 - certains objectifs secondaires, caches ou de maitrise peuvent etre perdus si la capture est tentee trop tot ;
 - la tentative peut mettre fin au combat ou consommer une ressource de capture selon les regles choisies.
 
@@ -2280,7 +2382,7 @@ Effets possibles :
 - niveau 2 : les ennemis brules subissent plus de degats critiques ;
 - niveau 3 : une fois par combat, un critique rembourse 1 PA.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Etincelle critique : le premier critique d'un combat applique une Brulure legere.
 
@@ -2300,7 +2402,7 @@ Effets possibles :
 - degats accrus si le heros finit son tour a 0 PA ;
 - risque defensif temporaire apres grosse attaque.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Frappe ardente : apres avoir depense 3 PA en une action, la prochaine Entaille gagne un bonus de degats.
 
@@ -2320,7 +2422,7 @@ Effets possibles :
 - niveau 2 : si l'ennemi a 0 PA restant, le heros gagne de la garde ;
 - niveau 3 : une capacite Eau coute 1 PA de moins une fois tous les deux tours.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Courant brise : une fois par combat, retirer un PA a un ennemi donne de la garde.
 
@@ -2340,7 +2442,7 @@ Effets possibles :
 - reduire les degats apres une parade ;
 - transformer un tour defensif en avantage au tour suivant.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Refuge clair : finir un tour avec au moins 1 PA donne une petite garde.
 
@@ -2360,7 +2462,7 @@ Effets possibles :
 - niveau 2 : apres un deplacement, la prochaine Entaille a plus de critique ;
 - niveau 3 : si le heros agit avant l'ennemi, sa premiere attaque coute 0 PA une fois par combat.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Pas de rafale : apres une esquive reussie, la prochaine Entaille gagne du critique.
 
@@ -2380,7 +2482,7 @@ Effets possibles :
 - recuperation conditionnelle de PA ;
 - enchainements limites si le heros reste mobile.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Elan leger : apres deux actions a 1 PA dans le meme tour, gagne un petit bonus d'esquive.
 
@@ -2400,7 +2502,7 @@ Effets possibles :
 - reduction de cout sur la premiere competence a 2 PA ;
 - maximum de PA augmente.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Reserve tactique : une fois par combat, commencer un tour avec 0 PA restant au tour precedent donne +1 PA.
 
@@ -2420,7 +2522,7 @@ Effets possibles :
 - augmente les gains de capture ;
 - rend certains patterns plus lisibles.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Oeil du chasseur : revele une trace ou un indice supplementaire pendant l'exploration.
 
@@ -2440,7 +2542,7 @@ Effets possibles :
 - reduction de penalite apres changement de posture ;
 - petit bonus d'initiative apres un tour defensif.
 
-Affixe individuel possible :
+Instinct individuel possible :
 
 - Reprise : apres une parade reussie, la prochaine action offensive coute 1 PA de moins une fois par combat.
 
@@ -2492,7 +2594,7 @@ Plafonds recommandes pour les combats de capture :
 | Initiative | 10 |
 | Perception | 5, via runes ou preparation dediee |
 
-Les combats de capture doivent rester des duels de maitrise. Ils sont equilibres autour du heros, de sa progression permanente et de sa preparation de chasse. Les creatures ne sont pas equipees ; seul un affixe de chasse prepare peut eventuellement accompagner le heros.
+Les combats de capture doivent rester des duels de maitrise. Ils sont equilibres autour du heros, de sa progression permanente et de sa preparation de chasse. Les creatures ne sont pas equipees ; seul un instinct de chasse prepare peut eventuellement accompagner le heros.
 
 Plafonds recommandes pour les combats standards :
 
@@ -2506,7 +2608,7 @@ Plafonds recommandes pour les combats standards :
 | Initiative | 15 | 22 |
 | Perception | 5 | 7 via preparation dediee |
 
-Les combats standards peuvent aller plus haut parce qu'ils expriment le build complet : heros, creatures equipees, affixes de creatures, utilitaires et bonus de specialisation.
+Les combats standards peuvent aller plus haut parce qu'ils expriment le build complet : heros, creatures equipees, instincts de creatures, utilitaires et bonus de specialisation.
 
 Principe :
 
@@ -2534,7 +2636,7 @@ La Perception represente la capacite du heros a lire le monde et les creatures.
 Elle peut servir a :
 
 - reveler des objectifs caches de capture ;
-- indiquer les conditions permettant d'obtenir des affixes ameliores ;
+- indiquer les conditions permettant d'obtenir des instincts ameliores ;
 - afficher des indices sur les patterns d'une creature sauvage ;
 - reveler sur la map des traces de creatures plus puissantes ;
 - identifier des rencontres plus rares ou plus dangereuses ;
@@ -2555,9 +2657,9 @@ Radar du heros :
 - forme stable ;
 - represente l'identite durable du personnage.
 
-Couche d'affixes de creatures :
+Couche d'instincts de creatures :
 
-- visible en combat standard si les creatures equipees portent des affixes ;
+- visible en combat standard si les creatures equipees portent des instincts ;
 - rattachee aux creatures equipees ;
 - peut modifier la forme du radar de build ;
 - peut ajouter des pulsations, segments translucides ou marqueurs conditionnels ;
@@ -2569,19 +2671,19 @@ Radar de build :
 - bonus temporaires ;
 - creatures equipees ;
 - contributions statistiques des creatures equipees ;
-- affixes de creatures ;
+- instincts de creatures ;
 - forme plus dynamique.
 
 En combat standard :
 
-- radar complet visible : heros, creatures, contributions statistiques, affixes de creatures et synergies.
+- radar complet visible : heros, creatures, contributions statistiques, instincts de creatures et synergies.
 
 En combat de capture :
 
 - disparition de la couche de creatures ;
 - disparition des contributions statistiques des creatures equipees ;
-- disparition des affixes de creatures non prepares ;
-- affichage eventuel de l'affixe de chasse prepare ;
+- disparition des instincts de creatures non prepares ;
+- affichage eventuel de l'instinct de chasse prepare ;
 - couche heros et preparation de chasse visible ;
 - le joueur voit ce qu'il conserve vraiment.
 
@@ -2691,7 +2793,7 @@ Le contenu repetable doit vivre en donnees :
 - types ;
 - competences ;
 - armes ;
-- affixes ;
+- instincts ;
 - dialogues ;
 - quetes ;
 - objectifs de capture ;
@@ -2774,7 +2876,7 @@ Actions generiques utiles :
 { "type": "give_currency", "amount": 20 }
 { "type": "unlock_area", "area": "forest_path" }
 { "type": "set_flag", "flag": "met_hunter", "value": true }
-{ "type": "give_creature", "creature": "braise_corne", "affix": "spark_critical" }
+{ "type": "give_creature", "creature": "braise_corne", "instinct": "spark_critical" }
 ```
 
 ## 48. Localisation et traduction
@@ -2785,7 +2887,7 @@ Principe :
 
 > Le contenu de jeu reference une cle de texte. La langue choisit comment afficher cette cle.
 
-Les dialogues, competences, creatures, affixes, objectifs, objets et textes d'interface ne doivent pas contenir directement les phrases finales. Ils doivent utiliser des cles de localisation.
+Les dialogues, competences, creatures, instincts, objectifs, objets et textes d'interface ne doivent pas contenir directement les phrases finales. Ils doivent utiliser des cles de localisation.
 
 Exemple :
 
@@ -2805,14 +2907,14 @@ locales/
     ui.json
     dialogue.json
     creatures.json
-    affixes.json
+    instincts.json
     abilities.json
     quests.json
   en/
     ui.json
     dialogue.json
     creatures.json
-    affixes.json
+    instincts.json
     abilities.json
     quests.json
 ```
@@ -2863,7 +2965,7 @@ Glossaire initial :
 | Francais | Anglais |
 | -------- | ------- |
 | creature | creature |
-| affixe | affix |
+| instinct | instinct |
 | PA | AP |
 | Puissance | Power |
 | Defense | Defense |
@@ -2917,7 +3019,7 @@ Ordre recommande :
 8. Creer un combat minimal : PA, attaque, ennemi, victoire/defaite.
 9. Creer la transition dialogue -> combat -> recompense -> retour au monde.
 10. Ajouter les creatures equipees.
-11. Ajouter les affixes portes par les creatures.
+11. Ajouter les instincts portes par les creatures.
 12. Ajouter le radar.
 13. Ajouter les captures tactiques.
 14. Ajouter la progression permanente.
@@ -2936,8 +3038,8 @@ Contenu recommande :
 - 3 types ;
 - 6 creatures typees ;
 - 3 utilitaires ;
-- plusieurs affixes individuels possibles par espece ;
-- 1 emplacement d'affixe de chasse prepare pour les captures ;
+- plusieurs instincts individuels possibles par espece ;
+- 1 emplacement d'instinct de chasse prepare pour les captures ;
 - inventaire de creatures ;
 - Sanctuaire pour liberer et etudier les creatures ;
 - combats standards ;
@@ -2994,7 +3096,7 @@ Ce livrable ne sert pas a impressionner visuellement. Il sert a valider la machi
 Une fois ce circuit propre, on peut ajouter :
 
 - creatures ;
-- affixes ;
+- instincts ;
 - radar ;
 - captures ;
 - synergies ;
@@ -3003,9 +3105,9 @@ Une fois ce circuit propre, on peut ajouter :
 ## 53. Regles de design a garder en tete
 
 - Une creature doit changer une habitude de jeu.
-- Un affixe doit encourager un comportement.
-- Un affixe appartient a une creature individuelle, pas a une progression permanente separee du heros.
-- Un affixe de creature peut etre prepare comme trace de chasse en capture, mais sans apporter type, effort, stats ou synergies.
+- Un instinct doit encourager un comportement.
+- Un instinct appartient a une creature individuelle, pas a une progression permanente separee du heros.
+- Un instinct de creature peut etre prepare comme trace de chasse en capture, mais sans apporter type, effort, stats ou synergies.
 - Un utilitaire doit etre un joker, pas le meilleur choix par defaut.
 - Une capture doit enseigner la creature capturee.
 - Un bonus 12 doit transformer le gameplay.
@@ -3017,4 +3119,4 @@ Une fois ce circuit propre, on peut ajouter :
 
 ## 54. Phrase de reference
 
-> Le heros est le centre du combat. Les creatures definissent son build actuel. Chaque creature porte un affixe qui lui donne une identite individuelle. En capture, un affixe peut devenir une trace de chasse limitee. Le radar rend cette composition lisible en un regard.
+> Le heros est le centre du combat. Les creatures definissent son build actuel. Chaque creature porte un instinct qui lui donne une identite individuelle. En capture, un instinct peut devenir une trace de chasse limitee. Le radar rend cette composition lisible en un regard.
