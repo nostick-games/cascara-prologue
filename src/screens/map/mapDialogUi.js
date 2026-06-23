@@ -168,7 +168,7 @@ export function activateDialogChoice(host, options, { layout = "horizontal" } = 
   });
 }
 
-export function activateMapChoicePanel(host, options) {
+export function activateMapChoicePanel(host, options, { cancelOnOutside = false } = {}) {
   const { mapChoicePanel, mapChoiceList } = ensureMapChoicePanel(host);
   if (!mapChoicePanel || !mapChoiceList || !options?.length) return Promise.resolve(null);
   mapChoiceList.innerHTML = "";
@@ -183,10 +183,18 @@ export function activateMapChoicePanel(host, options) {
     let resolved = false;
     const cleanup = () => {
       window.removeEventListener("keydown", handleKeyDown, true);
+      window.removeEventListener("pointerdown", handleOutsidePointerDown, true);
       window.removeEventListener("resize", host.positionMapChoiceScrollControls);
       optionButtons.forEach((button) => {
         button.removeEventListener("pointerdown", handlePointerDown);
       });
+    };
+    const cancel = () => {
+      if (resolved) return;
+      resolved = true;
+      cleanup();
+      hideMapChoicePanel(host);
+      resolve(null);
     };
     const confirm = () => {
       if (resolved) return;
@@ -235,6 +243,15 @@ export function activateMapChoicePanel(host, options) {
       }
       confirm();
     };
+    const handleOutsidePointerDown = (event) => {
+      if (!cancelOnOutside || resolved) return;
+      const target = event.target;
+      if (mapChoicePanel.contains(target)) return;
+      if (host.nodes.mapChoiceScrollControls?.contains(target)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      cancel();
+    };
     const renderOptions = () => {
       mapChoiceList.innerHTML = "";
       optionButtons = options.map((option, index) => {
@@ -263,6 +280,7 @@ export function activateMapChoicePanel(host, options) {
     window.setTimeout(() => {
       acceptingKeyboard = true;
       window.addEventListener("keydown", handleKeyDown, true);
+      if (cancelOnOutside) window.addEventListener("pointerdown", handleOutsidePointerDown, true);
     }, 180);
   });
 }

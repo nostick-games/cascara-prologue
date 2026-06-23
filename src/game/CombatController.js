@@ -62,6 +62,7 @@ import { applyTypeAdvantageDamage } from "./typeAdvantages.js";
 import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const damageFlashMs = 1120;
+const enemyInitiativeGuardBonus = 3;
 
 function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -359,7 +360,12 @@ export class CombatController {
     this.logCombatStatsSummary();
 
     if (enemy.speed > hero.speed) {
-      this.addLog(this.t("log.enemy_initiative", { opponent: this.creatureName(), creature: this.creatureName() }));
+      hero.guard += enemyInitiativeGuardBonus;
+      this.addLog(this.t("log.enemy_initiative", {
+        opponent: this.creatureName(),
+        creature: this.creatureName(),
+        guard: enemyInitiativeGuardBonus
+      }));
       this.chargeSignatureForAction("enemy", "initiative", { id: "initiative" }, { actionId: "initiative", actedFirst: true });
       combat.phase = "enemy";
     } else if (hero.speed > enemy.speed) {

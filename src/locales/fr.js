@@ -365,7 +365,7 @@ export const fr = {
   "log.initial": "Attribuez les 10 points pour former la couche permanente du héros.",
   "log.build_reset": "Build réinitialisé. Les PA restent verrouillés.",
   "log.initiative": "Votre vitesse prend l'ascendant : vous agissez en premier.",
-  "log.enemy_initiative": "La vitesse de {opponent} prend l'ascendant : l'adversaire agit en premier.",
+  "log.enemy_initiative": "La vitesse de {opponent} lui permet de frapper en premier ! Mais vous gagnez {guard} points de garde…",
   "log.capture_start": "{creature} jauge votre posture. La capture commence.",
   "log.perception_reveals": "Perception : vous repérez un objectif caché lié aux attaques marquées.",
   "log.perception_low": "Perception faible : certains objectifs de capture restent flous.",

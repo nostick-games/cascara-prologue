@@ -75,16 +75,19 @@ export class MapShopFlow {
   async browseItems() {
     while (true) {
       this.host.hideDialog();
-      const selectedItemId = await this.host.activateMapChoicePanel(this.shop.items.map((entry) => {
-        const item = itemDefinitions[entry.itemId];
-        return {
-          label: this.t(item.nameKey),
-          value: entry.itemId,
-          price: entry.price,
-          iconSrc: goldIconSrc
-        };
-      }));
-      if (!selectedItemId) return "intro";
+      const selectedItemId = await this.host.activateMapChoicePanel(
+        this.shop.items.map((entry) => {
+          const item = itemDefinitions[entry.itemId];
+          return {
+            label: this.t(item.nameKey),
+            value: entry.itemId,
+            price: entry.price,
+            iconSrc: goldIconSrc
+          };
+        }),
+        { cancelOnOutside: true }
+      );
+      if (!selectedItemId) return "exit";
 
       const shopEntry = this.shop.items.find((entry) => entry.itemId === selectedItemId);
       const item = itemDefinitions[selectedItemId];

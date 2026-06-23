@@ -365,7 +365,7 @@ export const en = {
   "log.initial": "Assign the 10 points to shape the hero's permanent layer.",
   "log.build_reset": "Build reset. AP remains locked.",
   "log.initiative": "Your speed takes over: you act first.",
-  "log.enemy_initiative": "{opponent}'s speed takes over: the opponent acts first.",
+  "log.enemy_initiative": "{opponent}'s speed lets them strike first! But you gain {guard} guard points...",
   "log.capture_start": "{creature} studies your stance. The capture begins.",
   "log.perception_reveals": "Perception: you spot a hidden objective tied to marked attacks.",
   "log.perception_low": "Low Perception: some capture objectives remain unclear.",

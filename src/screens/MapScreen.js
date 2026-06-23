@@ -1295,8 +1295,8 @@ export class MapScreen {
     return activateMapDialogChoice(this, options, { layout });
   }
 
-  activateMapChoicePanel(options) {
-    return activateMapChoicePanelUi(this, options);
+  activateMapChoicePanel(options, config) {
+    return activateMapChoicePanelUi(this, options, config);
   }
 
   ensureMapChoicePanel() {

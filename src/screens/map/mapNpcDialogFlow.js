@@ -150,8 +150,12 @@ export async function runNpcMenuAction(host, action, { speaker }) {
     (action.panelChoices ?? []).map((id) => ({
       label: host.t(`${action.panelLabelKeyPrefix}${id}`),
       value: id
-    }))
+    })),
+    { cancelOnOutside: true }
   );
+  if (!choice) {
+    return { continueMenu: false };
+  }
   if (choice && action.responseKeyPrefix) {
     await host.playMessageDialog({
       message: `${speaker} : ${host.t(`${action.responseKeyPrefix}${choice}`)}`,
