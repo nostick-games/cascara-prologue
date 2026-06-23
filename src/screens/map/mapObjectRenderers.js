@@ -12,6 +12,8 @@ export function drawHumanEncounterNpcs({ ctx, time, encounters, images }) {
     if (!image) return;
     const frame = Math.floor(time / 140) % sprite.frames;
     const { frameSize, drawSize } = sprite;
+    ctx.save();
+    ctx.globalAlpha *= Math.max(0, Math.min(1, encounter.opacity ?? 1));
     ctx.drawImage(
       image,
       frame * frameSize,
@@ -23,6 +25,7 @@ export function drawHumanEncounterNpcs({ ctx, time, encounters, images }) {
       drawSize,
       drawSize
     );
+    ctx.restore();
   });
 }
 

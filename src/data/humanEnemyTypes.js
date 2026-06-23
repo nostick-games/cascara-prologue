@@ -35,6 +35,18 @@ export const humanEnemyTypes = {
       perception: 5
     }
   },
+  adepte: {
+    id: "adepte",
+    nameKey: "human_enemy.type.adepte.name",
+    stats: {
+      maxHp: 36,
+      power: 8,
+      defense: 4,
+      speed: 2,
+      crit: 2,
+      perception: 4
+    }
+  },
   entraineur: {
     id: "entraineur",
     nameKey: "human_enemy.type.entraineur.name",

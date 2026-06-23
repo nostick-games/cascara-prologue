@@ -182,8 +182,8 @@ export function createAdventureFlow({
         messageHighlights: [opponent],
         promptHighlights: [opponent],
         options: [
-          { label: humanBriefingScreen.t("ui.choice.yes"), value: "yes" },
-          { label: humanBriefingScreen.t("ui.choice.no"), value: "no" }
+          { label: humanBriefingScreen.t(mapDialog.yesLabelKey ?? "ui.choice.yes"), value: "yes" },
+          { label: humanBriefingScreen.t(mapDialog.noLabelKey ?? "ui.choice.no"), value: "no" }
         ]
       });
       if (choice !== "yes") {
@@ -251,7 +251,20 @@ export function createAdventureFlow({
     }
     renderAll();
     if (result?.won) {
-      if (humanBriefingScreen.enemy?.mapDialog?.defeatBehavior === "stay") {
+      const mapDialog = humanBriefingScreen.enemy?.mapDialog ?? {};
+      if (mapDialog.defeatBehavior === "dialogThenFade" && mapDialog.defeatedKey) {
+        screenRouter.show(gameScreens.map);
+        scrollTop();
+        await mapScreen.resumeFromEncounter();
+        const opponent = humanBriefingScreen.enemy ? humanBriefingScreen.t(humanBriefingScreen.enemy.nameKey) : "";
+        await mapScreen.playMessageDialog({
+          message: humanBriefingScreen.t(mapDialog.defeatedKey, { opponent, hero: heroName }),
+          messageHighlights: [opponent, heroName]
+        });
+        await mapScreen.fadeHumanEncounter(result.creatureId);
+        return;
+      }
+      if (mapDialog.defeatBehavior === "stay") {
         mapScreen.markHumanEncounterDefeated(result.creatureId);
       } else {
         mapScreen.clearHumanEncounter(result.creatureId);

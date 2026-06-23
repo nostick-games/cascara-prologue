@@ -104,6 +104,16 @@ export const humanEncounterConfigs = [
       frameSize: 32,
       drawSize: 32
     }
+  },
+  {
+    id: "orve",
+    objectName: "orvé",
+    sprite: {
+      src: assetPath("assets/enemys/orve/orve.png"),
+      frames: 10,
+      frameSize: 32,
+      drawSize: 32
+    }
   }
 ];
 export const humanEncounterConfigById = Object.fromEntries(

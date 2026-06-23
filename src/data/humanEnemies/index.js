@@ -2,6 +2,7 @@ import { humanEnemyTypeProfile } from "../humanEnemyTypes.js";
 import { aragor } from "./aragor.js";
 import { chad } from "./chad.js";
 import { ilda } from "./ilda.js";
+import { orve } from "./orve.js";
 import { ranbu } from "./ranbu.js";
 import { createHumanCombatProfile } from "./humanArsenal.js";
 import { dominantHumanBuildType, humanBuildTypeProfile } from "./humanBuildTypes.js";
@@ -121,6 +122,7 @@ export const humanEnemies = {
   aragor: withTypeProfile(aragor),
   chad: withTypeProfile(chad),
   ilda: withTypeProfile(ilda),
+  orve: withTypeProfile(orve),
   ranbu: withTypeProfile(ranbu)
 };
 

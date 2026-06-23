@@ -159,6 +159,7 @@ export class MapScreen {
     this.collisionLayer = null;
     this.cloudLayer = null;
     this.humanEncounterPositions = new Map();
+    this.humanEncounterFades = new Map();
     this.clearedHumanEncounterIds = new Set();
     this.defeatedHumanEncounterIds = new Set();
     this.tilesets = [];
@@ -280,6 +281,7 @@ export class MapScreen {
     this.collisionLayer = null;
     this.cloudLayer = null;
     this.humanEncounterPositions = new Map();
+    this.humanEncounterFades = new Map();
     this.tilesets = [];
     this.mapNpcImages = new Map();
     this.respawnImage = null;
@@ -515,6 +517,7 @@ export class MapScreen {
   }
 
   clearHumanEncounter(id = humanEncounterFallbackId) {
+    this.humanEncounterFades.delete(id);
     this.clearedHumanEncounterIds.add(id);
   }
 
@@ -541,6 +544,30 @@ export class MapScreen {
         targetY: target.y,
         resolve
       };
+    });
+  }
+
+  fadeHumanEncounter(id = humanEncounterFallbackId, durationMs = 900) {
+    const encounter = this.humanEncounterById(id);
+    if (!encounter) return Promise.resolve();
+    const startedAt = performance.now();
+    this.inputLocked = true;
+    this.keys.clear();
+    this.resetJoystick();
+    this.heroMoving = false;
+    return new Promise((resolve) => {
+      const step = (time) => {
+        const progress = Math.min(1, Math.max(0, (time - startedAt) / durationMs));
+        this.humanEncounterFades.set(id, 1 - progress);
+        if (progress >= 1) {
+          this.clearHumanEncounter(id);
+          this.inputLocked = false;
+          resolve();
+          return;
+        }
+        requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
     });
   }
 
@@ -1227,7 +1254,8 @@ export class MapScreen {
     const config = humanEncounterConfigById[id] ?? humanEncounterFallbackConfig;
     return {
       ...config,
-      position
+      position,
+      opacity: this.humanEncounterFades.get(id) ?? 1
     };
   }
 
