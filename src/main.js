@@ -34,6 +34,7 @@ import { MapPopulationModal } from "./ui/MapPopulationModal.js";
 import { MapHealerFlow } from "./ui/MapHealerFlow.js";
 import { MapShopFlow } from "./ui/MapShopFlow.js";
 import { setPixelButtonLabel } from "./ui/PixelButton.js";
+import { hpRechargeStepDelay } from "./utils/hpRechargeTiming.js";
 import { nativeHaptic, nativeLoad, nativeSave } from "./utils/nativeBridge.js";
 
 const mapQuickActionsFreezeMs = 650;
@@ -726,11 +727,12 @@ async function applyMapInventoryItem(entry) {
   const targetHp = Math.min(hero.maxHp, hero.hp + heal);
   baseProgression.inventory[entry.item.id] = Math.max(0, (baseProgression.inventory[entry.item.id] ?? 0) - 1);
   inventoryModal.renderItems();
+  const stepDelay = hpRechargeStepDelay(targetHp - hero.hp);
   for (let hp = hero.hp + 1; hp <= targetHp; hp += 1) {
     baseProgression.heroHp = hp;
     inventoryModal.renderHeader();
     nativeHaptic("light");
-    await wait(220);
+    await wait(stepDelay);
   }
   renderAll();
   return { waitForClose: true };

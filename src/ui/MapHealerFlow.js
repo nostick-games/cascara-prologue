@@ -1,4 +1,5 @@
 import { assetPath } from "../utils/assetPath.js";
+import { hpRechargeStepDelay } from "../utils/hpRechargeTiming.js";
 import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const goldIconSrc = assetPath("assets/inventaire/or.png");
@@ -117,12 +118,13 @@ export class MapHealerFlow {
     this.showHpPanel();
     this.updateHpPanel(startHp, maxHp);
     await wait(180);
+    const stepDelay = hpRechargeStepDelay(maxHp - startHp);
     for (let hp = startHp + 1; hp <= maxHp; hp += 1) {
       this.setHeroHp(hp, maxHp);
       this.updateHpPanel(hp, maxHp);
       this.render();
       nativeHaptic("light");
-      await wait(220);
+      await wait(stepDelay);
     }
     if (startHp >= maxHp) {
       this.setHeroHp(maxHp, maxHp);
@@ -179,17 +181,25 @@ export class MapHealerFlow {
   waitForHpPanelContinue() {
     this.ensureHpPanel();
     if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = false;
-    const eventName = this.host?.isMobile?.() ? "pointerdown" : "keydown";
+    const eventNames = this.host?.isMobile?.()
+      ? ["pointerdown", "pointerup", "click", "touchend"]
+      : ["keydown"];
     return new Promise((resolve) => {
+      let resolved = false;
+      const cleanup = () => {
+        eventNames.forEach((eventName) => window.removeEventListener(eventName, handler, true));
+      };
       const handler = (event) => {
+        if (resolved) return;
         if (event.repeat) return;
+        resolved = true;
         event.preventDefault?.();
         event.stopPropagation?.();
-        window.removeEventListener(eventName, handler, true);
+        cleanup();
         if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = true;
         resolve();
       };
-      window.addEventListener(eventName, handler, true);
+      eventNames.forEach((eventName) => window.addEventListener(eventName, handler, true));
     });
   }
 
