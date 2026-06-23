@@ -531,7 +531,7 @@ export const en = {
   "map.ilda.fight_question": "Do you want to swallow water?",
   "map.ilda.defeated": "{opponent}: Okay, turns out I was the one who swallowed water...",
   "map.ranbu.challenge": "{opponent}: Ah, I see you are eyeing that chest. So am I. Let us fight to decide who gets to open it!",
-  "map.ranbu.fight_question": "",
+  "map.ranbu.fight_question": "Brawl?",
   "log.capture_fail": "The attempt fails ({chance}% mastery).",
   "log.enemy_flees": "{creature} no longer has the strength to continue and flees. The hunt ends.",
   "log.human_victory": "{opponent} yields the field. Duel won.",

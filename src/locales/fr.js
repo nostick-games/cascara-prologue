@@ -531,7 +531,7 @@ export const fr = {
   "map.ilda.fight_question": "Voulez-vous boire la tasse ?",
   "map.ilda.defeated": "{opponent} : OK, finalement c'est moi qui ai bu la tasse…",
   "map.ranbu.challenge": "{opponent} : Ah, je vois que tu lorgnes sur ce coffre, et bien moi aussi. Battons-nous pour savoir qui va l'ouvrir !",
-  "map.ranbu.fight_question": "",
+  "map.ranbu.fight_question": "Baston ?",
   "log.capture_fail": "La tentative échoue ({chance}% de maîtrise).",
   "log.enemy_flees": "{creature} n'a plus assez de force pour continuer et prend la fuite. La chasse s'arrête.",
   "log.human_victory": "{opponent} cède le terrain. Duel remporté.",
