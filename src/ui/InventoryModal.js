@@ -48,12 +48,15 @@ export class InventoryModal {
   open({ readOnly = false, mode = "combat" } = {}) {
     this.readOnly = readOnly;
     this.mode = mode;
+    this.shield.classList.toggle("inventory-combat-mode", mode === "combat");
+    this.shield.classList.toggle("inventory-map-mode", mode !== "combat");
     this.selectedItemId = null;
     this.warningItemId = null;
     this.applying = false;
     this.awaitingClose = false;
     this.closeButton.disabled = false;
     if (this.optionsButton) this.optionsButton.disabled = false;
+    if (this.optionsButton) this.optionsButton.hidden = mode === "combat";
     this.renderHeader();
     this.renderStaticText();
     this.renderItems();
@@ -71,7 +74,11 @@ export class InventoryModal {
     this.applying = false;
     this.awaitingClose = false;
     this.closeButton.disabled = false;
-    if (this.optionsButton) this.optionsButton.disabled = false;
+    if (this.optionsButton) {
+      this.optionsButton.disabled = false;
+      this.optionsButton.hidden = false;
+    }
+    this.shield.classList.remove("inventory-combat-mode", "inventory-map-mode");
     delete this.itemsNode.dataset.warningKey;
     window.clearTimeout(this.warningTimer);
     this.shield.hidden = true;

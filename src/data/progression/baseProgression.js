@@ -8,7 +8,7 @@ export const baseProgression = {
   captureHuntsCompleted: 3,
   openedMapFlags: [],
   visitedMapIds: ["prologue"],
-  completedTrainerBattleIds: [],
+  completedTrainerBattleIds: ["chad"],
   capturedCreatures: [
     { id: "braise_corne_test_1", creatureId: "braise_corne", level: 1, capturedAt: 1, completedObjectives: 3 },
     { id: "flamillon_test_1", creatureId: "flamillon", level: 1, capturedAt: 2, completedObjectives: 3 },

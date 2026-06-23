@@ -56,6 +56,7 @@ export class MapRadarModal {
 
   renderStaticText() {
     setPixelButtonLabel(this.nodes.closeButton, this.t("ui.ok"));
+    setPixelButtonLabel(this.nodes.statModalClose, this.t("ui.ok"));
     setPixelButtonLabel(this.nodes.resetBuildButton, "♺");
     this.nodes.resetBuildButton.setAttribute("aria-label", this.t("ui.reset"));
     this.nodes.resetBuildButton.title = this.t("ui.reset");

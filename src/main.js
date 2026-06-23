@@ -822,10 +822,22 @@ mapRadarModalController = new MapRadarModal({
   }
 });
 
-bindPress(mapPopulationButton, () => mapPopulationModal.open());
-bindPress(mapRadarButton, () => mapRadarModalController.open());
-bindPress(mapInventoryButton, () => inventoryModal.open({ mode: "map" }));
-bindPress(mapCreaturesButton, () => humanBriefingScreen.openOwnedCreatures());
+bindPress(mapPopulationButton, () => {
+  nativeHaptic("light");
+  mapPopulationModal.open();
+});
+bindPress(mapRadarButton, () => {
+  nativeHaptic("light");
+  mapRadarModalController.open();
+});
+bindPress(mapInventoryButton, () => {
+  nativeHaptic("light");
+  inventoryModal.open({ mode: "map" });
+});
+bindPress(mapCreaturesButton, () => {
+  nativeHaptic("light");
+  humanBriefingScreen.openOwnedCreatures();
+});
 bindPress(optionsSaveButton, () => runManualSave());
 bindPress(optionsLoadButton, () => runManualLoad());
 bindPress(optionsJoystickFixedButton, () => setJoystickMode(joystickModes.fixed));

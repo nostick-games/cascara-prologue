@@ -85,6 +85,16 @@
       right: 18px;
     }
 
+    .inventory-combat-mode .inventory-center {
+      grid-template-rows: minmax(0, 1fr);
+      padding-top: 28px;
+    }
+
+    .inventory-combat-mode .inventory-status-row,
+    .inventory-combat-mode .inventory-options {
+      display: none;
+    }
+
     .inventory-items {
       --bag-red: #ba2935;
       display: grid;
