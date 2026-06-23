@@ -959,7 +959,7 @@
 
     body.briefing-active .radar-modal {
       position: fixed;
-      z-index: 81;
+      z-index: 83;
     }
 
     body.briefing-active .roster-modal {
