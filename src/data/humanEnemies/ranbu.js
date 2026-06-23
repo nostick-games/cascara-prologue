@@ -1,8 +1,7 @@
-import { humanBuildTypeProfile } from "./humanBuildTypes.js";
-
 export const ranbu = {
   id: "ranbu",
-  type: "voleur",
+  type: "villageoise",
+  typeNameKey: "human_enemy.type.gredin.name",
   nameKey: "human_enemy.ranbu.name",
   stageLabelKey: "human_enemy.ranbu.stage_label",
   spriteLabelKey: "human_enemy.ranbu.sprite_label",
@@ -23,25 +22,21 @@ export const ranbu = {
     fightQuestionKey: "map.ranbu.fight_question"
   },
   stats: {
-    maxHp: 8,
-    maxPa: 3,
-    power: -1
+    maxHp: 10,
+    maxPa: 3
   },
   arsenal: {
     baseActionIds: ["entaille", "garde", "feinte", "art"],
-    pattern: ["entaille", "feinte", "garde", "art"],
-    followUpActionIds: ["entaille", "feinte"],
-    singleLightActionChance: 0.52
+    singleLightActionChance: 0.48
   },
   equippedCreatures: [
-    { creatureId: "zephyr", level: 1 }
+    { creatureId: "onde_lente", level: 1 }
   ],
-  forcedBuildTypeProfile: humanBuildTypeProfile("vent", 1),
-  activeAffixId: "pas_de_rafale",
+  activeAffixId: "instinct_ecaille",
   rewards: {
     victory: {
-      stars: 8,
-      gold: 5
+      stars: 10,
+      gold: 4
     }
   }
 };

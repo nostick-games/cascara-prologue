@@ -1,6 +1,9 @@
+import { humanBuildTypeProfile } from "./humanBuildTypes.js";
+
 export const ilda = {
   id: "ilda",
-  type: "villageoise",
+  type: "voleur",
+  typeNameKey: "human_enemy.type.eclaireuse.name",
   nameKey: "human_enemy.ilda.name",
   stageLabelKey: "human_enemy.ilda.stage_label",
   spriteLabelKey: "human_enemy.ilda.sprite_label",
@@ -23,21 +26,25 @@ export const ilda = {
     defeatBehavior: "stay"
   },
   stats: {
-    maxHp: 10,
-    maxPa: 3
+    maxHp: 8,
+    maxPa: 3,
+    power: -1
   },
   arsenal: {
     baseActionIds: ["entaille", "garde", "feinte", "art"],
-    singleLightActionChance: 0.48
+    pattern: ["entaille", "feinte", "garde", "art"],
+    followUpActionIds: ["entaille", "feinte"],
+    singleLightActionChance: 0.52
   },
   equippedCreatures: [
-    { creatureId: "onde_lente", level: 1 }
+    { creatureId: "zephyr", level: 1 }
   ],
-  activeAffixId: "instinct_ecaille",
+  forcedBuildTypeProfile: humanBuildTypeProfile("vent", 1),
+  activeAffixId: "pas_de_rafale",
   rewards: {
     victory: {
-      stars: 10,
-      gold: 4
+      stars: 8,
+      gold: 5
     }
   }
 };

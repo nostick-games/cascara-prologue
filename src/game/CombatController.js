@@ -53,6 +53,8 @@ import { CombatLog } from "./combatLog.js";
 import { CombatObjectives } from "./combatObjectives.js";
 import { grantCapturedCreatureReward, grantCombatCurrencyReward, grantEncounterAffixReward } from "./combatRewards.js";
 import { CombatTurns } from "./combatTurns.js";
+import { recordEquippedCreatureVictory } from "./creatureProgression.js";
+import { creatures } from "../data/creatures.js";
 import {
   typeStatusChance,
   typeStatusForCreature,
@@ -63,6 +65,15 @@ import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const damageFlashMs = 1120;
 const enemyInitiativeGuardBonus = 3;
+// Multiplicateur de chance d'infliger le statut de type selon le genre d'action.
+// L'Art reste la source principale, mais les attaques fortes en posent aussi (moins
+// souvent) pour que les statuts — et donc leurs remèdes — servent régulièrement.
+// Monter `simple` au-dessus de 0 rendrait les statuts encore plus fréquents.
+const enemyStatusChanceByActionKind = {
+  art: 1,
+  strong: 0.6,
+  simple: 0
+};
 
 function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -425,9 +436,9 @@ export class CombatController {
     }
   }
 
-  rollCrit(actionId) {
+  rollCrit(actionId, actionCritChance = 0) {
     const bonus = actionId === "entaille" ? (this.combat.hero.nextEntailleCritBonus ?? 0) : 0;
-    return rollChance(this.combat.hero.critChance + bonus / 100);
+    return rollChance(this.combat.hero.critChance + (actionCritChance ?? 0) + bonus / 100);
   }
 
   enemyRollCrit(actionId, actionCritChance = null) {
@@ -517,7 +528,7 @@ export class CombatController {
       return { hit: false, damage: 0 };
     }
 
-    const crit = this.rollCrit(action.id);
+    const crit = this.rollCrit(action.id, action.critChance ?? 0);
     this.affixes.consumeRafale(action.id);
     const damageBreakdown = calculateHeroDamageBreakdown({
       hero: combat.hero,
@@ -721,9 +732,10 @@ export class CombatController {
 
   applyCreatureArtStatus(action, { chanceMultiplier = 1, interrupted = false } = {}) {
     const combat = this.combat;
-    if (action?.kind !== "art") return;
+    const kindMultiplier = enemyStatusChanceByActionKind[action?.kind] ?? 0;
+    if (kindMultiplier <= 0) return;
     const status = typeStatusForCreature(combat.enemy);
-    const statusChance = Math.min(1, typeStatusChance(combat.enemy) * chanceMultiplier);
+    const statusChance = Math.min(1, typeStatusChance(combat.enemy) * kindMultiplier * chanceMultiplier);
     if (!status || !rollChance(statusChance)) return;
 
     const intensity = typeStatusIntensity(combat.enemy);
@@ -985,6 +997,23 @@ export class CombatController {
     return resolveHumanSignatureEffect(this, side);
   }
 
+  applyArtSelfBuffs(action) {
+    const combat = this.combat;
+    if (!combat) return;
+    const selfGuard = action.selfGuard ?? 0;
+    if (selfGuard > 0) {
+      combat.hero.guard += selfGuard;
+      this.addLog(this.t("log.art_self_guard", { guard: selfGuard }));
+    }
+    const paRefund = action.paRefund ?? 0;
+    if (paRefund > 0) {
+      const before = combat.hero.pa;
+      combat.hero.pa = Math.min(combat.hero.maxPa, combat.hero.pa + paRefund);
+      const gained = combat.hero.pa - before;
+      if (gained > 0) this.addLog(this.t("log.art_refund_pa", { ap: gained }));
+    }
+  }
+
   playerSignatureAction() {
     const signature = this.combat?.hero.signature;
     if (!isHumanSignatureReady(signature)) {
@@ -1053,6 +1082,9 @@ export class CombatController {
       },
       art: () => {
         if (!this.spendPa(playerActionDefinition.cost)) return this.addLog(this.t("log.no_ap.art"));
+        // Teintes de build « sur soi » (eau : Garde ; vent : remboursement de PA),
+        // appliquées à l'usage, indépendamment de la touche.
+        this.applyArtSelfBuffs(playerActionDefinition);
         signatureEvent = { ...signatureEvent, executed: true };
         this.objectives.registerHeroActionUse("art");
         this.objectives.completeByType("artOnce");
@@ -1165,6 +1197,19 @@ export class CombatController {
         stars: currencyReward.stars,
         gold: currencyReward.gold
       }), currencyReward);
+    }
+    if (won && !isTrainingCombat) {
+      const levelUps = recordEquippedCreatureVictory({
+        progression: this.baseProgression,
+        equippedCreatures: combat.build?.equippedCreatures ?? []
+      });
+      levelUps.forEach((levelUp) => {
+        const creature = creatures[levelUp.creatureId];
+        this.addRewardLog(this.t("log.creature_level_up", {
+          creature: this.t(creature?.nameKey ?? levelUp.creatureId),
+          level: levelUp.level
+        }), levelUp);
+      });
     }
     this.addContinueIndicator(() => this.onCombatReadyToContinue(this.lastCombatResult));
     this.renderCombatUi();

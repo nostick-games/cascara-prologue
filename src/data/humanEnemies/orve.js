@@ -27,9 +27,7 @@ export const orve = {
     defeatBehavior: "dialogThenFade"
   },
   stats: {
-    maxPa: 3,
-    power: 2,
-    vitality: 8
+    maxPa: 3
   },
   arsenal: {
     baseActionIds: ["entaille", "garde", "feinte", "art"],
@@ -38,10 +36,10 @@ export const orve = {
     singleLightActionChance: 0.42
   },
   equippedCreatures: [
-    { creatureId: "braise_corne", level: 3 },
-    { creatureId: "onde_lente", level: 3 }
+    { creatureId: "braise_corne", level: 2 },
+    { creatureId: "onde_lente", level: 2 }
   ],
-  forcedBuildTypeProfile: humanBuildTypeProfile("feu", 3),
+  forcedBuildTypeProfile: humanBuildTypeProfile("feu", 1),
   activeAffixId: "morsure_sure",
   rewards: {
     victory: {

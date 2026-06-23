@@ -57,6 +57,9 @@ export function grantCapturedCreatureReward({
   const capturedCreature = {
     id: `${creature.id}_${baseProgression.capturedCreatures.length + 1}`,
     creatureId: creature.id,
+    level: creature.level ?? 1,
+    teamWins: 0,
+    levelWins: 0,
     capturedAt: Date.now(),
     completedObjectives,
     affixId: rewardedAffix?.id ?? null,

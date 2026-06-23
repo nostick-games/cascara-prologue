@@ -1,10 +1,10 @@
 export const baseProgression = {
-  availableXp: 2,
+  availableXp: 5,
   stars: 0,
   gold: 20,
   arachnideReplenishCost: 10,
-  heroHp: 10,
-  heroMaxHp: 10,
+  heroHp: 13,
+  heroMaxHp: 13,
   captureHuntsCompleted: 3,
   openedMapFlags: [],
   visitedMapIds: ["prologue"],

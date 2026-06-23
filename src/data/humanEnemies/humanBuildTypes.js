@@ -28,6 +28,11 @@ export const humanBuildTypeProfiles = {
       entaille: { baseDamage: 1 },
       feinte: { baseDamage: 1 },
       art: { baseDamage: 1 }
+    },
+    // Bonus de palier (à plat, dès le rang atteint) : l'Art feu gagne un cran
+    // supplémentaire au rang 3 → +1/+2/+4 dégâts.
+    rankGatedActionBonuses: {
+      3: { art: { baseDamage: 1 } }
     }
   },
   eau: {
@@ -57,6 +62,13 @@ export const humanBuildTypeProfiles = {
     },
     actionBonusesPerRank: {
       garde: { guard: 2, baseGuard: 2 }
+    },
+    // Contrôle eau : l'Art donne de la Garde au lanceur (2/3/3 selon le rang) et ne
+    // renforce le déni de PA (-2) qu'au rang 3 — build eau dédié, pour éviter le swing.
+    rankGatedActionBonuses: {
+      1: { art: { selfGuard: 2 } },
+      2: { art: { selfGuard: 1 } },
+      3: { art: { enemyPaDamage: 1 } }
     }
   },
   vent: {
@@ -85,7 +97,15 @@ export const humanBuildTypeProfiles = {
         patternKey: "combat.pattern.human_wind_art"
       }
     },
-    actionBonusesPerRank: {}
+    // Tempo vent : la Feinte gagne en taux de crit (3/6/9 % selon le rang), et l'Art
+    // rembourse du PA au lanceur (1/1/2) — efficience pure, sans casser l'alternance.
+    actionBonusesPerRank: {
+      feinte: { critChance: 0.03 }
+    },
+    rankGatedActionBonuses: {
+      1: { art: { paRefund: 1 } },
+      3: { art: { paRefund: 1 } }
+    }
   }
 };
 
@@ -102,16 +122,31 @@ export function humanBuildTypeProfile(type, rank = 1) {
   if (!profile) return null;
   const normalizedRank = Math.max(1, Math.min(maxBuildRank, Math.round(rank)));
 
+  const actionBonuses = Object.fromEntries(
+    Object.entries(profile.actionBonusesPerRank ?? {}).map(([actionId, bonus]) => [
+      actionId,
+      scaleNumericValues(bonus, normalizedRank)
+    ])
+  );
+
+  // Bonus de palier : ajoutés à plat (non multipliés par le rang) dès que le rang
+  // atteint le seuil. Ex. l'eau ne débloque le -2 PA de l'Art qu'au rang 3.
+  Object.entries(profile.rankGatedActionBonuses ?? {}).forEach(([threshold, bonusByAction]) => {
+    if (normalizedRank < Number(threshold)) return;
+    Object.entries(bonusByAction).forEach(([actionId, bonus]) => {
+      const current = { ...(actionBonuses[actionId] ?? {}) };
+      Object.entries(bonus).forEach(([key, value]) => {
+        current[key] = (current[key] ?? 0) + value;
+      });
+      actionBonuses[actionId] = current;
+    });
+  });
+
   return {
     ...profile,
     rank: normalizedRank,
     statBonus: scaleNumericValues(profile.statBonusPerRank, normalizedRank),
-    actionBonuses: Object.fromEntries(
-      Object.entries(profile.actionBonusesPerRank ?? {}).map(([actionId, bonus]) => [
-        actionId,
-        scaleNumericValues(bonus, normalizedRank)
-      ])
-    )
+    actionBonuses
   };
 }
 
@@ -142,7 +177,7 @@ export function applyHumanBuildTypeToAction(action, buildTypeProfile) {
   const namedAction = buildTypeProfile.actionNames?.[action.id] ?? {};
   const actionBonus = buildTypeProfile.actionBonuses?.[action.id] ?? {};
 
-  return {
+  const result = {
     ...action,
     ...namedAction,
     baseDamage: (action.baseDamage ?? 0) + (actionBonus.baseDamage ?? 0),
@@ -150,6 +185,21 @@ export function applyHumanBuildTypeToAction(action, buildTypeProfile) {
     baseGuard: (action.baseGuard ?? 0) + (actionBonus.baseGuard ?? 0),
     type: buildTypeProfile.id
   };
+  // On ne touche enemyPaDamage/critChance que s'il y a un bonus, pour ne pas
+  // écraser la valeur de base (ni forcer un 0 qui casserait le crit ennemi).
+  if (actionBonus.enemyPaDamage) {
+    result.enemyPaDamage = (action.enemyPaDamage ?? 0) + actionBonus.enemyPaDamage;
+  }
+  if (actionBonus.critChance) {
+    result.critChance = (action.critChance ?? 0) + actionBonus.critChance;
+  }
+  if (actionBonus.selfGuard) {
+    result.selfGuard = (action.selfGuard ?? 0) + actionBonus.selfGuard;
+  }
+  if (actionBonus.paRefund) {
+    result.paRefund = (action.paRefund ?? 0) + actionBonus.paRefund;
+  }
+  return result;
 }
 
 export function applyHumanBuildTypeNamesToAction(action, buildTypeProfile) {

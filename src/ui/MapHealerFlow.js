@@ -81,7 +81,9 @@ export class MapHealerFlow {
       await this.spendGold(cost);
       await this.restoreHeroHp();
       this.setCost(cost + 2);
+      this.hideHpPanel();
 
+      await wait(80);
       await host.playMessageDialog({
         message: `${speaker} : ${this.t(service.thanksKey, { hero })}`,
         messageHighlights: [speaker, hero]

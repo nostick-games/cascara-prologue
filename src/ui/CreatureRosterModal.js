@@ -4,6 +4,7 @@ import { affixes } from "../data/affixes.js";
 import { computeEquippedCreatureStats } from "../data/humanEnemies/inheritedStats.js";
 import { statDefinitions } from "../data/stats.js";
 import { huntAffixLevel } from "../game/affixEffects.js";
+import { creatureInstinctLevel, creatureLevelProgress } from "../game/creatureProgression.js";
 
 const rosterCellSpriteSize = 148;
 const rosterPreviewSpriteSize = 480;
@@ -360,7 +361,10 @@ export class CreatureRosterModal {
     const instinctTitle = document.createElement("div");
     instinctTitle.className = "roster-instinct-title";
     instinctTitle.textContent = instinct
-      ? `${this.t(instinct.nameKey)}, ${huntAffixLevel(this.t, instinct)}`
+      ? `${this.t(instinct.nameKey)}, ${huntAffixLevel(this.t, {
+          ...instinct,
+          level: creatureInstinctLevel(entry)
+        })}`
       : this.t("ui.affix");
     instinctBlock.append(instinctTitle);
 
@@ -372,6 +376,26 @@ export class CreatureRosterModal {
     instinctBlock.append(instinctDescription);
 
     this.statsList.append(instinctBlock);
+
+    const progress = creatureLevelProgress(entry);
+    const progressBlock = document.createElement("div");
+    progressBlock.className = "roster-instinct-block";
+
+    const progressTitle = document.createElement("div");
+    progressTitle.className = "roster-instinct-title";
+    progressTitle.textContent = this.t("ui.roster.level_progress_title");
+    progressBlock.append(progressTitle);
+
+    const progressDescription = document.createElement("div");
+    progressDescription.className = "roster-instinct-description";
+    progressDescription.textContent = progress.maxed
+      ? this.t("ui.roster.level_progress_max")
+      : this.t("ui.roster.level_progress_counter", {
+          wins: progress.wins,
+          required: progress.required
+        });
+    progressBlock.append(progressDescription);
+    this.statsList.append(progressBlock);
 
     if (!this.statsList.children.length) {
       this.statsList.classList.add("empty");

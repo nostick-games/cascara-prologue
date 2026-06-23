@@ -8,6 +8,7 @@ import { dominantHumanBuildType } from "../data/humanEnemies/humanBuildTypes.js"
 import { affixes } from "../data/affixes.js";
 import { creatures } from "../data/creatures.js";
 import { createHumanSignatureFromEquippedCreatures, translatedSignatureName } from "../game/humanSignatures.js";
+import { creatureInstinctLevel } from "../game/creatureProgression.js";
 
 const affixById = Object.fromEntries(affixes.map((affix) => [affix.id, affix]));
 const creaturesById = Object.fromEntries(Object.values(creatures).map((creature) => [creature.id, creature]));
@@ -217,8 +218,8 @@ export class HumanBriefingScreen {
     this.rosterModal.openBrowser();
   }
 
-  // Instincts disponibles = ceux des créatures équipées, au niveau de chaque créature
-  // (niveau créature 1/2/3 → niveau d'instinct I/II/III), dédupliqués sur le meilleur niveau.
+  // Instincts disponibles = ceux des créatures équipées, avec le niveau obtenu
+  // à la capture + les niveaux gagnés par la créature, plafonné à III.
   teamInstincts() {
     const owned = this.getOwnedCreatures();
     const byAffixId = new Map();
@@ -226,7 +227,7 @@ export class HumanBriefingScreen {
       const match = owned.find(({ entry }) => entry.id === entryId);
       const baseAffix = match ? affixById[match.entry.affixId] : null;
       if (!baseAffix) return;
-      const level = Math.min(maxAffixLevel, Math.max(0, (match.entry.level ?? 1) - 1));
+      const level = Math.min(maxAffixLevel, creatureInstinctLevel(match.entry));
       const existing = byAffixId.get(baseAffix.id);
       if (!existing || level > existing.level) {
         byAffixId.set(baseAffix.id, { ...baseAffix, level });
@@ -267,7 +268,12 @@ export class HumanBriefingScreen {
       .filter(Boolean)
       .map((entryId) => owned.find(({ entry }) => entry.id === entryId))
       .filter(Boolean)
-      .map(({ entry, creature }) => ({ creatureId: entry.creatureId, level: entry.level ?? 1, type: creature.type }));
+      .map(({ entry, creature }) => ({
+        entryId: entry.id,
+        creatureId: entry.creatureId,
+        level: entry.level ?? 1,
+        type: creature.type
+      }));
   }
 
   // Agrège les stats héritables des créatures équipées et les pousse en bonus du radar.
@@ -589,7 +595,10 @@ export class HumanBriefingScreen {
   }
 
   opponentName() {
-    return `${this.t(this.enemy.typeProfile.nameKey)} ${this.t(this.enemy.nameKey)}`;
+    // typeNameKey : libellé d'archétype affiché, découplé du type qui pilote les stats
+    // (permet d'échanger les kits de combat sans changer le nom de classe montré au joueur).
+    const typeNameKey = this.enemy.typeNameKey ?? this.enemy.typeProfile.nameKey;
+    return `${this.t(typeNameKey)} ${this.t(this.enemy.nameKey)}`;
   }
 
   enemyRadarBuild() {
