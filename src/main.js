@@ -441,14 +441,24 @@ const mapHealerFlow = new MapHealerFlow({
   setGold: (gold) => {
     baseProgression.gold = Math.max(0, gold);
   },
-  getCost: () => baseProgression.arachnideReplenishCost ?? 10,
-  setCost: (cost) => {
-    baseProgression.arachnideReplenishCost = Math.max(0, cost);
+  getHpCost: () => baseProgression.arachnideHpRestoreCost ?? baseProgression.arachnideReplenishCost ?? 10,
+  setHpCost: (cost) => {
+    baseProgression.arachnideHpRestoreCost = Math.max(0, cost);
+  },
+  getGemCost: () => baseProgression.arachnideGemRestoreCost ?? 15,
+  setGemCost: (cost) => {
+    baseProgression.arachnideGemRestoreCost = Math.max(0, cost);
   },
   getHeroStatus: () => currentHeroStatus(),
   setHeroHp: (hp, maxHp) => {
     baseProgression.heroMaxHp = maxHp;
     baseProgression.heroHp = Math.max(0, Math.min(maxHp, hp));
+  },
+  getMaxGems: () => baseProgression.availableXp ?? 0,
+  getUnspentGems: () => unspentXp(),
+  resetTalents: () => {
+    Object.assign(build, initialBuild);
+    Object.assign(committedBuild, initialBuild);
   },
   getHeroName: () => heroName,
   render: () => renderAll()
@@ -764,7 +774,7 @@ const inventoryModal = new InventoryModal({
   getCurrencies: () => ({
     gold: baseProgression.gold ?? 0,
     stars: baseProgression.stars ?? 0,
-    gems: baseProgression.availableXp ?? 0
+    gems: unspentXp()
   }),
   isItemEffective: (item) => isInventoryCombatContext()
     ? combatController.isCombatItemEffective(item)

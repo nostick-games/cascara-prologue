@@ -421,6 +421,40 @@
       width: min(420px, 100%);
     }
 
+    .map-healer-panel-content {
+      display: grid;
+      place-items: center;
+      min-height: 74px;
+    }
+
+    .map-healer-gems-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      min-width: 220px;
+      padding: 12px 22px;
+      color: var(--ink);
+      font: 24px/1 "Press Start 2P", monospace;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.35);
+      pointer-events: none;
+    }
+
+    .map-healer-gems-panel[hidden] {
+      display: none;
+    }
+
+    .map-healer-gems-panel img {
+      width: 32px;
+      height: 32px;
+      image-rendering: pixelated;
+    }
+
+    .map-healer-gems-equals,
+    .map-healer-gems-value {
+      transform: translateY(2px);
+    }
+
     .map-healer-continue-indicator {
       position: absolute;
       right: 24px;

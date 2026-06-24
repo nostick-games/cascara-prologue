@@ -1,8 +1,9 @@
 export const baseProgression = {
   availableXp: 5,
   stars: 0,
-  gold: 20,
-  arachnideReplenishCost: 10,
+  gold: 99,
+  arachnideHpRestoreCost: 10,
+  arachnideGemRestoreCost: 15,
   heroHp: 13,
   heroMaxHp: 13,
   captureHuntsCompleted: 3,

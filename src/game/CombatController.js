@@ -408,18 +408,28 @@ export class CombatController {
     this.baseProgression.heroHp = hero.hp;
   }
 
-  persistHeroHp({ defeated = false } = {}) {
+  respawnHpForMax(maxHp) {
+    return Math.max(1, Math.ceil(maxHp * 0.5));
+  }
+
+  persistHeroHp({ respawn = false, restoreFull = false } = {}) {
     const hero = this.combat?.hero;
     if (!hero) return;
     this.baseProgression.heroMaxHp = hero.maxHp;
-    this.baseProgression.heroHp = defeated ? hero.maxHp : clampHeroHp(hero.hp, hero.maxHp);
+    if (restoreFull) {
+      this.baseProgression.heroHp = hero.maxHp;
+      return;
+    }
+    this.baseProgression.heroHp = respawn
+      ? this.respawnHpForMax(hero.maxHp)
+      : clampHeroHp(hero.hp, hero.maxHp);
   }
 
   restoreHeroHpForRespawn() {
     const hero = this.combat?.hero;
     const maxHp = hero?.maxHp ?? this.baseProgression.heroMaxHp;
     if (!Number.isFinite(maxHp)) return;
-    const respawnHp = Math.max(1, Math.ceil(maxHp * 0.5));
+    const respawnHp = this.respawnHpForMax(maxHp);
     this.baseProgression.heroMaxHp = maxHp;
     this.baseProgression.heroHp = respawnHp;
     if (hero) {
@@ -1202,7 +1212,10 @@ export class CombatController {
       combat.huntCompletionRecorded = true;
     }
     this.combatDebug("combat_end", { won, outcome });
-    this.persistHeroHp({ defeated: outcome === "defeat" || isTrainingCombat });
+    this.persistHeroHp({
+      respawn: outcome === "defeat",
+      restoreFull: isTrainingCombat
+    });
     this.addLog(message);
     const unspentXpBefore = this.getUnspentXp();
     const currencyReward = isTrainingCombat ? null : grantCombatCurrencyReward({

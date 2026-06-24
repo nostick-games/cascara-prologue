@@ -1403,6 +1403,33 @@
                  "width":21.9262438478225,
                  "x":606.147556103484,
                  "y":414.086170446486
+                }, 
+                {
+                 "height":14.6528850342561,
+                 "id":56,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"down"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"maison_puits_exit"
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"spawn"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":19.4051720723932,
+                 "x":198.407983842224,
+                 "y":279.196863490555
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1446,6 +1473,38 @@
                  "width":22.3932452904679,
                  "x":541.069721176649,
                  "y":431.238248039341
+                }, 
+                {
+                 "height":14.6528850342561,
+                 "id":55,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"label",
+                         "type":"string",
+                         "value":"puits"
+                        }, 
+                        {
+                         "name":"targetMap",
+                         "type":"string",
+                         "value":"maison_puits_prologue"
+                        }, 
+                        {
+                         "name":"targetSpawn",
+                         "type":"string",
+                         "value":"entrance"
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"door"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":17.4250524731694,
+                 "x":198.804007762069,
+                 "y":254.247356540335
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2390,7 +2449,7 @@
          "y":0
         }],
  "nextlayerid":37,
- "nextobjectid":55,
+ "nextobjectid":57,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

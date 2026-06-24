@@ -3,6 +3,7 @@ import { hpRechargeStepDelay } from "../utils/hpRechargeTiming.js";
 import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const goldIconSrc = assetPath("assets/inventaire/or.png");
+const gemIconSrc = assetPath("assets/inventaire/gemme.png");
 
 function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -13,29 +14,42 @@ export class MapHealerFlow {
     t,
     getGold,
     setGold,
-    getCost,
-    setCost,
+    getHpCost,
+    setHpCost,
+    getGemCost,
+    setGemCost,
     getHeroStatus,
     setHeroHp,
+    getMaxGems,
+    getUnspentGems,
+    resetTalents,
     getHeroName,
     render = () => {}
   }) {
     this.t = t;
     this.getGold = getGold;
     this.setGold = setGold;
-    this.getCost = getCost;
-    this.setCost = setCost;
+    this.getHpCost = getHpCost;
+    this.setHpCost = setHpCost;
+    this.getGemCost = getGemCost;
+    this.setGemCost = setGemCost;
     this.getHeroStatus = getHeroStatus;
     this.setHeroHp = setHeroHp;
+    this.getMaxGems = getMaxGems;
+    this.getUnspentGems = getUnspentGems;
+    this.resetTalents = resetTalents;
     this.getHeroName = getHeroName;
     this.render = render;
     this.goldCounter = null;
     this.goldValueNode = null;
     this.hpPanel = null;
+    this.hpPanelContent = null;
     this.hpLabelNode = null;
     this.hpTextNode = null;
     this.hpBarNode = null;
     this.hpContinueIndicator = null;
+    this.gemsPanel = null;
+    this.gemsValueNode = null;
   }
 
   async run(service, host, { speaker }) {
@@ -47,54 +61,160 @@ export class MapHealerFlow {
     this.showGoldCounter();
 
     try {
-      const cost = this.getCost();
       const hero = this.getHeroName();
-      const choice = await host.playChoiceDialog({
-        message: `${speaker} : ${this.t(service.introKey, { hero, cost })}`,
-        options: [
-          { label: this.t("ui.choice.yes"), value: "yes" },
-          { label: this.t("ui.choice.no"), value: "no" }
-        ],
-        messageHighlights: [speaker, hero, String(cost)],
-        optionLayout: "vertical",
-        autoHide: false
-      });
-
-      if (choice !== "yes") return;
-      if (this.isHeroFullHp()) {
-        await host.playMessageDialog({
-          message: `${speaker} : ${this.t(service.fullHpKey)}`,
-          messageHighlights: [speaker]
+      let showIntro = true;
+      while (showIntro) {
+        const choice = await host.playChoiceDialog({
+          message: `${speaker} : ${this.t(service.introKey, { hero })}`,
+          options: [
+            { label: this.t(service.browseKey), value: "browse" },
+            { label: this.t(service.exitKey), value: "exit" }
+          ],
+          messageHighlights: [speaker, hero],
+          optionLayout: "vertical",
+          autoHide: false
         });
-        return;
-      }
-      if (this.getGold() < cost) {
-        await host.playMessageDialog({
-          message: `${speaker} : ${this.t(service.notEnoughGoldKey)}`,
-          messageHighlights: [speaker]
-        });
-        return;
-      }
 
-      host.hideDialog();
-      host.hideMapChoicePanel();
-      await this.spendGold(cost);
-      await this.restoreHeroHp();
-      this.setCost(cost + 2);
-      this.hideHpPanel();
-
-      await wait(80);
-      await host.playMessageDialog({
-        message: `${speaker} : ${this.t(service.thanksKey, { hero })}`,
-        messageHighlights: [speaker, hero]
-      });
+        if (choice !== "browse") return;
+        const result = await this.browseServices();
+        showIntro = result === "intro";
+        if (result === "done" || result === "exit") return;
+      }
     } finally {
       this.hideHpPanel();
+      this.hideGemsPanel();
       this.setServiceActive(false);
       this.hideGoldCounter();
       host.hideDialog();
       host.hideMapChoicePanel();
     }
+  }
+
+  async browseServices() {
+    while (true) {
+      this.host.hideDialog();
+      const selectedService = await this.host.activateMapChoicePanel([
+        {
+          label: this.t(this.service.hpServiceKey),
+          value: "hp",
+          price: this.getHpCost(),
+          iconSrc: goldIconSrc
+        },
+        {
+          label: this.t(this.service.gemsServiceKey),
+          value: "gems",
+          price: this.getGemCost(),
+          iconSrc: goldIconSrc
+        }
+      ], { cancelOnOutside: true });
+
+      if (!selectedService) return "exit";
+      const result = selectedService === "hp"
+        ? await this.showHpDetails()
+        : await this.showGemsDetails();
+      if (result === "more") continue;
+      return result;
+    }
+  }
+
+  async showHpDetails() {
+    const choice = await this.host.playChoiceDialog({
+      message: `${this.speaker} : ${this.t(this.service.hpDetailsKey)}`,
+      options: [
+        { label: this.t(this.service.confirmKey), value: "buy" },
+        { label: this.t(this.service.moreKey), value: "more" },
+        { label: this.t(this.service.cancelKey), value: "intro" }
+      ],
+      messageHighlights: [this.speaker],
+      optionLayout: "vertical",
+      autoHide: false
+    });
+
+    if (choice === "more") return "more";
+    if (choice !== "buy") return "intro";
+    return this.buyHpRestore();
+  }
+
+  async showGemsDetails() {
+    const choice = await this.host.playChoiceDialog({
+      message: `${this.speaker} : ${this.t(this.service.gemsDetailsKey)}`,
+      options: [
+        { label: this.t(this.service.confirmKey), value: "buy" },
+        { label: this.t(this.service.moreKey), value: "more" },
+        { label: this.t(this.service.cancelKey), value: "intro" }
+      ],
+      messageHighlights: [this.speaker],
+      optionLayout: "vertical",
+      autoHide: false
+    });
+
+    if (choice === "more") return "more";
+    if (choice !== "buy") return "intro";
+    return this.buyGemRestore();
+  }
+
+  async buyHpRestore() {
+    const cost = this.getHpCost();
+    if (this.isHeroFullHp()) {
+      await this.host.playMessageDialog({
+        message: `${this.speaker} : ${this.t(this.service.fullHpKey)}`,
+        messageHighlights: [this.speaker]
+      });
+      return "more";
+    }
+    if (this.getGold() < cost) {
+      await this.host.playMessageDialog({
+        message: `${this.speaker} : ${this.t(this.service.notEnoughGoldKey)}`,
+        messageHighlights: [this.speaker]
+      });
+      return "more";
+    }
+
+    this.host.hideDialog();
+    this.host.hideMapChoicePanel();
+    await this.spendGold(cost);
+    await this.restoreHeroHp();
+    this.setHpCost(cost + 2);
+    this.hideHpPanel();
+    await this.showThanks();
+    return "done";
+  }
+
+  async buyGemRestore() {
+    const cost = this.getGemCost();
+    if (this.hasFullGems()) {
+      await this.host.playMessageDialog({
+        message: `${this.speaker} : ${this.t(this.service.fullGemsKey)}`,
+        messageHighlights: [this.speaker]
+      });
+      return "more";
+    }
+    if (this.getGold() < cost) {
+      await this.host.playMessageDialog({
+        message: `${this.speaker} : ${this.t(this.service.notEnoughGoldKey)}`,
+        messageHighlights: [this.speaker]
+      });
+      return "more";
+    }
+
+    this.host.hideDialog();
+    this.host.hideMapChoicePanel();
+    await this.spendGold(cost);
+    await this.restoreGems();
+    this.setGemCost(cost + 5);
+    this.hideGemsPanel();
+    this.hideHpPanel();
+    await this.showThanks();
+    return "done";
+  }
+
+  async showThanks() {
+    const hero = this.getHeroName();
+    await wait(80);
+    await this.host.playMessageDialog({
+      message: `${this.speaker} : ${this.t(this.service.thanksKey, { hero })}`,
+      messageHighlights: [this.speaker, hero]
+    });
   }
 
   isHeroFullHp() {
@@ -104,6 +224,10 @@ export class MapHealerFlow {
     return hp >= maxHp;
   }
 
+  hasFullGems() {
+    return Math.max(0, this.getUnspentGems()) >= Math.max(0, this.getMaxGems());
+  }
+
   async spendGold(cost) {
     for (let index = 0; index < cost; index += 1) {
       this.setGold(Math.max(0, this.getGold() - 1));
@@ -111,6 +235,31 @@ export class MapHealerFlow {
       this.render();
       await wait(28);
     }
+  }
+
+  async restoreGems() {
+    const start = Math.max(0, this.getUnspentGems());
+    const max = Math.max(start, this.getMaxGems());
+    this.showGemsPanel();
+    this.updateGemsPanel(start);
+    await wait(180);
+    this.resetTalents();
+    const missing = Math.max(0, max - start);
+    const stepDelay = hpRechargeStepDelay(missing);
+    if (missing <= 0) {
+      this.updateGemsPanel(max);
+      this.render();
+      await wait(360);
+      await this.waitForHpPanelContinue();
+      return;
+    }
+    for (let value = start + 1; value <= max; value += 1) {
+      this.updateGemsPanel(value);
+      this.render();
+      nativeHaptic("light");
+      await wait(stepDelay);
+    }
+    await this.waitForHpPanelContinue();
   }
 
   async restoreHeroHp() {
@@ -142,6 +291,8 @@ export class MapHealerFlow {
     this.hpPanel = document.createElement("div");
     this.hpPanel.className = "map-healer-hp-panel";
     this.hpPanel.hidden = true;
+    this.hpPanelContent = document.createElement("div");
+    this.hpPanelContent.className = "map-healer-panel-content";
     const hpBox = document.createElement("div");
     hpBox.className = "inventory-hp";
     const head = document.createElement("div");
@@ -160,12 +311,14 @@ export class MapHealerFlow {
     this.hpContinueIndicator.setAttribute("aria-hidden", "true");
     this.hpContinueIndicator.textContent = "▼";
     this.hpContinueIndicator.hidden = true;
-    this.hpPanel.append(hpBox, this.hpContinueIndicator);
+    this.hpPanelContent.append(hpBox);
+    this.hpPanel.append(this.hpPanelContent, this.hpContinueIndicator);
     this.host.nodes.mapSection.append(this.hpPanel);
   }
 
   showHpPanel() {
     this.ensureHpPanel();
+    this.showPanelChild(this.hpPanelContent?.querySelector(".inventory-hp"));
     if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = true;
     if (this.hpPanel) this.hpPanel.hidden = false;
   }
@@ -183,9 +336,7 @@ export class MapHealerFlow {
   waitForHpPanelContinue() {
     this.ensureHpPanel();
     if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = false;
-    const eventNames = this.host?.isMobile?.()
-      ? ["pointerdown", "pointerup", "click", "touchend"]
-      : ["keydown"];
+    const eventNames = this.host?.isMobile?.() ? ["pointerdown"] : ["keydown"];
     return new Promise((resolve) => {
       let resolved = false;
       const cleanup = () => {
@@ -199,9 +350,50 @@ export class MapHealerFlow {
         event.stopPropagation?.();
         cleanup();
         if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = true;
-        resolve();
+        window.setTimeout(resolve, this.host?.isMobile?.() ? 220 : 0);
       };
       eventNames.forEach((eventName) => window.addEventListener(eventName, handler, true));
+    });
+  }
+
+  ensureGemsPanel() {
+    this.ensureHpPanel();
+    if (this.gemsPanel || !this.hpPanelContent) return;
+    this.gemsPanel = document.createElement("div");
+    this.gemsPanel.className = "map-healer-gems-panel";
+    this.gemsPanel.hidden = true;
+    const icon = document.createElement("img");
+    icon.src = gemIconSrc;
+    icon.alt = "";
+    const equals = document.createElement("span");
+    equals.className = "map-healer-gems-equals";
+    equals.textContent = "=";
+    this.gemsValueNode = document.createElement("span");
+    this.gemsValueNode.className = "map-healer-gems-value";
+    this.gemsPanel.append(icon, equals, this.gemsValueNode);
+    this.hpPanelContent.append(this.gemsPanel);
+  }
+
+  showGemsPanel() {
+    this.ensureGemsPanel();
+    this.showPanelChild(this.gemsPanel);
+    if (this.hpContinueIndicator) this.hpContinueIndicator.hidden = true;
+    if (this.hpPanel) this.hpPanel.hidden = false;
+    if (this.gemsPanel) this.gemsPanel.hidden = false;
+  }
+
+  hideGemsPanel() {
+    if (this.gemsPanel) this.gemsPanel.hidden = true;
+  }
+
+  updateGemsPanel(value) {
+    if (this.gemsValueNode) this.gemsValueNode.textContent = String(value);
+  }
+
+  showPanelChild(activeChild) {
+    if (!this.hpPanelContent) return;
+    [...this.hpPanelContent.children].forEach((child) => {
+      child.hidden = child !== activeChild;
     });
   }
 
