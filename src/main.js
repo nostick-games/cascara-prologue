@@ -733,7 +733,7 @@ async function applyMapInventoryItem(entry) {
   const hero = currentHeroStatus();
   const heal = entry.item.effect === "fullHeal"
     ? hero.maxHp
-    : Math.max(1, Math.ceil(hero.maxHp / 2));
+    : Math.max(1, Math.ceil((hero.maxHp - hero.hp) / 2));
   baseProgression.heroMaxHp = hero.maxHp;
   const targetHp = Math.min(hero.maxHp, hero.hp + heal);
   baseProgression.inventory[entry.item.id] = Math.max(0, (baseProgression.inventory[entry.item.id] ?? 0) - 1);

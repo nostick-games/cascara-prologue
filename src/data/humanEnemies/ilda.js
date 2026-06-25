@@ -1,5 +1,3 @@
-import { humanBuildTypeProfile } from "./humanBuildTypes.js";
-
 export const ilda = {
   id: "ilda",
   type: "voleur",
@@ -39,7 +37,6 @@ export const ilda = {
   equippedCreatures: [
     { creatureId: "zephyr", level: 1 }
   ],
-  forcedBuildTypeProfile: humanBuildTypeProfile("vent", 1),
   activeAffixId: "pas_de_rafale",
   rewards: {
     victory: {

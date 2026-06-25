@@ -556,7 +556,7 @@ export const fr = {
   "map.shop.option.more": "J'ai besoin d'autre chose",
   "map.shop.option.cancel": "Finalement, non",
   "map.shop.quantity_prompt": "Choisis une quantité de {item} (tu possèdes {quantity} {item}) :",
-  "map.shop.item.potion_50.description": "Restaure la moitié des PV.",
+  "map.shop.item.potion_50.description": "Restaure la moitié des PV perdus.",
   "map.shop.item.potion_100.description": "Restaure l'intégralité des PV.",
   "map.shop.item.antipara.description": "Un objet de combat pour soigner le statut paralysie.",
   "map.shop.item.pommade.description": "Un objet de combat pour soigner le statut brûlure.",

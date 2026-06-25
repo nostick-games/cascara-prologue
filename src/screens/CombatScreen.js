@@ -44,7 +44,10 @@ export class CombatScreen {
     this.heroDeathTimeout = null;
 
     nodes.actionButtons.forEach((button) => {
-      button.addEventListener("click", () => onAction(button.dataset.action));
+      button.addEventListener("click", () => {
+        if (button.disabled || nodes.combatActions?.classList.contains("is-locked")) return;
+        onAction(button.dataset.action);
+      });
     });
     nodes.combatObjectives?.addEventListener("click", () => {
       if (!this.canOpenObjectives()) return;
@@ -197,6 +200,14 @@ export class CombatScreen {
 
   boot() {
     this.nodes.phaseCover.remove();
+    // Verrouille les actions dès l'ouverture du combat, avant que startCombat (différé)
+    // ne décide la phase. Évite la fenêtre où les boutons paraissent actifs alors que le
+    // combat n'a pas commencé ; renderActionStates rétablira l'état correct au 1er rendu.
+    if (this.nodes.combatActions) {
+      this.nodes.combatActions.classList.add("is-locked");
+      this.nodes.combatActions.inert = true;
+    }
+    this.nodes.actionButtons?.forEach((button) => { button.disabled = true; });
     window.clearTimeout(this.heroDeathTimeout);
     this.heroDeathTimeout = null;
     this.nodes.heroSprite.classList.remove("damage-flash", "hero-hurt", "hero-entaille");
@@ -343,6 +354,9 @@ export class CombatScreen {
 
   renderActionStates(combat) {
     const { nodes, actionDefinitions } = this;
+    const actionsLocked = combat.ended || combat.damageAnimating || combat.playerInputLocked || combat.phase !== "player";
+    nodes.combatActions?.classList.toggle("is-locked", actionsLocked);
+    if (nodes.combatActions) nodes.combatActions.inert = actionsLocked;
     nodes.actionButtons.forEach((button) => {
       const action = button.dataset.action;
       const definition = actionDefinitions[action];
@@ -353,9 +367,7 @@ export class CombatScreen {
       button.hidden = this.visibleActionIds ? !this.visibleActionIds.has(action) : false;
       button.disabled = definition.disabled
         || button.hidden
-        || combat.ended
-        || combat.damageAnimating
-        || combat.phase !== "player"
+        || actionsLocked
         || combat.hero.pa < definition.cost
         || combat.hero.blockedActionId === action;
     });

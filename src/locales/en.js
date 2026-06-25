@@ -556,7 +556,7 @@ export const en = {
   "map.shop.option.more": "I need something else",
   "map.shop.option.cancel": "Actually, no",
   "map.shop.quantity_prompt": "Choose a quantity of {item} (you own {quantity} {item}):",
-  "map.shop.item.potion_50.description": "Restores half of your HP.",
+  "map.shop.item.potion_50.description": "Restores half of your missing HP.",
   "map.shop.item.potion_100.description": "Restores all of your HP.",
   "map.shop.item.antipara.description": "A combat item that cures paralysis.",
   "map.shop.item.pommade.description": "A combat item that cures burn.",

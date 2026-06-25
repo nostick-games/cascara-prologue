@@ -596,6 +596,16 @@
       align-content: start;
     }
 
+    .combat-actions.is-locked .pixel-ui-button {
+      opacity: 0.36;
+      filter: grayscale(0.35) brightness(0.78);
+      pointer-events: none;
+    }
+
+    .combat-actions.is-locked .pixel-button-label {
+      color: rgba(47, 31, 24, 0.72);
+    }
+
     .combat-actions button {
       min-height: 48px;
       text-align: left;

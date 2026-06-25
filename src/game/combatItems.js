@@ -20,7 +20,8 @@ export function applyCombatItemToState({ combat, entry, inventory, t, addLog }) 
   combat.hero.pa = Math.max(0, combat.hero.pa - entry.item.paCost);
   inventory[entry.item.id] = Math.max(0, (inventory[entry.item.id] ?? 0) - 1);
   if (entry.item.effect === "halfHeal") {
-    const heal = Math.max(1, Math.ceil(combat.hero.maxHp / 2));
+    const missingHp = Math.max(0, combat.hero.maxHp - combat.hero.hp);
+    const heal = Math.max(1, Math.ceil(missingHp / 2));
     combat.hero.hp = Math.min(combat.hero.maxHp, combat.hero.hp + heal);
     addLog(t("log.item_potion_50"));
   }

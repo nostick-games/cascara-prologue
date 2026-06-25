@@ -33,6 +33,7 @@ export class CombatTurns {
       ctx.objectives.complete("sparePa");
       ctx.affixes.prepareConcentration();
     }
+    ctx.lockPlayerInput();
     combat.phase = "enemy";
     ctx.combatDebug("player_turn_end");
     ctx.renderCombatUi();
@@ -323,11 +324,13 @@ export class CombatTurns {
     hero.guarding = false;
     hero.guard = ctx.decayHeroGuard(hero.guard);
     combat.phase = "player";
+    combat.playerInputLocked = true;
     this.updateCreaturePlan();
     const heroStatusQueued = ctx.tickHeroStatuses();
     if (!heroStatusQueued) ctx.affixes.trySouffleRelatif();
     ctx.combatDebug("enemy_turn_end");
     ctx.renderCombatUi();
     ctx.combatScreen.syncCombat(combat);
+    if (!heroStatusQueued) ctx.unlockPlayerInputWhenReady();
   }
 }

@@ -8,6 +8,21 @@ export class CombatLog {
     this.typeDelayMs = typeDelayMs;
     this.queue = [];
     this.typing = false;
+    this.idleCallbacks = [];
+  }
+
+  isBusy() {
+    return this.typing || this.queue.length > 0;
+  }
+
+  // Exécute le callback quand le journal a fini de tout taper (file vide + plus de
+  // frappe). Sert à ne déclencher le 1er tour ennemi qu'après la narration d'ouverture.
+  runWhenIdle(callback) {
+    if (!this.isBusy()) {
+      callback();
+      return;
+    }
+    this.idleCallbacks.push(callback);
   }
 
   add(message, afterTyped = null, options = {}) {
@@ -41,10 +56,17 @@ export class CombatLog {
     this.node.innerHTML = "";
     this.queue = [];
     this.typing = false;
+    this.idleCallbacks = [];
   }
 
   typeNext() {
-    if (this.typing || this.queue.length === 0) return;
+    if (this.typing) return;
+    if (this.queue.length === 0) {
+      const callbacks = this.idleCallbacks;
+      this.idleCallbacks = [];
+      callbacks.forEach((callback) => callback());
+      return;
+    }
     this.typing = true;
     const { line, textNode, message, reward, afterTyped, options = {} } = this.queue.shift();
     const target = textNode ?? line;

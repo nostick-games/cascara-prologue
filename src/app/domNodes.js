@@ -148,6 +148,7 @@ export function queryDomNodes(root = document) {
     combatSection,
     phaseCover,
     combatUi,
+    combatActions: root.querySelector(".combat-actions"),
     actionButtons,
     battleStage,
     enemySprite,

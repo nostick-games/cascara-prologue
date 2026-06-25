@@ -265,6 +265,24 @@ export class CombatController {
     this.log.add(message, afterTyped);
   }
 
+  lockPlayerInput() {
+    const combat = this.combat;
+    if (!combat || combat.ended) return;
+    combat.playerInputLocked = true;
+  }
+
+  unlockPlayerInputWhenReady() {
+    const combat = this.combat;
+    if (!combat || combat.ended) return;
+    this.log.runWhenIdle(() => {
+      const currentCombat = this.combat;
+      if (!currentCombat || currentCombat.ended || currentCombat.phase !== "player" || currentCombat.damageAnimating) return;
+      currentCombat.playerInputLocked = false;
+      this.renderCombatUi();
+      this.combatScreen.syncCombat(currentCombat);
+    });
+  }
+
   addContinueIndicator(afterTyped = null) {
     this.log.addContinueIndicator(afterTyped);
   }
@@ -350,6 +368,7 @@ export class CombatController {
       enemy: enemy.hp
     };
     combat.damageAnimating = false;
+    combat.playerInputLocked = false;
     combat.playerAffix = this.context === "human" ? this.getActiveHumanAffix() : this.getActiveHuntAffix();
     combat.huntAffix = combat.playerAffix;
     combat.enemyAffix = this.enemyAffix();
@@ -371,6 +390,7 @@ export class CombatController {
     this.logCombatStatsSummary();
 
     if (enemy.speed > hero.speed) {
+      combat.playerInputLocked = true;
       hero.guard += enemyInitiativeGuardBonus;
       this.addLog(this.t("log.enemy_initiative", {
         opponent: this.creatureName(),
@@ -394,7 +414,16 @@ export class CombatController {
     this.combatScreen.syncCombat(combat);
     this.renderCombatUi();
     this.combatScreen.playEnemyEntrance();
-    if (combat.phase === "enemy") setTimeout(() => this.turns.enemyTurn(), 420);
+    if (combat.phase === "enemy") {
+      // On attend que la narration d'ouverture (initiative, perception…) soit
+      // entièrement tapée avant de lancer le 1er tour ennemi. Sinon advanceEnemyTurn
+      // repasse en phase "player" et déverrouille les boutons pendant que le journal
+      // s'écrit encore (désync → boutons accessibles pendant le tour du fawna).
+      this.log.runWhenIdle(() => {
+        if (!this.combat || this.combat.ended) return;
+        setTimeout(() => this.turns.enemyTurn(), 220);
+      });
+    }
   }
 
   syncHeroPersistentHp(hero) {
@@ -727,6 +756,7 @@ export class CombatController {
           : () => {
             this.affixes.tryElanDeSurvie(heroHpBeforeActual);
             this.affixes.trySouffleRelatif();
+            this.unlockPlayerInputWhenReady();
           }
       });
       return true;
@@ -750,6 +780,7 @@ export class CombatController {
               : () => {
                 this.affixes.tryElanDeSurvie(heroHpBeforeActual);
                 this.affixes.trySouffleRelatif();
+                this.unlockPlayerInputWhenReady();
               }
           });
           return true;
@@ -1073,7 +1104,7 @@ export class CombatController {
   playerAction(actionId) {
     const combat = this.combat;
     if (!this.inventoryModalShield.hidden) return;
-    if (!combat || combat.ended || combat.damageAnimating || combat.phase !== "player") return;
+    if (!combat || combat.ended || combat.damageAnimating || combat.playerInputLocked || combat.phase !== "player") return;
     const playerActionDefinition = this.actionDefinitions[actionId];
     if (combat.hero.blockedActionId === actionId) {
       return this.addLog(this.t("log.hero_status_paralysis_blocks", {

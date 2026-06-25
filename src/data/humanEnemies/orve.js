@@ -1,5 +1,3 @@
-import { humanBuildTypeProfile } from "./humanBuildTypes.js";
-
 export const orve = {
   id: "orve",
   type: "adepte",
@@ -39,7 +37,6 @@ export const orve = {
     { creatureId: "braise_corne", level: 2 },
     { creatureId: "onde_lente", level: 2 }
   ],
-  forcedBuildTypeProfile: humanBuildTypeProfile("feu", 1),
   activeAffixId: "morsure_sure",
   rewards: {
     victory: {
