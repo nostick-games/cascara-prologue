@@ -54,6 +54,7 @@ import {
   isDecorYSortLayer as isLayerDecorYSort,
   layerFlag as getLayerFlag,
   layerNumber as getLayerNumber,
+  layerOcclusionSide as getLayerOcclusionSide,
   layerOcclusionHeight as getLayerOcclusionHeight,
   shouldDrawTileLayer as shouldDrawMapTileLayer,
   ySortOffset as getYSortOffset
@@ -1880,6 +1881,10 @@ export class MapScreen {
     return getLayerOcclusionHeight(layer);
   }
 
+  layerOcclusionSide(layer) {
+    return getLayerOcclusionSide(layer);
+  }
+
   drawTileLayer(layer, time, { ySortPass = null, occlusionPass = null } = {}) {
     const { tilewidth, tileheight } = this.map;
     const occlusionHeight = this.layerOcclusionHeight(layer);
@@ -1899,14 +1904,21 @@ export class MapScreen {
       const drawY = y + tileheight - tile.tileset.tileheight;
       if (occlusionPass === "above" && occlusionHeight > 0) {
         const clippedHeight = Math.min(tile.tileset.tileheight, occlusionHeight);
+        const occlusionSide = this.layerOcclusionSide(layer);
+        const sourceY = occlusionSide === "top"
+          ? tile.sy
+          : tile.sy + tile.tileset.tileheight - clippedHeight;
+        const targetY = occlusionSide === "top"
+          ? drawY
+          : drawY + tile.tileset.tileheight - clippedHeight;
         this.ctx.drawImage(
           tile.tileset.image,
           tile.sx,
-          tile.sy + tile.tileset.tileheight - clippedHeight,
+          sourceY,
           tile.tileset.tilewidth,
           clippedHeight,
           drawX,
-          drawY + tile.tileset.tileheight - clippedHeight,
+          targetY,
           tile.tileset.tilewidth,
           clippedHeight
         );

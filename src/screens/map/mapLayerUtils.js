@@ -55,6 +55,11 @@ export function layerOcclusionHeight(layer) {
   return Math.max(0, layerNumber(layer, "occlusionHeight", 0));
 }
 
+export function layerOcclusionSide(layer) {
+  const value = layer.properties?.find((candidate) => candidate.name === "occlusionSide")?.value;
+  return value === "top" ? "top" : "bottom";
+}
+
 export function shouldDrawTileLayer({
   layer,
   collisionLayer,
