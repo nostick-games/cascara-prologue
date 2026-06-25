@@ -418,6 +418,8 @@ export const fr = {
   "log.affix_retour_de_geste_fail": "L'Instinct de retour de geste échoue à vous donner 1 PA supplémentaire…",
   "log.type_advantage_player": "Avantage de type : votre build {attackerType} frappe fort contre {defenderType}.",
   "log.type_advantage_enemy": "Avantage de type : le build {attackerType} de {creature} frappe fort contre {defenderType}.",
+  "log.type_resist_player": "Désavantage de type : votre build {attackerType} peine contre {defenderType}.",
+  "log.type_resist_enemy": "Désavantage de type : le build {attackerType} de {creature} peine contre {defenderType}.",
   "log.enemy_affix_rafale_ready": "L'Instinct de {creature} s'active : sa prochaine Entaille gagne +{bonus}% Critique.",
   "log.enemy_affix_guard_bonus": "L'Instinct de {creature} renforce sa garde : +{bonus} garde.",
   "log.enemy_affix_morsure_sure": "L'Instinct de morsure sûre de {creature} alourdit son coup !",

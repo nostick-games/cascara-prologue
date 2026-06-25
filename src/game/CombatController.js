@@ -566,6 +566,11 @@ export class CombatController {
         attackerType: this.t(`affix.type.${combat.hero.type}`),
         defenderType: this.t(`affix.type.${combat.enemy.type}`)
       }));
+    } else if (typeAdvantage.disadvantaged) {
+      this.addLog(this.t("log.type_resist_player", {
+        attackerType: this.t(`affix.type.${combat.hero.type}`),
+        defenderType: this.t(`affix.type.${combat.enemy.type}`)
+      }));
     }
     if (crit) this.objectives.completeByType("criticalBeforeCapture");
     if (crit && combat.hero.parriedBurningHorns) {

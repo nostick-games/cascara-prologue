@@ -157,6 +157,12 @@ export class CombatTurns {
         attackerType: ctx.t(`affix.type.${enemy.type}`),
         defenderType: ctx.t(`affix.type.${hero.type}`)
       }));
+    } else if (typeAdvantage.disadvantaged) {
+      ctx.addLog(ctx.t("log.type_resist_enemy", {
+        creature: ctx.creatureName(),
+        attackerType: ctx.t(`affix.type.${enemy.type}`),
+        defenderType: ctx.t(`affix.type.${hero.type}`)
+      }));
     }
     ctx.affixes.applyCritical(enemyCrit, "enemy");
 

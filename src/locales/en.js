@@ -418,6 +418,8 @@ export const en = {
   "log.affix_retour_de_geste_fail": "Gesture Return Instinct fails to give you 1 extra AP…",
   "log.type_advantage_player": "Type advantage: your {attackerType} build hits hard against {defenderType}.",
   "log.type_advantage_enemy": "Type advantage: {creature}'s {attackerType} build hits hard against {defenderType}.",
+  "log.type_resist_player": "Type disadvantage: your {attackerType} build struggles against {defenderType}.",
+  "log.type_resist_enemy": "Type disadvantage: {creature}'s {attackerType} build struggles against {defenderType}.",
   "log.enemy_affix_rafale_ready": "{creature}'s Instinct activates: its next Slash gains +{bonus}% Critical.",
   "log.enemy_affix_guard_bonus": "{creature}'s Guard Instinct reinforces its guard: +{bonus} guard.",
   "log.enemy_affix_morsure_sure": "{creature}'s Sure Bite Instinct makes the hit heavier!",
