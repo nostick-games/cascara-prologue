@@ -693,7 +693,9 @@ export class MapScreen {
   }
 
   canStartMovableJoystick(event) {
-    if (!this.running || this.inputLocked || this.encounterPaused || this.joystick.active) return false;
+    const simonPuzzleControlsMap = Boolean(this.activeSimonPuzzle);
+    if (!this.running || this.inputLocked || this.joystick.active) return false;
+    if (this.encounterPaused && !simonPuzzleControlsMap) return false;
     if (event.pointerType && event.pointerType !== "touch") return false;
     const target = event.target;
     if (!(target instanceof Element)) return false;
