@@ -11,6 +11,7 @@ import {
   npcLayerName,
   npcTriggerRadius,
   pixelAnimationsLayerName,
+  simonLayerName,
   teleportLayerName,
   tileFlipFlags
 } from "./mapConfig.js";
@@ -213,6 +214,44 @@ export function loadChests(map) {
         width: object.width,
         height: object.height,
         openingStartedAt: null
+      };
+    })
+    .filter(Boolean);
+}
+
+export function loadSimonTiles(map) {
+  const layer = map.layers.find(
+    (candidate) => normalizeLayerName(candidate.name) === simonLayerName && candidate.type === "objectgroup"
+  );
+  return (layer?.objects ?? [])
+    .map((object) => {
+      const properties = propertiesFromObject(object);
+      const id = properties.id ?? object.name ?? "";
+      const normalizedId = String(id).toLowerCase();
+      const color = normalizedId.replace(/^simon_/, "");
+      const isOrigin = color === "origine" || color === "origin";
+      const colorMap = {
+        bleu: "blue",
+        blue: "blue",
+        orange: "orange",
+        rouge: "red",
+        red: "red",
+        vert: "green",
+        green: "green"
+      };
+      const key = isOrigin ? "origin" : colorMap[color];
+      if (!key) return null;
+      return {
+        id,
+        key,
+        color: isOrigin ? null : key,
+        x: object.x,
+        y: object.y,
+        width: object.width,
+        height: object.height,
+        centerX: object.x + object.width / 2,
+        centerY: object.y + object.height / 2,
+        visible: object.visible !== false
       };
     })
     .filter(Boolean);

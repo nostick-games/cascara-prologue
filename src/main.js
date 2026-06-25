@@ -488,6 +488,7 @@ mapScreen = new MapScreen({
   onMapService: ({ service, host, speaker }) => mapHealerFlow.run(service, host, { speaker }),
   onDoor: (payload) => adventureFlow?.openDoorFromMap(payload),
   onRespawnDiscovery: ({ mapId }) => discoverMapRelay(mapId),
+  onMapFlagUnlocked: (flag) => unlockMapFlag(flag),
   onMapChange: () => syncMapQuickActions()
 });
 
@@ -553,7 +554,7 @@ function setMapQuickActionsDisabled(disabled) {
 function syncMapQuickActions() {
   if (!mapPopulationButton || !mapScreen) return;
   mapPopulationButton.hidden = !mapScreen.isMinimapAvailable();
-  mapRadarButton.hidden = !hasCompletedChadTrainingCombat();
+  mapRadarButton.hidden = false;
 }
 
 function freezeMapQuickActions(duration = mapQuickActionsFreezeMs) {
@@ -865,6 +866,15 @@ function hasCompletedChadTrainingCombat() {
   return baseProgression.completedTrainerBattleIds?.includes("chad") ?? false;
 }
 
+function unlockMapFlag(flag) {
+  if (!flag) return;
+  baseProgression.openedMapFlags ??= [];
+  if (!baseProgression.openedMapFlags.includes(flag)) {
+    baseProgression.openedMapFlags.push(flag);
+  }
+  renderAll();
+}
+
 function collectMapChestReward(chest) {
   baseProgression.openedMapFlags ??= [];
   if (!baseProgression.openedMapFlags.includes(chest.openedFlag)) {
@@ -881,6 +891,18 @@ function collectMapChestReward(chest) {
       description: `${creatureName} était caché dans le coffre !`,
       okLabel: "OK"
     }).then(() => adventureFlow?.openHuntBriefingFromMap(null));
+  }
+  if (chest.contentType === "talents" && chest.contentId === "perception") {
+    const quantity = Number(chest.quantity ?? 1) || 1;
+    const maxPerception = playerRadarStatDefinitions.find((stat) => stat.id === "perception")?.max ?? Number.POSITIVE_INFINITY;
+    build.perception = Math.min(maxPerception, (build.perception ?? 0) + quantity);
+    committedBuild.perception = Math.min(maxPerception, (committedBuild.perception ?? 0) + quantity);
+    renderAll();
+    return openMapRewardModal({
+      title: t("map.chest.perception_reward_title"),
+      description: t("map.chest.perception_reward_description", { quantity }),
+      okLabel: t("ui.ok")
+    });
   }
   return openMapRewardModal({
     title: "Félicitations !",

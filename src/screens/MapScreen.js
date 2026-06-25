@@ -28,6 +28,7 @@ import {
   npcLayerName,
   respawnSprite,
   respawnDiscoveryBounds,
+  simonTileSprites,
   tileFlipFlags
 } from "./map/mapConfig.js";
 import { nativeHaptic } from "../utils/nativeBridge.js";
@@ -39,6 +40,7 @@ import {
   loadMapNpcs as loadMapNpcObjects,
   loadPixelAnimationLayers as loadMapPixelAnimationLayers,
   loadRespawnPoints as loadMapRespawnPoints,
+  loadSimonTiles as loadMapSimonTiles,
   loadUntypedEncounterZones as loadMapUntypedEncounterZones,
   pointInEncounterZone as isPointInEncounterZone,
   tileOverlapsZone as doesTileOverlapZone
@@ -108,6 +110,8 @@ import {
   positiveModulo
 } from "./map/mapUtils.js";
 
+const simonOriginTriggerRadius = 8;
+
 export class MapScreen {
   constructor({
     nodes,
@@ -123,6 +127,7 @@ export class MapScreen {
     onMapService = () => {},
     onDoor = () => {},
     onRespawnDiscovery = () => {},
+    onMapFlagUnlocked = () => {},
     onMapChange = () => {}
   }) {
     this.nodes = nodes;
@@ -139,6 +144,7 @@ export class MapScreen {
     this.onMapService = onMapService;
     this.onDoor = onDoor;
     this.onRespawnDiscovery = onRespawnDiscovery;
+    this.onMapFlagUnlocked = onMapFlagUnlocked;
     this.onMapChange = onMapChange;
     this.heroName = heroName;
     this.ctx = nodes.canvas.getContext("2d");
@@ -153,6 +159,7 @@ export class MapScreen {
     this.respawnPoints = [];
     this.doors = [];
     this.chests = [];
+    this.simonTiles = [];
     this.mapNpcs = [];
     this.pixelAnimationLayers = [];
     this.activeRespawnId = null;
@@ -166,6 +173,8 @@ export class MapScreen {
     this.heroImages = {};
     this.humanEncounterImages = new Map();
     this.mapNpcImages = new Map();
+    this.simonTileImages = new Map();
+    this.simonTileOverlayImages = new Map();
     this.chestImage = null;
     this.respawnImage = null;
     this.loaded = false;
@@ -201,6 +210,8 @@ export class MapScreen {
     this.lastDoorTriggerId = null;
     this.lastDoorTriggeredAt = 0;
     this.lastNpcDialogId = null;
+    this.activeSimonPuzzle = null;
+    this.simonFlash = null;
     this.completedNpcDialogIds = new Set();
     this.encounterPaused = false;
     this.dialogTypingToken = 0;
@@ -226,6 +237,7 @@ export class MapScreen {
     this.respawnPoints = this.loadRespawnPoints();
     this.doors = this.loadDoors();
     this.chests = this.loadChests();
+    this.simonTiles = this.loadSimonTiles();
     this.mapNpcs = this.loadMapNpcs();
     this.pixelAnimationLayers = this.loadPixelAnimationLayers();
     this.activeRespawnId = this.defaultRespawnPoint()?.id ?? null;
@@ -255,6 +267,9 @@ export class MapScreen {
     this.mapNpcImages = new Map(await Promise.all(
       [...new Set(this.mapNpcs.map((npc) => npc.sprite.src))].map(async (src) => [src, await loadImage(src)])
     ));
+    this.simonTileImages = new Map(await Promise.all(
+      Object.entries(simonTileSprites).map(async ([key, sprite]) => [key, await loadImage(sprite.src)])
+    ));
     this.chestImage = await loadImage(chestSprite.src);
     this.respawnImage = await loadImage(respawnSprite.src);
     this.placeHeroBottomLeft();
@@ -275,6 +290,7 @@ export class MapScreen {
     this.respawnPoints = [];
     this.doors = [];
     this.chests = [];
+    this.simonTiles = [];
     this.mapNpcs = [];
     this.pixelAnimationLayers = [];
     this.activeRespawnId = null;
@@ -284,7 +300,11 @@ export class MapScreen {
     this.humanEncounterFades = new Map();
     this.tilesets = [];
     this.mapNpcImages = new Map();
+    this.simonTileImages = new Map();
+    this.simonTileOverlayImages = new Map();
     this.respawnImage = null;
+    this.activeSimonPuzzle = null;
+    this.simonFlash = null;
     this.clearHeroRespawnAnimation();
     this.lastDoorTriggerId = null;
     this.lastNpcDialogId = null;
@@ -791,6 +811,7 @@ export class MapScreen {
     this.moveHero(dx, dy, delta);
     this.checkRespawnDiscovery();
     this.updateCamera();
+    if (this.updateSimonPuzzle()) return;
     this.checkChestInteraction();
     this.checkDoorInteraction();
     this.checkNpcDialogInteraction();
@@ -922,6 +943,10 @@ export class MapScreen {
 
   loadChests() {
     return loadMapChests(this.map);
+  }
+
+  loadSimonTiles() {
+    return loadMapSimonTiles(this.map);
   }
 
   defaultRespawnPoint() {
@@ -1175,6 +1200,249 @@ export class MapScreen {
     return this.isChestOpened(chest.openedFlag);
   }
 
+  isSimonLockedChest(chest) {
+    return chest.id === "puits_chest_01";
+  }
+
+  simonSolvedFlag(chest) {
+    return `${chest.openedFlag}_simon_solved`;
+  }
+
+  isSimonPuzzleSolved(chest) {
+    return this.isChestOpened(this.simonSolvedFlag(chest));
+  }
+
+  simonOriginTile() {
+    return this.simonTiles.find((tile) => tile.key === "origin") ?? null;
+  }
+
+  simonColorTiles() {
+    return this.simonTiles.filter((tile) => tile.color);
+  }
+
+  isHeroOnSimonTile(tile, { padding = 5 } = {}) {
+    if (!tile) return false;
+    const pointX = this.hero.x;
+    const pointY = this.hero.y + heroCollisionBox.bottomOffset;
+    return pointX >= tile.x - padding
+      && pointX <= tile.x + tile.width + padding
+      && pointY >= tile.y - padding
+      && pointY <= tile.y + tile.height + padding;
+  }
+
+  currentSimonColorTile() {
+    return this.simonColorTiles().find((tile) => this.isHeroOnSimonTile(tile, { padding: 5 })) ?? null;
+  }
+
+  isHeroCenteredOnSimonOrigin() {
+    const tile = this.simonOriginTile();
+    if (!tile) return false;
+    const pointX = this.hero.x;
+    const pointY = this.hero.y + heroCollisionBox.bottomOffset;
+    return Math.abs(pointX - tile.centerX) <= simonOriginTriggerRadius
+      && Math.abs(pointY - tile.centerY) <= simonOriginTriggerRadius;
+  }
+
+  updateSimonPuzzle() {
+    const puzzle = this.activeSimonPuzzle;
+    if (!puzzle) return false;
+    const now = performance.now();
+    if (puzzle.phase === "waitingOrigin" && this.isHeroCenteredOnSimonOrigin()) {
+      this.launchSimonSequence(puzzle);
+      return true;
+    }
+    if (puzzle.phase !== "listening") return true;
+
+    const tile = this.currentSimonColorTile();
+    if (!tile) {
+      puzzle.holdColor = null;
+      puzzle.holdStartedAt = 0;
+      puzzle.holdConsumed = false;
+      return true;
+    }
+    if (puzzle.holdColor !== tile.color) {
+      puzzle.holdColor = tile.color;
+      puzzle.holdStartedAt = now;
+      puzzle.holdConsumed = false;
+      return true;
+    }
+    if (puzzle.holdConsumed || now - puzzle.holdStartedAt < 280) return true;
+    puzzle.holdConsumed = true;
+    this.resolveSimonInput(tile.color);
+    return true;
+  }
+
+  async launchSimonSequence(puzzle) {
+    if (!puzzle || puzzle.phase !== "waitingOrigin") return;
+    const token = puzzle.token;
+    const sequence = puzzle.sequences[puzzle.stage];
+    puzzle.phase = "showing";
+    puzzle.inputIndex = 0;
+    puzzle.holdColor = null;
+    puzzle.holdStartedAt = 0;
+    puzzle.holdConsumed = false;
+    this.inputLocked = true;
+    this.heroMoving = false;
+    this.keys.clear();
+    this.resetJoystick();
+    await this.delay(320);
+    for (const color of sequence) {
+      if (!this.isCurrentSimonPuzzle(token)) return;
+      this.setSimonFlash(color, { durationMs: 620 });
+      await this.delay(680);
+      await this.delay(120);
+    }
+    if (!this.isCurrentSimonPuzzle(token)) return;
+    puzzle.phase = "listening";
+    this.inputLocked = false;
+  }
+
+  resolveSimonInput(color) {
+    const puzzle = this.activeSimonPuzzle;
+    if (!puzzle || puzzle.phase !== "listening") return;
+    const expected = puzzle.sequences[puzzle.stage][puzzle.inputIndex];
+    if (color !== expected) {
+      this.failSimonPuzzle(color);
+      return;
+    }
+    nativeHaptic("light");
+    this.setSimonFlash(color, { durationMs: 320 });
+    puzzle.inputIndex += 1;
+    if (puzzle.inputIndex >= puzzle.sequences[puzzle.stage].length) {
+      this.completeSimonStage();
+    }
+  }
+
+  async completeSimonStage() {
+    const puzzle = this.activeSimonPuzzle;
+    if (!puzzle || puzzle.phase === "resolving") return;
+    const token = puzzle.token;
+    puzzle.phase = "resolving";
+    this.inputLocked = true;
+    this.heroMoving = false;
+    this.keys.clear();
+    this.resetJoystick();
+    await this.delay(420);
+    if (!this.isCurrentSimonPuzzle(token)) return;
+
+    const isLastStage = puzzle.stage >= puzzle.sequences.length - 1;
+    const messageKey = isLastStage
+      ? "map.simon.complete"
+      : puzzle.stage === 0
+        ? "map.simon.stage_1_clear"
+        : "map.simon.stage_2_clear";
+    if (isLastStage) {
+      this.onMapFlagUnlocked(puzzle.solvedFlag);
+    }
+    await this.playMessageDialog({
+      message: this.t(messageKey),
+      messageHighlights: ["Echo"]
+    });
+    if (!this.isCurrentSimonPuzzle(token)) return;
+    if (isLastStage) {
+      this.activeSimonPuzzle = null;
+      this.simonFlash = null;
+      this.encounterPaused = false;
+      this.inputLocked = false;
+      return;
+    }
+    puzzle.stage += 1;
+    puzzle.phase = "waitingOrigin";
+    puzzle.inputIndex = 0;
+    puzzle.holdColor = null;
+    puzzle.holdStartedAt = 0;
+    puzzle.holdConsumed = false;
+    this.inputLocked = false;
+  }
+
+  async failSimonPuzzle(color) {
+    const puzzle = this.activeSimonPuzzle;
+    if (!puzzle || puzzle.phase === "resolving") return;
+    const token = puzzle.token;
+    puzzle.phase = "resolving";
+    this.inputLocked = true;
+    this.heroMoving = false;
+    this.keys.clear();
+    this.resetJoystick();
+    nativeHaptic("medium");
+    this.setSimonFlash(color, { durationMs: 420, black: true });
+    await this.delay(500);
+    if (!this.isCurrentSimonPuzzle(token)) return;
+    await this.playMessageDialog({
+      message: this.t("map.simon.fail"),
+      messageHighlights: ["Echo"]
+    });
+    if (!this.isCurrentSimonPuzzle(token)) return;
+    this.activeSimonPuzzle = null;
+    this.simonFlash = null;
+    this.encounterPaused = false;
+    this.inputLocked = false;
+  }
+
+  isCurrentSimonPuzzle(token) {
+    return this.activeSimonPuzzle?.token === token;
+  }
+
+  setSimonFlash(color, { durationMs = 500, black = false } = {}) {
+    this.simonFlash = {
+      color,
+      black,
+      startedAt: performance.now(),
+      durationMs
+    };
+  }
+
+  randomSimonSequence(length) {
+    const colors = ["green", "blue", "orange", "red"];
+    return Array.from({ length }, () => colors[Math.floor(Math.random() * colors.length)]);
+  }
+
+  async startSimonPuzzleForChest(chest) {
+    if (!this.simonOriginTile() || this.simonColorTiles().length < 4) {
+      await this.playMessageDialog({
+        message: this.t("map.simon.fail"),
+        messageHighlights: ["Echo"]
+      });
+      this.encounterPaused = false;
+      this.inputLocked = false;
+      return;
+    }
+    await this.playMessageDialog({
+      message: this.t("map.simon.chest_locked")
+    });
+    await this.playMessageDialog({
+      message: this.t("map.simon.locked_intro"),
+      messageHighlights: ["Echo"]
+    });
+    this.activeSimonPuzzle = {
+      chestId: chest.id,
+      solvedFlag: this.simonSolvedFlag(chest),
+      token: Symbol(chest.id),
+      stage: 0,
+      phase: "waitingOrigin",
+      sequences: [
+        ["green", "blue", "orange", "red"],
+        this.randomSimonSequence(4),
+        this.randomSimonSequence(6)
+      ],
+      inputIndex: 0,
+      holdColor: null,
+      holdStartedAt: 0,
+      holdConsumed: false
+    };
+    this.encounterPaused = true;
+    this.inputLocked = false;
+    this.heroMoving = false;
+    this.keys.clear();
+    this.resetJoystick();
+  }
+
+  delay(ms) {
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, ms);
+    });
+  }
+
   async openChestPrompt(chest) {
     this.encounterPaused = true;
     this.inputLocked = true;
@@ -1182,16 +1450,20 @@ export class MapScreen {
     this.keys.clear();
     this.resetJoystick();
     const choice = await this.playChoiceDialog({
-      message: "Voulez-vous ouvrir le coffre ?",
+      message: this.t("map.chest.open_prompt"),
       prompt: "",
       options: [
-        { label: "Oui", value: "yes" },
-        { label: "Non", value: "no" }
+        { label: this.t("ui.yes"), value: "yes" },
+        { label: this.t("ui.no"), value: "no" }
       ]
     });
     if (choice !== "yes") {
       this.encounterPaused = false;
       this.inputLocked = false;
+      return;
+    }
+    if (this.isSimonLockedChest(chest) && !this.isSimonPuzzleSolved(chest)) {
+      await this.startSimonPuzzleForChest(chest);
       return;
     }
     await this.playChestOpeningAnimation(chest);
@@ -1361,6 +1633,7 @@ export class MapScreen {
     ctx.scale(scale, scale);
     ctx.translate(-Math.round(this.camera.x), -Math.round(this.camera.y));
     this.drawTileLayers(time, { aboveHero: false });
+    this.drawSimonTiles(time);
     this.drawRespawnPoints(time);
     this.drawChests(time, { ySortPass: "below" });
     this.drawMapNpcs(time, { ySortPass: "below" });
@@ -1381,6 +1654,60 @@ export class MapScreen {
       encounters: this.activeHumanEncounters(),
       images: this.humanEncounterImages
     });
+  }
+
+  drawSimonTiles(time) {
+    if (!this.simonTiles.length) return;
+    const ctx = this.ctx;
+    const active = Boolean(this.activeSimonPuzzle);
+    this.simonTiles.forEach((tile) => {
+      if (!tile.visible) return;
+      const sprite = simonTileSprites[tile.key];
+      const image = this.simonTileImages.get(tile.key);
+      if (!sprite || !image) return;
+      const drawSize = sprite.drawSize;
+      const drawX = Math.round(tile.centerX - drawSize / 2);
+      const drawY = Math.round(tile.centerY - drawSize / 2);
+      ctx.drawImage(image, drawX, drawY, drawSize, drawSize);
+      if (!tile.color || !active) return;
+
+      const flash = this.simonFlash;
+      const isFlashing = flash?.color === tile.color;
+      const progress = isFlashing
+        ? Math.max(0, Math.min(1, (time - flash.startedAt) / flash.durationMs))
+        : 1;
+      const intensity = isFlashing ? 1 - Math.abs(progress * 2 - 1) : 0;
+      const baseAlpha = 0.66;
+      const overlayAlpha = flash?.black && isFlashing
+        ? baseAlpha + intensity * (0.96 - baseAlpha)
+        : baseAlpha * (1 - intensity);
+
+      if (overlayAlpha <= 0.01) return;
+      const overlay = this.simonTileOverlayImage(tile.key, image, drawSize);
+      ctx.save();
+      ctx.globalAlpha = overlayAlpha;
+      ctx.drawImage(overlay, drawX, drawY, drawSize, drawSize);
+      ctx.restore();
+    });
+  }
+
+  simonTileOverlayImage(key, image, drawSize) {
+    const cacheKey = `${key}:${drawSize}`;
+    const cached = this.simonTileOverlayImages.get(cacheKey);
+    if (cached) return cached;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = drawSize;
+    canvas.height = drawSize;
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = "#050507";
+    ctx.fillRect(0, 0, drawSize, drawSize);
+    ctx.globalCompositeOperation = "destination-in";
+    ctx.drawImage(image, 0, 0, drawSize, drawSize);
+    ctx.globalCompositeOperation = "source-over";
+    this.simonTileOverlayImages.set(cacheKey, canvas);
+    return canvas;
   }
 
   drawRespawnPoints(time) {

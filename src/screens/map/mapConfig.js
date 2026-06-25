@@ -56,6 +56,7 @@ export const npcLayerName = "pnj";
 export const teleportLayerName = "teleport";
 export const doorsLayerName = "doors";
 export const itemsLayerName = "items";
+export const simonLayerName = "simon";
 export const pixelAnimationsLayerName = "animations pixel";
 export const defaultRespawnType = "respawn_default";
 export const discoveredRespawnTypes = new Set(["respawn_found", "respawn_discovered"]);
@@ -139,6 +140,13 @@ export const chestSprite = {
   frames: 4,
   drawSize: 32,
   frameDurationMs: 360
+};
+export const simonTileSprites = {
+  origin: { src: assetPath("assets/mini_games/simon/simon_origine.png"), drawSize: 16 },
+  blue: { src: assetPath("assets/mini_games/simon/simon_bleu.png"), drawSize: 16 },
+  orange: { src: assetPath("assets/mini_games/simon/simon_orange.png"), drawSize: 16 },
+  red: { src: assetPath("assets/mini_games/simon/simon_rouge.png"), drawSize: 16 },
+  green: { src: assetPath("assets/mini_games/simon/simon_vert.png"), drawSize: 16 }
 };
 export const respawnSprite = {
   src: assetPath("assets/objects/teleport.png"),
