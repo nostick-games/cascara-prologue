@@ -219,6 +219,26 @@ export function loadChests(map) {
     .filter(Boolean);
 }
 
+export function loadEchoCalls(map) {
+  const layer = map.layers.find(
+    (candidate) => normalizeLayerName(candidate.name) === itemsLayerName && candidate.type === "objectgroup"
+  );
+  return (layer?.objects ?? [])
+    .map((object) => {
+      const properties = propertiesFromObject(object);
+      const id = properties.id ?? object.name ?? "";
+      if (id !== "appel_echo") return null;
+      return {
+        id,
+        x: object.x,
+        y: object.y,
+        width: object.width,
+        height: object.height
+      };
+    })
+    .filter(Boolean);
+}
+
 export function loadSimonTiles(map) {
   const layer = map.layers.find(
     (candidate) => normalizeLayerName(candidate.name) === simonLayerName && candidate.type === "objectgroup"

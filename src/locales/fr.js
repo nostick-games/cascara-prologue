@@ -24,6 +24,8 @@ export const fr = {
   "map.simon.stage_2_clear": "Echo : Tu es décidément très fort ! Replace toi sur la dalle grise centrale et essaie de reproduire cette dernière séquence…",
   "map.simon.complete": "Echo : Incroyable ! Tu as bien mérité ton trésor.",
   "map.simon.fail": "Echo : Dommage, tu as échoué ! Mais tu peux recommencer autant de fois que tu le désires en essayant d'ouvrir le coffre…",
+  "map.echo_call.call": "{hero}… {hero}…",
+  "map.echo_call.message": "Vous entendez un Echo qui semble venir du fond du puits.",
   "ui.map_radar": "Radar du joueur",
   "ui.map_inventory": "Inventaire",
   "ui.map_creatures": "Fawnas possédés",

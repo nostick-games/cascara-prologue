@@ -36,6 +36,7 @@ import {
   encounterZoneSummaries as summarizeEncounterZones,
   loadChests as loadMapChests,
   loadDoors as loadMapDoors,
+  loadEchoCalls as loadMapEchoCalls,
   loadEncounterZones as loadMapEncounterZones,
   loadMapNpcs as loadMapNpcObjects,
   loadPixelAnimationLayers as loadMapPixelAnimationLayers,
@@ -159,6 +160,7 @@ export class MapScreen {
     this.respawnPoints = [];
     this.doors = [];
     this.chests = [];
+    this.echoCalls = [];
     this.simonTiles = [];
     this.mapNpcs = [];
     this.pixelAnimationLayers = [];
@@ -209,6 +211,7 @@ export class MapScreen {
     this.lastChestTriggerId = null;
     this.lastDoorTriggerId = null;
     this.lastDoorTriggeredAt = 0;
+    this.lastEchoCallId = null;
     this.lastNpcDialogId = null;
     this.activeSimonPuzzle = null;
     this.simonFlash = null;
@@ -237,6 +240,7 @@ export class MapScreen {
     this.respawnPoints = this.loadRespawnPoints();
     this.doors = this.loadDoors();
     this.chests = this.loadChests();
+    this.echoCalls = this.loadEchoCalls();
     this.simonTiles = this.loadSimonTiles();
     this.mapNpcs = this.loadMapNpcs();
     this.pixelAnimationLayers = this.loadPixelAnimationLayers();
@@ -290,6 +294,7 @@ export class MapScreen {
     this.respawnPoints = [];
     this.doors = [];
     this.chests = [];
+    this.echoCalls = [];
     this.simonTiles = [];
     this.mapNpcs = [];
     this.pixelAnimationLayers = [];
@@ -307,6 +312,7 @@ export class MapScreen {
     this.simonFlash = null;
     this.clearHeroRespawnAnimation();
     this.lastDoorTriggerId = null;
+    this.lastEchoCallId = null;
     this.lastNpcDialogId = null;
     this.lastDoorTriggeredAt = performance.now();
     await this.load();
@@ -814,6 +820,7 @@ export class MapScreen {
     this.checkRespawnDiscovery();
     this.updateCamera();
     if (this.updateSimonPuzzle()) return;
+    this.checkEchoCallInteraction();
     this.checkChestInteraction();
     this.checkDoorInteraction();
     this.checkNpcDialogInteraction();
@@ -945,6 +952,10 @@ export class MapScreen {
 
   loadChests() {
     return loadMapChests(this.map);
+  }
+
+  loadEchoCalls() {
+    return loadMapEchoCalls(this.map);
   }
 
   loadSimonTiles() {
@@ -1153,6 +1164,24 @@ export class MapScreen {
     this.openChestPrompt(chest);
   }
 
+  checkEchoCallInteraction() {
+    if (this.encounterPaused || !this.echoCalls.length) return;
+    const echoCall = this.echoCalls.find((candidate) => this.isHeroInsideEchoCall(candidate));
+    if (!echoCall) {
+      this.lastEchoCallId = null;
+      return;
+    }
+    if (this.isChestOpened(this.echoCallFlag(echoCall))) return;
+    if (this.lastEchoCallId === echoCall.id) return;
+    this.lastEchoCallId = echoCall.id;
+    this.onMapFlagUnlocked(this.echoCallFlag(echoCall));
+    this.openEchoCallDialog();
+  }
+
+  echoCallFlag(echoCall) {
+    return `${echoCall.id}_heard`;
+  }
+
   checkDoorInteraction() {
     if (this.encounterPaused || !this.doors.length) return;
     const door = this.doors.find((candidate) => this.isHeroInsideDoor(candidate));
@@ -1188,6 +1217,15 @@ export class MapScreen {
 
   isHeroNearChest(chest) {
     return isHeroInChestRange(this.hero, chest);
+  }
+
+  isHeroInsideEchoCall(echoCall) {
+    const pointX = this.hero.x;
+    const pointY = this.hero.y + heroCollisionBox.bottomOffset;
+    return pointX >= echoCall.x
+      && pointX <= echoCall.x + echoCall.width
+      && pointY >= echoCall.y
+      && pointY <= echoCall.y + echoCall.height;
   }
 
   isHeroInsideDoor(door) {
@@ -1476,6 +1514,18 @@ export class MapScreen {
     await this.onChestReward(chest);
     this.encounterPaused = false;
     this.inputLocked = false;
+  }
+
+  async openEchoCallDialog() {
+    this.lockMapDialogInput();
+    await this.playMessageDialog({
+      message: this.t("map.echo_call.call", { hero: this.heroName })
+    });
+    await this.playMessageDialog({
+      message: this.t("map.echo_call.message"),
+      messageHighlights: ["Echo"]
+    });
+    this.unlockMapDialogInput();
   }
 
   playChestOpeningAnimation(chest) {

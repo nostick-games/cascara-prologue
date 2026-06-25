@@ -24,6 +24,8 @@ export const en = {
   "map.simon.stage_2_clear": "Echo: You really are strong! Stand back on the central gray slab and try to reproduce this final sequence...",
   "map.simon.complete": "Echo: Incredible! You have earned your treasure.",
   "map.simon.fail": "Echo: Too bad, you failed! But you can try again as many times as you like by trying to open the chest...",
+  "map.echo_call.call": "{hero}... {hero}...",
+  "map.echo_call.message": "You hear an Echo that seems to come from the bottom of the well.",
   "ui.map_radar": "Player radar",
   "ui.map_inventory": "Inventory",
   "ui.map_creatures": "Owned fawnas",
