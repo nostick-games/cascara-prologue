@@ -111,7 +111,7 @@ import {
   positiveModulo
 } from "./map/mapUtils.js";
 
-const simonOriginTriggerRadius = 8;
+const simonOriginTriggerRadius = 3;
 
 export class MapScreen {
   constructor({
@@ -1278,7 +1278,7 @@ export class MapScreen {
     const tile = this.simonOriginTile();
     if (!tile) return false;
     const pointX = this.hero.x;
-    const pointY = this.hero.y + heroCollisionBox.bottomOffset;
+    const pointY = this.hero.y - 12;
     return Math.abs(pointX - tile.centerX) <= simonOriginTriggerRadius
       && Math.abs(pointY - tile.centerY) <= simonOriginTriggerRadius;
   }
