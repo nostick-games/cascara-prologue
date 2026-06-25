@@ -1285,10 +1285,12 @@ export class MapScreen {
     this.heroMoving = false;
     this.keys.clear();
     this.resetJoystick();
+    nativeHaptic("medium");
     await this.delay(320);
     for (const color of sequence) {
       if (!this.isCurrentSimonPuzzle(token)) return;
       this.setSimonFlash(color, { durationMs: 620 });
+      nativeHaptic("light");
       await this.delay(680);
       await this.delay(120);
     }
@@ -1324,6 +1326,7 @@ export class MapScreen {
     this.resetJoystick();
     await this.delay(420);
     if (!this.isCurrentSimonPuzzle(token)) return;
+    nativeHaptic("success");
 
     const isLastStage = puzzle.stage >= puzzle.sequences.length - 1;
     const messageKey = isLastStage
@@ -1364,7 +1367,7 @@ export class MapScreen {
     this.heroMoving = false;
     this.keys.clear();
     this.resetJoystick();
-    nativeHaptic("medium");
+    nativeHaptic("error");
     this.setSimonFlash(color, { durationMs: 420, black: true });
     await this.delay(500);
     if (!this.isCurrentSimonPuzzle(token)) return;

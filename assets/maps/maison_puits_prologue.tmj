@@ -660,7 +660,7 @@
         {
          "columns":1,
          "firstgid":1,
-         "image":"..\/..\/dist\/assets\/maps_assets_tilesets\/Other\/Ladder.png",
+         "image":"..\/maps_assets_tilesets\/Other\/Ladder.png",
          "imageheight":48,
          "imagewidth":16,
          "margin":0,
