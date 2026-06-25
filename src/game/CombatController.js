@@ -637,6 +637,7 @@ export class CombatController {
     const combat = this.combat;
     const exposed = combat.enemy.statuses?.a_decouvert;
     if (exposed) {
+      const enemyHpBefore = combat.displayHp?.enemy ?? combat.enemy.hp;
       const { lostGuard, ruptureDamage } = this.applyGuardRupture(combat.enemy, exposed.guardLoss);
       this.combatDebug("enemy_status_tick", {
         status: "a_decouvert",
@@ -644,18 +645,27 @@ export class CombatController {
         ruptureDamage
       });
       if (lostGuard > 0 || ruptureDamage > 0) {
+        if (ruptureDamage > 0) {
+          combat.displayHp.enemy = enemyHpBefore;
+          this.queueDamageFeedback({
+            targetKey: "enemy",
+            message: this.t("log.status_exposed_guard_loss", {
+              creature: this.creatureName(),
+              guard: lostGuard,
+              damage: ruptureDamage
+            }),
+            flash: () => this.combatScreen.flashEnemy(),
+            onSettled: combat.enemy.hp <= 0
+              ? () => this.endEnemyFlee()
+              : () => this.turns.enemyTurn({ skipStatus: true })
+          });
+          return true;
+        }
         this.addLog(this.t("log.status_exposed_guard_loss", {
           creature: this.creatureName(),
           guard: lostGuard,
           damage: ruptureDamage
         }));
-        if (ruptureDamage > 0) {
-          this.syncDisplayedHitPoints("enemy");
-          if (combat.enemy.hp <= 0) {
-            this.endEnemyFlee();
-            return true;
-          }
-        }
       }
     }
 
@@ -724,17 +734,27 @@ export class CombatController {
 
     const exposed = hero.statuses?.a_decouvert;
     if (exposed) {
+      const heroHpBeforeActual = hero.hp;
+      const heroHpBefore = combat.displayHp?.hero ?? hero.hp;
       const { lostGuard, ruptureDamage } = this.applyGuardRupture(hero, exposed.guardLoss);
       this.combatDebug("hero_status_tick", { status: "a_decouvert", lostGuard, ruptureDamage });
       if (lostGuard > 0 || ruptureDamage > 0) {
-        this.addLog(this.t("log.hero_status_exposed_guard_loss", { guard: lostGuard, damage: ruptureDamage }));
         if (ruptureDamage > 0) {
-          this.syncDisplayedHitPoints("hero");
-          if (hero.hp <= 0) {
-            this.endCombat(false, this.t(this.context === "human" ? "log.human_defeat" : "log.defeat"));
-            return true;
-          }
+          combat.displayHp.hero = heroHpBefore;
+          this.queueDamageFeedback({
+            targetKey: "hero",
+            message: this.t("log.hero_status_exposed_guard_loss", { guard: lostGuard, damage: ruptureDamage }),
+            flash: () => this.combatScreen.flashHero(),
+            onSettled: hero.hp <= 0
+              ? () => this.endCombat(false, this.t(this.context === "human" ? "log.human_defeat" : "log.defeat"))
+              : () => {
+                this.affixes.tryElanDeSurvie(heroHpBeforeActual);
+                this.affixes.trySouffleRelatif();
+              }
+          });
+          return true;
         }
+        this.addLog(this.t("log.hero_status_exposed_guard_loss", { guard: lostGuard, damage: ruptureDamage }));
       }
     }
 
