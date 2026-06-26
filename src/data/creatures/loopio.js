@@ -1,5 +1,6 @@
 export const loopio = {
   id: "loopio",
+  number: 7,
   type: "utilitaire",
   nameKey: "creature.loopio.name",
   stageLabelKey: "creature.loopio.stage_label",

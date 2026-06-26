@@ -1,6 +1,7 @@
 export const aragor = {
   id: "aragor",
   type: "gardien",
+  gender: "masculin",
   nameKey: "human_enemy.aragor.name",
   stageLabelKey: "human_enemy.aragor.stage_label",
   spriteLabelKey: "human_enemy.aragor.sprite_label",

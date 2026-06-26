@@ -5,6 +5,7 @@ import {
   applyHumanBuildTypeToAction,
   humanBuildTypeProfile
 } from "../data/humanEnemies/humanBuildTypes.js";
+import { humanGenderTextVars } from "../data/humanEnemies/gender.js";
 import { CombatAffixes } from "./combatAffixes.js";
 import { CombatDebug } from "./combatDebug.js";
 import {
@@ -295,6 +296,19 @@ export class CombatController {
     this.log.clear();
   }
 
+  randomLog(key, vars = {}, variantCount = 0) {
+    const variantIndex = Math.floor(Math.random() * (variantCount + 1));
+    const variantKey = variantIndex === 0 ? key : `${key}_alt_${variantIndex}`;
+    return this.t(variantKey, vars);
+  }
+
+  humanOpponentVars(vars = {}) {
+    return {
+      ...humanGenderTextVars(this.context === "human" ? this.creature?.gender : undefined),
+      ...vars
+    };
+  }
+
   combatDebug(event, details = {}) {
     this.debug.log(event, details);
   }
@@ -389,14 +403,17 @@ export class CombatController {
     });
     this.logCombatStatsSummary();
 
+    // Amorce : pose la scène avant les lignes d'initiative/perception (narration en récit).
+    if (this.context === "capture") this.narrateSceneOpening();
+
     if (enemy.speed > hero.speed) {
       combat.playerInputLocked = true;
       hero.guard += enemyInitiativeGuardBonus;
-      this.addLog(this.t("log.enemy_initiative", {
+      this.addLog(this.t("log.enemy_initiative", this.humanOpponentVars({
         opponent: this.creatureName(),
         creature: this.creatureName(),
         guard: enemyInitiativeGuardBonus
-      }));
+      })));
       this.chargeSignatureForAction("enemy", "initiative", { id: "initiative" }, { actionId: "initiative", actedFirst: true });
       combat.phase = "enemy";
     } else if (hero.speed > enemy.speed) {
@@ -468,14 +485,14 @@ export class CombatController {
   }
 
   revealPerception() {
-    // Même règle que la visibilité des objectifs : on révèle l'objectif caché quand on
-    // sur-perçoit le fawna (Perception joueur >= Perception du fawna), pas via un seuil fixe.
-    const enemyPerception = this.combat?.enemy?.perception ?? 0;
-    if ((this.build.perception ?? 0) >= enemyPerception) {
-      this.addLog(this.t("log.perception_reveals"));
-    } else {
-      this.addLog(this.t("log.perception_low"));
-    }
+    // La Perception module les objectifs révélés, mais ne produit plus de ligne
+    // d'ouverture dans le journal de combat.
+  }
+
+  // Ligne d'ouverture (amorce) du récit de combat, variée selon le type du fawna.
+  narrateSceneOpening() {
+    const type = this.creature.type ?? "feu";
+    this.addLog(this.randomLog(`log.scene_open.${type}`, { creature: this.creatureName() }, 1));
   }
 
   rollCrit(actionId, actionCritChance = 0) {
@@ -545,22 +562,22 @@ export class CombatController {
   damageLogMessage({ label, power, damage, defenseReduced = false, guardBlocked = 0, targetName = null }) {
     const hasGuard = guardBlocked > 0;
     if (targetName && defenseReduced && hasGuard) {
-      return this.t("log.damage_defense_guard", { label, power, target: targetName, damage });
+      return this.randomLog("log.damage_defense_guard", { label, power, target: targetName, damage });
     }
     if (targetName && defenseReduced) {
-      return this.t("log.damage_defense", { label, power, target: targetName, damage });
+      return this.randomLog("log.damage_defense", { label, power, target: targetName, damage }, 3);
     }
     if (targetName && hasGuard) {
-      return this.t("log.damage_guard", { label, power, target: targetName, damage });
+      return this.randomLog("log.damage_guard", { label, power, target: targetName, damage });
     }
     if (!targetName && defenseReduced && hasGuard) {
-      return this.t("log.enemy_damage_defense_guard", { label, power, damage });
+      return this.randomLog("log.enemy_damage_defense_guard", { label, power, damage }, 1);
     }
     if (!targetName && defenseReduced) {
-      return this.t("log.enemy_damage_defense", { label, power, damage });
+      return this.randomLog("log.enemy_damage_defense", { label, power, damage }, 1);
     }
     if (!targetName && hasGuard) {
-      return this.t("log.enemy_damage_guard", { label, power, damage });
+      return this.randomLog("log.enemy_damage_guard", { label, power, damage }, 3);
     }
     return this.t("log.damage_power", { label, power });
   }
@@ -725,7 +742,9 @@ export class CombatController {
 
   endEnemyFlee() {
     if (this.context === "human") {
-      this.endCombat(true, this.t("log.human_victory", { opponent: this.creatureName() }), "victory");
+      this.endCombat(true, this.t("log.human_victory", this.humanOpponentVars({
+        opponent: this.creatureName()
+      })), "victory");
       return;
     }
     this.objectives.checkFastHuntEndTiming();
@@ -892,7 +911,7 @@ export class CombatController {
       kind: "simple"
     };
     this.objectives.complete("interrupt");
-    this.addLog(`${prefix}.`);
+    this.addLog(prefix);
   }
 
   prepareFeintReduction() {
@@ -1153,7 +1172,7 @@ export class CombatController {
             if (interruptedAction.kind === "art" && combat.enemy.hp > 0) {
               this.applyCreatureArtStatus(interruptedAction, { chanceMultiplier: 0.5, interrupted: true });
             }
-            this.interruptCharge(this.t("log.feinte_interrupt"));
+            this.interruptCharge(this.t("log.feinte_interrupt", { creature: this.creatureName() }));
           }
         }
       },
@@ -1182,7 +1201,7 @@ export class CombatController {
             }));
           }
         }
-        if (combat.enemy.charging) this.interruptCharge(this.t("log.art_interrupt"));
+        if (combat.enemy.charging) this.interruptCharge(this.t("log.art_interrupt", { creature: this.creatureName() }));
       },
       capture: () => {
         if (this.context !== "capture") return;
@@ -1216,10 +1235,10 @@ export class CombatController {
                 affix: this.huntAffixName(rewardedAffix),
                 level: huntAffixLevel(this.t, rewardedAffix)
               })
-            : this.t("log.capture_success", { creature: this.creatureName() });
+            : this.randomLog("log.capture_success", { creature: this.creatureName() }, 3);
           this.endCombat(true, successMessage);
         } else {
-          this.addLog(this.t("log.capture_fail", { chance: Math.round(chance) }));
+          this.addLog(this.randomLog("log.capture_fail", { chance: Math.round(chance), creature: this.creatureName() }, 3));
           applyCaptureProgress(combat, calculateFailedCaptureProgress(this.build.perception));
         }
       },

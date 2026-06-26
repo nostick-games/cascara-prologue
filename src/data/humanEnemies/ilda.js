@@ -1,6 +1,7 @@
 export const ilda = {
   id: "ilda",
   type: "voleur",
+  gender: "feminin",
   typeNameKey: "human_enemy.type.eclaireuse.name",
   nameKey: "human_enemy.ilda.name",
   stageLabelKey: "human_enemy.ilda.stage_label",

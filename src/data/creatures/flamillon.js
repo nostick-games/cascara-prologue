@@ -1,5 +1,6 @@
 export const flamillon = {
   id: "flamillon",
+  number: 2,
   type: "feu",
   nameKey: "creature.flamillon.name",
   stageLabelKey: "creature.flamillon.stage_label",

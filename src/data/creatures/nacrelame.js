@@ -1,5 +1,6 @@
 export const nacrelame = {
   id: "nacrelame",
+  number: 3,
   type: "eau",
   nameKey: "creature.nacrelame.name",
   stageLabelKey: "creature.nacrelame.stage_label",

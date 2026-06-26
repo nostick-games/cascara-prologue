@@ -1,5 +1,6 @@
 export const sillage = {
   id: "sillage",
+  number: 8,
   type: "utilitaire",
   nameKey: "creature.sillage.name",
   stageLabelKey: "creature.sillage.stage_label",

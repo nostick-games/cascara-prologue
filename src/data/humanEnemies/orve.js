@@ -1,6 +1,7 @@
 export const orve = {
   id: "orve",
   type: "adepte",
+  gender: "masculin",
   nameKey: "human_enemy.orve.name",
   stageLabelKey: "human_enemy.orve.stage_label",
   spriteLabelKey: "human_enemy.orve.sprite_label",

@@ -49,15 +49,15 @@ export class CombatTurns {
     ctx.combatDebug("enemy_plan", { plan, actionId: action?.id });
     if (action?.marked) {
       if (combat.hero.perception > combat.enemy.perception) {
-        ctx.addLog(ctx.t("log.marked_attack", {
+        ctx.addLog(ctx.t("log.marked_attack", ctx.humanOpponentVars({
           creature: ctx.creatureName(),
           action: ctx.t(action.nameKey)
-        }));
+        })));
         return;
       }
 
       const vagueKey = vagueMarkedAttackLogKeys[Math.floor(Math.random() * vagueMarkedAttackLogKeys.length)];
-      ctx.addLog(ctx.t(vagueKey, { creature: ctx.creatureName() }));
+      ctx.addLog(ctx.t(vagueKey, ctx.humanOpponentVars({ creature: ctx.creatureName() })));
     }
   }
 

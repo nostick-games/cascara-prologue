@@ -7,6 +7,7 @@ import {
   playMapFadeToBlack,
   playRespawnReveal
 } from "./encounterTransition.js";
+import { humanGenderTextVars } from "../data/humanEnemies/gender.js";
 import { aragorObjectName, caveOpenLayerName } from "../screens/map/mapConfig.js";
 
 export function createAdventureFlow({
@@ -155,11 +156,13 @@ export function createAdventureFlow({
     gameStarted = false;
     humanBriefingSource = "map";
     prepareNextHumanCombat(enemyId);
-    const opponent = humanBriefingScreen.enemy ? humanBriefingScreen.t(humanBriefingScreen.enemy.nameKey) : "Aragor";
-    const mapDialog = humanBriefingScreen.enemy?.mapDialog ?? {};
+    const enemy = humanBriefingScreen.enemy;
+    const opponent = enemy ? humanBriefingScreen.t(enemy.nameKey) : "Aragor";
+    const opponentVars = { opponent, ...humanGenderTextVars(enemy?.gender) };
+    const mapDialog = enemy?.mapDialog ?? {};
     if (mapScreen.isHumanEncounterDefeated?.(enemyId) && mapDialog.defeatedKey) {
       await mapScreen.playMessageDialog({
-        message: humanBriefingScreen.t(mapDialog.defeatedKey, { opponent, hero: heroName }),
+        message: humanBriefingScreen.t(mapDialog.defeatedKey, { ...opponentVars, hero: heroName }),
         messageHighlights: [opponent]
       });
       mapScreen.resumeFromEncounter().then(() => mapScreen.animateHeroAwayFromHumanEncounter(enemyId));
@@ -169,7 +172,7 @@ export function createAdventureFlow({
     const hasRequiredTeam = humanBriefingScreen.ownedCreatureCount() >= requiredOwnedCreatureCount;
     if (!hasRequiredTeam) {
       await mapScreen.playMessageDialog({
-        message: humanBriefingScreen.t(mapDialog.needTeamKey ?? "map.aragor.need_team"),
+        message: humanBriefingScreen.t(mapDialog.needTeamKey ?? "map.aragor.need_team", opponentVars),
         messageHighlights: [opponent]
       });
       mapScreen.resumeFromEncounter().then(() => mapScreen.animateHeroAwayFromHumanEncounter());
@@ -178,8 +181,11 @@ export function createAdventureFlow({
 
     if (!skipChallenge) {
       const choice = await mapScreen.playChoiceDialog({
-        message: humanBriefingScreen.t(mapDialog.challengeKey ?? "map.aragor.challenge", { hero: heroName, opponent }),
-        prompt: humanBriefingScreen.t(mapDialog.fightQuestionKey ?? "map.aragor.fight_question", { opponent }),
+        message: humanBriefingScreen.t(mapDialog.challengeKey ?? "map.aragor.challenge", {
+          ...opponentVars,
+          hero: heroName
+        }),
+        prompt: humanBriefingScreen.t(mapDialog.fightQuestionKey ?? "map.aragor.fight_question", opponentVars),
         messageHighlights: [opponent],
         promptHighlights: [opponent],
         options: [
@@ -240,11 +246,12 @@ export function createAdventureFlow({
       screenRouter.show(gameScreens.map);
       scrollTop();
       await mapScreen.resumeFromEncounter();
-      const opponent = humanBriefingScreen.enemy ? humanBriefingScreen.t(humanBriefingScreen.enemy.nameKey) : "Chad";
+      const enemy = humanBriefingScreen.enemy;
+      const opponent = enemy ? humanBriefingScreen.t(enemy.nameKey) : "Chad";
       await mapScreen.playMessageDialog({
         message: humanBriefingScreen.t(
           returnDialogKey ?? "map.npc.chad.after_training",
-          { opponent, hero: heroName }
+          { opponent, hero: heroName, ...humanGenderTextVars(enemy?.gender) }
         ),
         messageHighlights: [opponent, heroName]
       });
@@ -257,10 +264,15 @@ export function createAdventureFlow({
         screenRouter.show(gameScreens.map);
         scrollTop();
         await mapScreen.resumeFromEncounter();
-        const opponent = humanBriefingScreen.enemy ? humanBriefingScreen.t(humanBriefingScreen.enemy.nameKey) : "";
+        const enemy = humanBriefingScreen.enemy;
+        const opponent = enemy ? humanBriefingScreen.t(enemy.nameKey) : "";
         if (mapDialog.defeatedKey) {
           await mapScreen.playMessageDialog({
-            message: humanBriefingScreen.t(mapDialog.defeatedKey, { opponent, hero: heroName }),
+            message: humanBriefingScreen.t(mapDialog.defeatedKey, {
+              opponent,
+              hero: heroName,
+              ...humanGenderTextVars(enemy?.gender)
+            }),
             messageHighlights: [opponent, heroName]
           });
         }

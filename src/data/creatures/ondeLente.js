@@ -1,5 +1,6 @@
 export const ondeLente = {
   id: "onde_lente",
+  number: 4,
   type: "eau",
   nameKey: "creature.onde_lente.name",
   stageLabelKey: "creature.onde_lente.stage_label",

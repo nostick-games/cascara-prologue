@@ -1,6 +1,7 @@
 export const ranbu = {
   id: "ranbu",
   type: "villageoise",
+  gender: "masculin",
   typeNameKey: "human_enemy.type.gredin.name",
   nameKey: "human_enemy.ranbu.name",
   stageLabelKey: "human_enemy.ranbu.stage_label",

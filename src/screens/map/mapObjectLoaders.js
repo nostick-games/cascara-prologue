@@ -45,6 +45,9 @@ export function pointInEncounterZone(x, y, zone) {
 }
 
 export function loadEncounterZones(map, encounterLayer) {
+  // Plafond de numéro de fawna pour cette map (propriété custom du .tmj). Si défini,
+  // les pools de rencontre n'offriront pas de fawna dont le numéro dépasse cette valeur.
+  const mapMaxCreatureNumber = propertiesFromObject(map).maxCreatureNumber;
   const layer = map.layers.find(
     (candidate) => candidate.name === encounterZonesLayerName && candidate.type === "objectgroup"
   );
@@ -65,7 +68,7 @@ export function loadEncounterZones(map, encounterLayer) {
   return [
     ...objectZones,
     ...loadUntypedEncounterZones(map, encounterLayer, objectZones)
-  ];
+  ].map((zone) => ({ ...zone, maxCreatureNumber: mapMaxCreatureNumber }));
 }
 
 export function loadRespawnPoints(map) {

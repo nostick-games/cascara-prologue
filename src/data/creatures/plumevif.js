@@ -1,5 +1,6 @@
 export const plumevif = {
   id: "plumevif",
+  number: 5,
   type: "vent",
   nameKey: "creature.plumevif.name",
   stageLabelKey: "creature.plumevif.stage_label",

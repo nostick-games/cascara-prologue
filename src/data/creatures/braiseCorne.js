@@ -1,5 +1,6 @@
 export const braiseCorne = {
   id: "braise_corne",
+  number: 1,
   type: "feu",
   nameKey: "creature.braise_corne.name",
   stageLabelKey: "creature.braise_corne.stage_label",

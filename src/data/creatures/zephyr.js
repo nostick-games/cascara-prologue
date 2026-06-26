@@ -1,5 +1,6 @@
 export const zephyr = {
   id: "zephyr",
+  number: 6,
   type: "vent",
   nameKey: "creature.zephyr.name",
   stageLabelKey: "creature.zephyr.stage_label",

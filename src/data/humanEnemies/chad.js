@@ -1,6 +1,7 @@
 export const chad = {
   id: "chad",
   type: "entraineur",
+  gender: "masculin",
   nameKey: "human_enemy.chad.name",
   stageLabelKey: "human_enemy.chad.stage_label",
   spriteLabelKey: "human_enemy.chad.sprite_label",

@@ -127,10 +127,18 @@ function warnUnknownPool(mapEncounterZone) {
 
 function encounterFromMapZone(mapEncounterZone, random) {
   if (!mapEncounterZone?.poolId) return null;
-  const pool = mapEncounterPools[mapEncounterZone.poolId];
-  if (!pool?.length) {
+  const fullPool = mapEncounterPools[mapEncounterZone.poolId];
+  if (!fullPool?.length) {
     warnUnknownPool(mapEncounterZone);
     return null;
+  }
+  // Plafond de numéro de fawna (propriété de map) : on ne tire pas au-delà. Si le filtre
+  // vide le pool, on retombe sur le pool complet pour éviter une rencontre impossible.
+  const cap = mapEncounterZone.maxCreatureNumber;
+  let pool = fullPool;
+  if (Number.isFinite(cap)) {
+    const capped = fullPool.filter((entry) => (creatures[entry.creatureKey]?.number ?? Infinity) <= cap);
+    if (capped.length) pool = capped;
   }
   const entry = weightedPick(pool, random);
   if (!entry) return null;
