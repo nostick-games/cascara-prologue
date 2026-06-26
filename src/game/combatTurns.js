@@ -168,6 +168,8 @@ export class CombatTurns {
     ctx.affixes.applyCritical(enemyCrit, "enemy");
 
     if (hero.feintReduction) {
+      // Parer un coup critique = feinter une attaque ennemie qui était critique.
+      if (enemyCrit) ctx.objectives.completeByType("parryCritical");
       const originalDamage = damage;
       damage = Math.max(1, Math.round(damage * hero.feintReduction.multiplier));
       ctx.combatDebug("feint_reduction_applied", {
@@ -192,6 +194,10 @@ export class CombatTurns {
       damage = guardResult.damage;
       const { blocked } = guardResult;
       guardBlocked = blocked;
+      if (blocked > 0) {
+        combat.guardBlockedTotal = (combat.guardBlockedTotal ?? 0) + blocked;
+        ctx.objectives.checkGuardBlocked();
+      }
       if (action?.id === "burningHorns" && hero.guarding) {
         hero.parriedBurningHorns = true;
         ctx.addLog(ctx.t("log.parried_burning_horns"));

@@ -10,6 +10,7 @@ import {
   doorsLayerName,
   encounterChance,
   encounterLayerName,
+  caveClosedLayerName,
   heroAnimations,
   heroCollisionBox,
   heroName,
@@ -170,6 +171,7 @@ export class MapScreen {
     this.cloudLayer = null;
     this.humanEncounterPositions = new Map();
     this.humanEncounterFades = new Map();
+    this.tileLayerFades = new Map();
     this.clearedHumanEncounterIds = new Set();
     this.defeatedHumanEncounterIds = new Set();
     this.tilesets = [];
@@ -588,6 +590,33 @@ export class MapScreen {
         this.humanEncounterFades.set(id, 1 - progress);
         if (progress >= 1) {
           this.clearHumanEncounter(id);
+          this.inputLocked = false;
+          resolve();
+          return;
+        }
+        requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  holdTileLayer(layerName, alpha = 1) {
+    this.tileLayerFades.set(layerName, Math.max(0, Math.min(1, alpha)));
+  }
+
+  fadeTileLayer(layerName = caveClosedLayerName, durationMs = 1200, { from = 1, to = 0 } = {}) {
+    const startedAt = performance.now();
+    this.holdTileLayer(layerName, from);
+    this.inputLocked = true;
+    this.keys.clear();
+    this.resetJoystick();
+    this.heroMoving = false;
+    return new Promise((resolve) => {
+      const step = (time) => {
+        const progress = Math.min(1, Math.max(0, (time - startedAt) / durationMs));
+        this.tileLayerFades.set(layerName, from + (to - from) * progress);
+        if (progress >= 1) {
+          this.tileLayerFades.delete(layerName);
           this.inputLocked = false;
           resolve();
           return;
@@ -1837,6 +1866,9 @@ export class MapScreen {
   }
 
   shouldDrawTileLayer(layer) {
+    if (this.tileLayerFades.has(layer.name) && layer.visible !== false && layer.type === "tilelayer") {
+      return layer !== this.collisionLayer && layer !== this.cloudLayer;
+    }
     return shouldDrawMapTileLayer({
       layer,
       collisionLayer: this.collisionLayer,
@@ -1888,6 +1920,11 @@ export class MapScreen {
   drawTileLayer(layer, time, { ySortPass = null, occlusionPass = null } = {}) {
     const { tilewidth, tileheight } = this.map;
     const occlusionHeight = this.layerOcclusionHeight(layer);
+    const layerFade = this.tileLayerFades.get(layer.name);
+    const previousAlpha = this.ctx.globalAlpha;
+    if (typeof layerFade === "number") {
+      this.ctx.globalAlpha = previousAlpha * Math.max(0, Math.min(1, layerFade));
+    }
     layer.data.forEach((rawGid, index) => {
       const gid = rawGid & ~tileFlipFlags;
       if (gid === 0) return;
@@ -1936,6 +1973,7 @@ export class MapScreen {
         tile.tileset.tileheight
       );
     });
+    this.ctx.globalAlpha = previousAlpha;
   }
 
   drawCloudLayer(time) {

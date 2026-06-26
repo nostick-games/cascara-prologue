@@ -17,53 +17,26 @@ const mandatoryPressureObjectives = [
   }
 ];
 
-const visibleEasyObjectives = [
-  { id: "survive3", family: "surviveTurns", type: "surviveTurns", turns: 3, labelKey: "objective.survive_3.label", reward: 18 },
-  { id: "survive4", family: "surviveTurns", type: "surviveTurns", turns: 4, labelKey: "objective.survive_4.label", reward: 24 },
-  { id: "sparePa", type: "sparePa", labelKey: "objective.spare_pa.label", reward: 20 },
+// Objectifs visibles (⭐ simples + ⭐⭐ intermédiaires).
+const visibleObjectives = [
   { id: "guardOnce", type: "guardOnce", labelKey: "objective.guard_once.label", reward: 18 },
   { id: "feintOnce", type: "feintOnce", labelKey: "objective.feint_once.label", reward: 20 },
   { id: "artOnce", type: "artOnce", labelKey: "objective.art_once.label", reward: 20 },
-  { id: "captureBeforeTurn4", type: "captureBeforeTurn", turn: 4, labelKey: "objective.capture_before_turn_4.label", reward: 20 },
-  { id: "entailleTwice", type: "useAction", actionId: "entaille", count: 2, labelKey: "objective.entaille_twice.label", reward: 20 }
+  { id: "sparePa", type: "sparePa", labelKey: "objective.spare_pa.label", reward: 20 },
+  { id: "captureBeforeTurn3", family: "tempo", type: "captureBeforeTurn", turn: 3, labelKey: "objective.capture_before_turn_3.label", reward: 24 },
+  { id: "survive5", family: "tempo", type: "surviveTurns", turns: 5, labelKey: "objective.survive_5.label", reward: 24 },
+  { id: "criticalBeforeCapture", type: "criticalBeforeCapture", labelKey: "objective.critical_before_capture.label", reward: 24 },
+  { id: "guardBlock6", type: "guardDamageBlocked", damage: 6, labelKey: "objective.guard_block_6.label", reward: 24 },
+  { id: "threeDistinctActions", type: "distinctActions", count: 3, labelKey: "objective.three_distinct_actions.label", reward: 22 }
 ];
 
+// Objectifs avancés (⭐⭐⭐), cachés tant que la Perception du joueur < celle du fawna.
 const hiddenObjectives = [
-  {
-    id: "feintSpecial",
-    type: "feintSpecial",
-    labelKey: "objective.feint_special.label",
-    reward: 25,
-    hiddenUntilPerception: 4
-  },
-  {
-    id: "captureWithOnePa",
-    type: "captureWithOnePa",
-    labelKey: "objective.capture_with_one_pa.label",
-    reward: 25,
-    hiddenUntilPerception: 4
-  },
-  {
-    id: "preventSpecial",
-    type: "preventSpecial",
-    labelKey: "objective.prevent_special.label",
-    reward: 25,
-    hiddenUntilPerception: 4
-  },
-  {
-    id: "criticalBeforeCapture",
-    type: "criticalBeforeCapture",
-    labelKey: "objective.critical_before_capture.label",
-    reward: 25,
-    hiddenUntilPerception: 4
-  },
-  {
-    id: "parry",
-    type: "parryCritical",
-    labelKey: "objective.parry.label",
-    reward: 25,
-    hiddenUntilPerception: 4
-  }
+  { id: "interrupt", type: "interruptSpecial", labelKey: "objective.interrupt.label", reward: 28, hiddenUntilPerception: true },
+  { id: "parry", type: "parryCritical", labelKey: "objective.parry.label", reward: 28, hiddenUntilPerception: true },
+  { id: "captureWithOnePa", type: "captureWithOnePa", labelKey: "objective.capture_with_one_pa.label", reward: 28, hiddenUntilPerception: true },
+  { id: "captureAboveHalfHp", type: "captureAboveHp", threshold: 0.5, labelKey: "objective.capture_above_half_hp.label", reward: 28, hiddenUntilPerception: true },
+  { id: "captureWithoutEntaille", type: "captureWithoutAction", actionId: "entaille", labelKey: "objective.capture_without_entaille.label", reward: 28, hiddenUntilPerception: true }
 ];
 
 function shuffle(items, random) {
@@ -101,7 +74,7 @@ export function selectCaptureObjectives({ huntNumber = 4, random = Math.random }
   const hiddenSlot = objectiveCount >= 4;
   const visibleSlots = objectiveCount - objectives.length - (hiddenSlot ? 1 : 0);
   objectives.push(...takeUniqueObjectiveFamilies(
-    shuffle(visibleEasyObjectives, random),
+    shuffle(visibleObjectives, random),
     Math.max(0, visibleSlots)
   ));
 

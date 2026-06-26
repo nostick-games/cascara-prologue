@@ -19,7 +19,8 @@ export const ranbu = {
   },
   mapDialog: {
     challengeKey: "map.ranbu.challenge",
-    fightQuestionKey: "map.ranbu.fight_question"
+    fightQuestionKey: "map.ranbu.fight_question",
+    defeatBehavior: "dialogThenFade"
   },
   stats: {
     maxHp: 10,

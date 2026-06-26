@@ -71,7 +71,7 @@ export function shouldDrawTileLayer({
   }
   const layerName = normalizeLayerName(layer.name);
   const aragorDefeated = !isHumanEncounterActive(aragorObjectName);
-  if (layerName === caveClosedLayerName) return !aragorDefeated;
+  if (layerName === caveClosedLayerName) return true;
   if (layerName === caveOpenLayerName) return aragorDefeated;
   return true;
 }

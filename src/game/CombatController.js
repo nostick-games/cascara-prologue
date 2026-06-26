@@ -468,7 +468,10 @@ export class CombatController {
   }
 
   revealPerception() {
-    if (this.build.perception >= 4) {
+    // Même règle que la visibilité des objectifs : on révèle l'objectif caché quand on
+    // sur-perçoit le fawna (Perception joueur >= Perception du fawna), pas via un seuil fixe.
+    const enemyPerception = this.combat?.enemy?.perception ?? 0;
+    if ((this.build.perception ?? 0) >= enemyPerception) {
       this.addLog(this.t("log.perception_reveals"));
     } else {
       this.addLog(this.t("log.perception_low"));
@@ -602,10 +605,6 @@ export class CombatController {
       }));
     }
     if (crit) this.objectives.completeByType("criticalBeforeCapture");
-    if (crit && combat.hero.parriedBurningHorns) {
-      this.objectives.complete("parry");
-      combat.hero.parriedBurningHorns = false;
-    }
     this.affixes.applyCritical(crit);
     const strikePower = damage + damageBreakdown.defenseReduction;
     let guardBlocked = 0;

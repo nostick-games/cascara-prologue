@@ -7,6 +7,7 @@ import {
   playMapFadeToBlack,
   playRespawnReveal
 } from "./encounterTransition.js";
+import { aragorObjectName, caveOpenLayerName } from "../screens/map/mapConfig.js";
 
 export function createAdventureFlow({
   briefingScreen,
@@ -252,16 +253,27 @@ export function createAdventureFlow({
     renderAll();
     if (result?.won) {
       const mapDialog = humanBriefingScreen.enemy?.mapDialog ?? {};
-      if (mapDialog.defeatBehavior === "dialogThenFade" && mapDialog.defeatedKey) {
+      if (mapDialog.defeatBehavior === "dialogThenFade") {
         screenRouter.show(gameScreens.map);
         scrollTop();
         await mapScreen.resumeFromEncounter();
         const opponent = humanBriefingScreen.enemy ? humanBriefingScreen.t(humanBriefingScreen.enemy.nameKey) : "";
-        await mapScreen.playMessageDialog({
-          message: humanBriefingScreen.t(mapDialog.defeatedKey, { opponent, hero: heroName }),
-          messageHighlights: [opponent, heroName]
-        });
+        if (mapDialog.defeatedKey) {
+          await mapScreen.playMessageDialog({
+            message: humanBriefingScreen.t(mapDialog.defeatedKey, { opponent, hero: heroName }),
+            messageHighlights: [opponent, heroName]
+          });
+        }
+        if (result.creatureId === aragorObjectName) {
+          mapScreen.holdTileLayer(caveOpenLayerName, 0);
+        }
         await mapScreen.fadeHumanEncounter(result.creatureId);
+        if (result.creatureId === aragorObjectName) {
+          await mapScreen.playMessageDialog({
+            message: humanBriefingScreen.t("map.aragor.cave_open")
+          });
+          await mapScreen.fadeTileLayer(caveOpenLayerName, 1200, { from: 0, to: 1 });
+        }
         return;
       }
       if (mapDialog.defeatBehavior === "stay") {

@@ -50,6 +50,22 @@ export class CombatObjectives {
     this.completeByType("useAction", (objective) => (
       objective.actionId === actionId && combat.actionUses[actionId] >= objective.count
     ));
+    this.completeByType("distinctActions", (objective) => (
+      this.distinctCombatActionCount() >= objective.count
+    ));
+  }
+
+  distinctCombatActionCount() {
+    const combat = this.getCombat();
+    return ["entaille", "garde", "feinte", "art"]
+      .filter((id) => (combat.actionUses[id] ?? 0) > 0).length;
+  }
+
+  checkGuardBlocked() {
+    const combat = this.getCombat();
+    this.completeByType("guardDamageBlocked", (objective) => (
+      (combat.guardBlockedTotal ?? 0) >= objective.damage
+    ));
   }
 
   checkEnemyHpThreshold() {
@@ -69,8 +85,14 @@ export class CombatObjectives {
     const combat = this.getCombat();
     this.completeByType("captureBeforeTurn", (objective) => combat.turn <= objective.turn);
     if (combat.hero.pa >= 1) this.complete("sparePa");
-    if (combat.hero.pa === 1) this.completeByType("captureWithOnePa");
+    if (combat.hero.pa <= 1) this.completeByType("captureWithOnePa");
     if (!combat.enemySpecialUsed) this.completeByType("preventSpecial");
+    this.completeByType("captureAboveHp", (objective) => (
+      combat.hero.hp / Math.max(1, combat.hero.maxHp) > objective.threshold
+    ));
+    this.completeByType("captureWithoutAction", (objective) => (
+      (combat.actionUses[objective.actionId] ?? 0) === 0
+    ));
   }
 
   checkFastHuntEndTiming() {

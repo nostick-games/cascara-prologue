@@ -20,7 +20,8 @@ export const aragor = {
     challengeKey: "map.aragor.challenge",
     fightQuestionKey: "map.aragor.fight_question",
     needTeamKey: "map.aragor.need_team",
-    requiredOwnedCreatureCount: 3
+    requiredOwnedCreatureCount: 3,
+    defeatBehavior: "dialogThenFade"
   },
   stats: {
     maxPa: 3,
