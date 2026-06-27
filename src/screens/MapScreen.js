@@ -68,6 +68,7 @@ import {
   ensureMapChoiceScrollControls as ensureMapChoiceScrollControlsUi,
   hideDialog as hideMapDialog,
   hideMapChoicePanel as hideMapChoicePanelUi,
+  isMapChoiceScrollControlTarget,
   playChoiceDialog as playMapChoiceDialog,
   playMessageDialog as playMapMessageDialog,
   renderHighlightedDialogText as renderMapHighlightedDialogText,
@@ -735,8 +736,9 @@ export class MapScreen {
     if (event.pointerType && event.pointerType !== "touch") return false;
     const target = event.target;
     if (!(target instanceof Element)) return false;
+    if (isMapChoiceScrollControlTarget(target)) return false;
     if (target.closest("button, a, input, select, textarea, [role='button']")) return false;
-    if (target.closest(".map-quick-actions, .map-dialog-frame, .map-choice-panel, .map-joystick")) return false;
+    if (target.closest(".map-quick-actions, .map-dialog-frame, .map-choice-panel, .map-choice-scroll-controls, .map-joystick")) return false;
     return target === this.nodes.canvas || target === this.nodes.section || this.nodes.canvas?.contains(target);
   }
 

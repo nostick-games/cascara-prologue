@@ -5,6 +5,10 @@ import {
 import { assetPath } from "../../utils/assetPath.js";
 import { nativeHaptic } from "../../utils/nativeBridge.js";
 
+export function isMapChoiceScrollControlTarget(target) {
+  return target instanceof Element && Boolean(target.closest(".map-choice-scroll-controls, .map-choice-scroll-button"));
+}
+
 export function showDialog(host, { message, prompt, messageHighlights = [], promptHighlights = [], showContinueIndicator = false }) {
   const { mapDialogFrame, mapDialogLog } = host.nodes;
   if (!mapDialogFrame || !mapDialogLog) return Promise.resolve();
@@ -247,7 +251,7 @@ export function activateMapChoicePanel(host, options, { cancelOnOutside = false 
       if (!cancelOnOutside || resolved) return;
       const target = event.target;
       if (mapChoicePanel.contains(target)) return;
-      if (host.nodes.mapChoiceScrollControls?.contains(target)) return;
+      if (isMapChoiceScrollControlTarget(target)) return;
       event.preventDefault();
       event.stopPropagation();
       cancel();
@@ -343,12 +347,12 @@ export function ensureMapChoiceScrollControls(host) {
     event.preventDefault();
     event.stopPropagation();
     scroll(-1);
-  });
+  }, { capture: true });
   downButton.addEventListener("pointerdown", (event) => {
     event.preventDefault();
     event.stopPropagation();
     scroll(1);
-  });
+  }, { capture: true });
   host.nodes.mapChoiceList?.addEventListener("scroll", () => updateMapChoiceScrollControls(host));
 }
 

@@ -278,6 +278,11 @@ export class CombatController {
     this.log.runWhenIdle(() => {
       const currentCombat = this.combat;
       if (!currentCombat || currentCombat.ended || currentCombat.phase !== "player" || currentCombat.damageAnimating) return;
+      // Posé ici, après que tous les logs (statuts, objectifs…) ont fini de défiler,
+      // pour que le connecteur soit immédiatement adjacent à la prochaine action du joueur.
+      if (currentCombat.enemyLastAction === "hit") currentCombat.lastLogContext = "enemy_hit";
+      else if (currentCombat.enemyLastAction === "missed") currentCombat.lastLogContext = "enemy_missed";
+      currentCombat.enemyLastAction = null;
       currentCombat.playerInputLocked = false;
       this.renderCombatUi();
       this.combatScreen.syncCombat(currentCombat);
@@ -300,6 +305,61 @@ export class CombatController {
     const variantIndex = Math.floor(Math.random() * (variantCount + 1));
     const variantKey = variantIndex === 0 ? key : `${key}_alt_${variantIndex}`;
     return this.t(variantKey, vars);
+  }
+
+  lowercaseFirst(str) {
+    if (!str) return str;
+    const properNouns = [this.creatureName(), this.heroName].filter(Boolean);
+    if (properNouns.some(n => str.startsWith(n))) return str;
+    return str.charAt(0).toLowerCase() + str.slice(1);
+  }
+
+  consumeLogContext(validContexts = null) {
+    const combat = this.combat;
+    if (!combat?.lastLogContext) return "";
+    const ctx = combat.lastLogContext;
+    if (validContexts && !validContexts.includes(ctx)) return "";
+    combat.lastLogContext = null;
+    const variantCounts = { enemy_hit: 2, enemy_missed: 1, hero_hit: 1, hero_guarded: 2 };
+    return this.randomLog(`log.connector.${ctx}`, {}, variantCounts[ctx] ?? 0);
+  }
+
+  consumeEnemyActionLogContext() {
+    const combat = this.combat;
+    if (!combat?.lastLogContext) return "";
+    const ctx = combat.lastLogContext;
+    if (!["hero_guarded", "hero_hit"].includes(ctx)) return "";
+    combat.lastLogContext = null;
+    if (ctx === "hero_hit") {
+      return this.randomLog("log.connector.hero_hit.enemy_action", {}, 1);
+    }
+    return this.randomLog("log.connector.hero_guarded", {}, 2);
+  }
+
+  prepareConnector(validContexts) {
+    if (!this.combat) return;
+    const combat = this.combat;
+    const ctx = combat.lastLogContext;
+    if (!ctx || (validContexts && !validContexts.includes(ctx))) {
+      combat._pendingConnector = "";
+      combat._pendingConnectorMiss = "";
+      return;
+    }
+    combat.lastLogContext = null;
+    const variantCounts = { enemy_hit: 2, enemy_missed: 1, hero_hit: 1, hero_guarded: 2 };
+    const missVariantCounts = { enemy_hit: 1, enemy_missed: 1, hero_hit: 1 };
+    combat._pendingConnector = this.randomLog(`log.connector.${ctx}`, {}, variantCounts[ctx] ?? 0);
+    combat._pendingConnectorMiss = this.randomLog(`log.connector.${ctx}.miss`, {}, missVariantCounts[ctx] ?? 0);
+  }
+
+  withConnector(message, { miss = false } = {}) {
+    const combat = this.combat;
+    if (!combat) return message;
+    const connector = miss ? (combat._pendingConnectorMiss ?? "") : (combat._pendingConnector ?? "");
+    combat._pendingConnector = null;
+    combat._pendingConnectorMiss = null;
+    if (!connector) return message;
+    return connector + this.lowercaseFirst(message);
   }
 
   humanOpponentVars(vars = {}) {
@@ -591,7 +651,7 @@ export class CombatController {
     const hitChance = this.heroHitChance();
     if (!rollChance(hitChance / 100)) {
       this.combatDebug("hero_miss", { action: action.id, hitChance: Math.round(hitChance) });
-      this.addLog(this.t("log.miss", { label: this.actionName(action.id), chance: Math.round(hitChance) }));
+      this.addLog(this.withConnector(this.t("log.miss", { label: this.actionName(action.id), chance: Math.round(hitChance) }), { miss: true }));
       this.affixes.prepareRafale("enemy");
       return { hit: false, damage: 0 };
     }
@@ -645,14 +705,14 @@ export class CombatController {
       combat.displayHp.enemy = enemyHpBefore;
       this.queueDamageFeedback({
         targetKey: "enemy",
-        message: this.damageLogMessage({
+        message: this.withConnector(this.damageLogMessage({
           label: this.damageActionLabel(this.actionName(action.id), crit),
           power: strikePower,
           damage,
           defenseReduced: damageBreakdown.defenseReduction > 0,
           guardBlocked,
           targetName: this.creatureName()
-        }),
+        })),
         flash: () => this.combatScreen.flashEnemy(),
         onSettled: combat.enemy.hp <= 0
           ? () => this.endEnemyFlee()
@@ -662,14 +722,14 @@ export class CombatController {
           }
       });
     } else {
-      this.addLog(this.damageLogMessage({
+      this.addLog(this.withConnector(this.damageLogMessage({
         label: this.damageActionLabel(this.actionName(action.id), crit),
         power: strikePower,
         damage,
         defenseReduced: damageBreakdown.defenseReduction > 0,
         guardBlocked,
         targetName: this.creatureName()
-      }));
+      })));
     }
     if (crit && combat.enemy.charging) {
       this.interruptCharge(this.t("log.critical_interrupt", { creature: this.creatureName() }));
@@ -1139,7 +1199,9 @@ export class CombatController {
         signatureEvent = { ...signatureEvent, executed: true };
         this.combatScreen.playHeroEntaille();
         this.objectives.registerHeroActionUse("entaille");
+        this.prepareConnector(["enemy_hit", "enemy_missed", "hero_hit"]);
         const result = this.damageEnemy(playerActionDefinition);
+        if (result.hit) combat.lastLogContext = "hero_hit";
         signatureEvent = { ...signatureEvent, hit: result.hit, damage: result.damage };
       },
       garde: () => {
@@ -1151,7 +1213,10 @@ export class CombatController {
         combat.hero.guarding = true;
         signatureEvent = { ...signatureEvent, guardGained: guard };
         this.combatDebug("hero_guard", { actionId, guard });
-        this.addLog(this.t("log.garde", { guard }));
+        const gardeConnector = this.consumeLogContext(["enemy_hit", "enemy_missed"]);
+        const gardeMsg = this.t("log.garde", { guard });
+        this.addLog(gardeConnector ? gardeConnector + this.lowercaseFirst(gardeMsg) : gardeMsg);
+        combat.lastLogContext = "hero_guarded";
         this.objectives.completeByType("guardOnce");
         this.affixes.applyGuard();
       },
@@ -1160,9 +1225,11 @@ export class CombatController {
         signatureEvent = { ...signatureEvent, executed: true };
         this.objectives.registerHeroActionUse("feinte");
         const interruptedAction = combat.enemy.currentAction;
+        this.prepareConnector(["enemy_hit", "enemy_missed", "hero_hit"]);
         const hit = this.damageEnemy(playerActionDefinition);
         signatureEvent = { ...signatureEvent, hit: hit.hit, damage: hit.damage };
         if (hit.hit) {
+          combat.lastLogContext = "hero_hit";
           this.objectives.completeByType("feintOnce");
           if (interruptedAction?.marked) {
             this.objectives.completeByType("feintSpecial");
@@ -1178,15 +1245,15 @@ export class CombatController {
       },
       art: () => {
         if (!this.spendPa(playerActionDefinition.cost)) return this.addLog(this.t("log.no_ap.art"));
-        // Teintes de build « sur soi » (eau : Garde ; vent : remboursement de PA),
-        // appliquées à l'usage, indépendamment de la touche.
         this.applyArtSelfBuffs(playerActionDefinition);
         signatureEvent = { ...signatureEvent, executed: true };
         this.objectives.registerHeroActionUse("art");
         this.objectives.completeByType("artOnce");
+        this.prepareConnector(["enemy_hit", "enemy_missed", "hero_hit"]);
         const hit = this.damageEnemy(playerActionDefinition);
         signatureEvent = { ...signatureEvent, hit: hit.hit, damage: hit.damage };
         if (!hit.hit) return;
+        combat.lastLogContext = "hero_hit";
         const paDenial = playerActionDefinition.enemyPaDamage ?? 0;
         if (paDenial > 0) {
           const enemyPaBefore = combat.enemy.pa;

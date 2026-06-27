@@ -962,6 +962,11 @@
       z-index: 83;
     }
 
+    body.briefing-active .human-radar-panel .radar-modal h3,
+    body.briefing-active .hunt-radar-panel .radar-modal h3 {
+      color: #2f1f18;
+    }
+
     body.briefing-active .roster-modal {
       z-index: 81;
     }

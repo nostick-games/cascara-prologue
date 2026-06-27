@@ -65,6 +65,7 @@ export class CombatTurns {
     const ctx = this.controller;
     const combat = ctx.combat;
     if (!combat || combat.ended) return;
+    if (!isFollowUp) combat.enemyLastAction = null;
     const enemy = combat.enemy;
     const hero = combat.hero;
     if (!isFollowUp && enemy.signature?.pending) {
@@ -129,6 +130,7 @@ export class CombatTurns {
         action: actionNameText,
         chance: Math.round(hitChance)
       }));
+      if (combat.enemyLastAction !== "hit") combat.enemyLastAction = "missed";
       ctx.affixes.prepareRafale();
       if (actionCost >= 3) ctx.affixes.tryRetourDeGeste(action.id, "enemy");
       this.scheduleEnemyContinuation(action, { actionId: action.id, executed: true, hit: false, damage: 0 });
@@ -150,7 +152,17 @@ export class CombatTurns {
       critical: enemyCrit ? ctx.t("log.enemy_critical_suffix") : ""
     };
     if (!hero.feintReduction) {
-      ctx.addLog(ctx.t("log.enemy_action", enemyActionLogParams));
+      const enemyActionConnector = ctx.consumeEnemyActionLogContext();
+      const hpRatio = enemy.hp / enemy.maxHp;
+      let enemyActionMsg;
+      if (hpRatio < 0.20) {
+        enemyActionMsg = ctx.randomLog("log.enemy_action.critical", enemyActionLogParams, 1);
+      } else if (hpRatio < 0.40) {
+        enemyActionMsg = ctx.randomLog("log.enemy_action.low", enemyActionLogParams, 1);
+      } else {
+        enemyActionMsg = ctx.t("log.enemy_action", enemyActionLogParams);
+      }
+      ctx.addLog(enemyActionConnector ? enemyActionConnector + ctx.lowercaseFirst(enemyActionMsg) : enemyActionMsg);
     }
     if (typeAdvantage.advantaged) {
       ctx.addLog(ctx.t("log.type_advantage_enemy", {
@@ -229,6 +241,7 @@ export class CombatTurns {
         onSettled: hero.hp <= 0
           ? () => ctx.endCombat(false, ctx.t(ctx.context === "human" ? "log.human_defeat" : "log.defeat"))
           : () => {
+            combat.enemyLastAction = "hit";
             ctx.applyCreatureArtStatus(action);
             ctx.affixes.applyEcaille();
             ctx.affixes.tryElanDeSurvie(heroHpBeforeActual);
@@ -246,6 +259,7 @@ export class CombatTurns {
       defenseReduced: damageBreakdown.defenseReduction > 0,
       guardBlocked
     }));
+    combat.enemyLastAction = "hit";
     ctx.applyCreatureArtStatus(action);
     if (actionCost >= 3) ctx.affixes.tryRetourDeGeste(action.id, "enemy");
     this.scheduleEnemyContinuation(action, { actionId: action.id, executed: true, hit: true, damage });
