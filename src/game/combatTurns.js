@@ -352,5 +352,6 @@ export class CombatTurns {
     ctx.renderCombatUi();
     ctx.combatScreen.syncCombat(combat);
     if (!heroStatusQueued) ctx.unlockPlayerInputWhenReady();
+    ctx.onAfterEnemyTurn?.(combat.turn);
   }
 }

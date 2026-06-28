@@ -128,7 +128,7 @@ export function createAdventureFlow({
     screenRouter.show(gameScreens.map);
     renderAll();
     scrollTop();
-    mapScreen.start({ reset: true });
+    return mapScreen.start({ reset: true });
   }
 
   async function openDoorFromMap(door) {

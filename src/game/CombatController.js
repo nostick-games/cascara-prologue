@@ -126,6 +126,7 @@ export class CombatController {
     this.setOwnedHuntAffixes = setOwnedHuntAffixes;
     this.t = t;
     this.buildOverride = null;
+    this.onAfterEnemyTurn = null;
 
     this.combat = null;
     this.lastCombatResult = null;
@@ -262,8 +263,8 @@ export class CombatController {
     return null;
   }
 
-  addLog(message, afterTyped = null) {
-    this.log.add(message, afterTyped);
+  addLog(message, afterTyped = null, options = {}) {
+    this.log.add(message, afterTyped, options);
   }
 
   lockPlayerInput() {

@@ -1,5 +1,5 @@
 export const baseProgression = {
-  availableXp: 5,
+  availableXp: 0,
   stars: 0,
   gold: 99,
   arachnideHpRestoreCost: 10,

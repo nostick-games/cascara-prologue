@@ -5,6 +5,7 @@ import { baseHero } from "./data/hero/index.js";
 import { playerRadarAllocatableStatIds, playerRadarStatDefinitions } from "./data/playerRadarStats.js";
 import { baseProgression } from "./data/progression/index.js";
 import { CombatController } from "./game/CombatController.js";
+import { createCombatBot } from "./game/combatBot.js";
 import { InventoryModal } from "./ui/InventoryModal.js";
 import { HuntBriefingScreen } from "./screens/HuntBriefingScreen.js";
 import { HumanBriefingScreen } from "./screens/HumanBriefingScreen.js";
@@ -17,7 +18,7 @@ import { createAdventureFlow } from "./app/adventureFlow.js";
 import { mountAppShell } from "./app/appShell.js";
 import { createCombatLauncher } from "./app/combatLauncher.js";
 import { queryDomNodes } from "./app/domNodes.js";
-import { createCaptureEncounterState, createHumanEncounterState } from "./app/encounterFactory.js";
+import { createCaptureEncounterState, createHumanEncounterState, createTutorialCaptureEncounterState } from "./app/encounterFactory.js";
 import { recordVisitedWorldMap } from "./game/mapProgression.js";
 import { createAdaptiveHumanEncounterEnemy } from "./data/humanEncounters.js";
 import {
@@ -36,6 +37,9 @@ import { MapShopFlow } from "./ui/MapShopFlow.js";
 import { setPixelButtonLabel } from "./ui/PixelButton.js";
 import { hpRechargeStepDelay } from "./utils/hpRechargeTiming.js";
 import { nativeHaptic, nativeLoad, nativeSave } from "./utils/nativeBridge.js";
+import { TutorialScreen } from "./screens/TutorialScreen.js";
+import { TutorialBriefingController } from "./screens/TutorialBriefingController.js";
+import { playEncounterTransition, cleanupEncounterTransition } from "./app/encounterTransition.js";
 
 const mapQuickActionsFreezeMs = 650;
 const manualSaveSlot = "manual";
@@ -49,7 +53,9 @@ const joystickModes = {
 const appRoot = document.querySelector("#app");
 mountAppShell(appRoot);
 
-const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
+const urlParams = new URLSearchParams(window.location.search);
+const requestedLanguage = urlParams.get("lang");
+const requestedBotMode = urlParams.get("bot");
 const i18n = createI18n({
   locales,
   defaultLanguage: DEFAULT_LANGUAGE,
@@ -102,7 +108,7 @@ function unspentXp() {
 const build = { ...baseHero.stats };
 const initialBuild = { ...build };
 const committedBuild = { ...build };
-const heroName = "Houdini";
+let heroName = baseProgression.heroName ?? "Hero";
 const {
   affixButton,
   appNode,
@@ -117,6 +123,15 @@ const {
   chooseCreatureHuntButton,
   chooseHumanCombatButton,
   chooseMapButton,
+  chooseTutorialButton,
+  chooseTutorialEpilogueButton,
+  tutorialOverlayCanvas,
+  mapNameInputFrame,
+  mapNameInputPrompt,
+  mapNameInput,
+  mapNameInputOk,
+  tutorialBriefingOverlay,
+  tutorialBriefingDialogLog,
   combatNodes,
   combatSection,
   creatureSprite,
@@ -267,6 +282,7 @@ const screenRouter = createScreenRouter({
 });
 
 let adventureFlow = null;
+let combatBot = null;
 
 function isCaptureConditionsModalOpen() {
   return document.body.classList.contains("capture-conditions-modal-open");
@@ -512,6 +528,21 @@ combatController = new CombatController({
   t
 });
 
+combatBot = createCombatBot({
+  action: (actionId) => {
+    if (isCaptureConditionsModalOpen()) return;
+    combatController?.playerAction(actionId);
+  },
+  getActionDefinitions: () => combatController?.actionDefinitions ?? actionDefinitions,
+  getCombat: () => combatController?.getCombat(),
+  getContext: () => adventureFlow?.getCombatContext() ?? "capture",
+  getPerception: () => combatController?.getCombat()?.build?.perception ?? build.perception,
+  onContinue: () => {
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+  }
+});
+window.combatBot = combatBot;
+
 function creatureName() {
   return t(creature.nameKey);
 }
@@ -554,7 +585,7 @@ function setMapQuickActionsDisabled(disabled) {
 function syncMapQuickActions() {
   if (!mapPopulationButton || !mapScreen) return;
   mapPopulationButton.hidden = !mapScreen.isMinimapAvailable();
-  mapRadarButton.hidden = false;
+  mapRadarButton.hidden = !(baseProgression.completedTrainerBattleIds?.includes("chad") ?? false);
 }
 
 function freezeMapQuickActions(duration = mapQuickActionsFreezeMs) {
@@ -835,9 +866,44 @@ mapRadarModalController = new MapRadarModal({
   }
 });
 
-bindPress(mapPopulationButton, () => {
+bindPress(mapPopulationButton, async () => {
   nativeHaptic("light");
   mapPopulationModal.open();
+  await new Promise((resolve) => window.setTimeout(resolve, 600));
+  const tutorialFlag = "nora_minimap_tutorial_seen";
+  const tutorialSeen = baseProgression.openedMapFlags?.includes(tutorialFlag);
+  if (!tutorialSeen) {
+    const noraName = t("map.npc.nora.name");
+    const heroNameStr = mapScreen.heroName;
+    mapScreen.lockMapDialogInput();
+    const choice = await mapScreen.playChoiceDialog({
+      message: t("map.npc.nora.minimap_tutorial.prompt"),
+      options: [
+        { label: t("map.npc.nora.minimap_tutorial.ok"), value: "ok" },
+        { label: t("map.npc.nora.minimap_tutorial.skip"), value: "skip" }
+      ],
+      messageHighlights: [noraName],
+      optionLayout: "horizontal"
+    });
+    if (choice === "ok") {
+      const lines = [
+        t("map.npc.nora.minimap_tutorial.1", { hero: heroNameStr }),
+        t("map.npc.nora.minimap_tutorial.2", { hero: heroNameStr }),
+        t("map.npc.nora.minimap_tutorial.3", { hero: heroNameStr }),
+        t("map.npc.nora.minimap_tutorial.4", { hero: heroNameStr })
+      ];
+      for (const line of lines) {
+        await mapScreen.playMessageDialog({
+          message: `${noraName} : ${line}`,
+          messageHighlights: [noraName, heroNameStr, "fawnas", "Cascara"],
+          autoHide: true
+        });
+      }
+    }
+    mapScreen.hideDialog();
+    mapScreen.unlockMapDialogInput();
+    unlockMapFlag(tutorialFlag);
+  }
 });
 bindPress(mapRadarButton, () => {
   nativeHaptic("light");
@@ -989,6 +1055,8 @@ staticTextRenderer = createStaticTextRenderer({
     chooseCreatureHuntButton,
     chooseHumanCombatButton,
     chooseMapButton,
+    chooseTutorialButton,
+    chooseTutorialEpilogueButton,
     mapCreaturesButton,
     mapInventoryButton,
     mapPopulationButton,
@@ -1140,6 +1208,146 @@ chooseMapButton.addEventListener("click", () => {
   adventureFlow.openMapFromMenu();
 });
 
+chooseTutorialEpilogueButton.addEventListener("click", async () => {
+  const mapReadyPromise = adventureFlow.openMapFromMenu();
+  const epilogueScreen = new TutorialScreen({
+    mapScreen,
+    overlayCanvas: tutorialOverlayCanvas,
+    t,
+    nameInputNodes: {
+      frame: mapNameInputFrame,
+      prompt: mapNameInputPrompt,
+      input: mapNameInput,
+      okButton: mapNameInputOk
+    },
+    quickActionButtons: [mapInventoryButton, mapCreaturesButton],
+    baseProgression
+  });
+  await epilogueScreen.playEpilogue(heroName, mapReadyPromise);
+});
+
+chooseTutorialButton.addEventListener("click", async () => {
+  [mapInventoryButton, mapCreaturesButton].forEach((b) => { if (b) b.hidden = true; });
+  screenRouter.show(gameScreens.map);
+  renderAll();
+  window.scrollTo({ top: 0, behavior: "auto" });
+  mapScreen.holdTileLayer("Bateau", 0);
+  await mapScreen.start({ reset: true });
+  mapScreen.heroHidden = true;
+  mapScreen.cameraYOffset = 2 * 16;
+  mapScreen.nodes.canvas.style.background = "#0095E9";
+  mapScreen.updateCamera();
+  tutorialOverlayCanvas.hidden = false;
+  const tutorialScreen = new TutorialScreen({
+    mapScreen,
+    overlayCanvas: tutorialOverlayCanvas,
+    t,
+    nameInputNodes: {
+      frame: mapNameInputFrame,
+      prompt: mapNameInputPrompt,
+      input: mapNameInput,
+      okButton: mapNameInputOk
+    },
+    quickActionButtons: [mapInventoryButton, mapCreaturesButton],
+    baseProgression
+  });
+  const chosenName = await tutorialScreen.start();
+  if (chosenName) {
+    heroName = chosenName;
+    baseProgression.heroName = chosenName;
+    mapScreen.heroName = chosenName;
+  }
+
+  // Préparer l'encounter Flamillon fixe
+  const tutorialState = createTutorialCaptureEncounterState({ progression: baseProgression });
+  encounter = tutorialState.encounter;
+  creature = tutorialState.creature;
+  encounterAffix = tutorialState.encounterAffix;
+  ownedHuntAffixes = tutorialState.ownedHuntAffixes;
+  objectivesData = tutorialState.objectives;
+  briefingScreen.configureEncounter({
+    creature,
+    encounterIntroKey: tutorialState.encounterIntroKey,
+    objectives: objectivesData,
+    encounterAffix,
+    ownedHuntAffixes,
+    selectedHuntAffixId: null,
+    totalPoints: 0
+  });
+  combatScreen.configureEncounter({ creature, objectives: objectivesData });
+  combatController.configureEncounter({ creature, encounter, encounterAffix, objectivesData });
+
+  // Transition vers le briefing — joue pendant que la map tuto est encore affichée
+  // (heroHidden=true, fond bleu) pour éviter le flash du héros
+  await playEncounterTransition(encounterTransition, {
+    boundsNode: mapScreen.nodes.section,
+    keepVisible: true
+  });
+
+  // Restauration de la map pendant que l'écran est noir
+  tutorialScreen.stop();
+  tutorialOverlayCanvas.hidden = true;
+  mapScreen.heroHidden = false;
+  mapScreen.cameraYOffset = 0;
+  mapScreen.nodes.canvas.style.background = "";
+  mapScreen.tileLayerFades.delete("Bateau");
+  mapScreen.updateCamera();
+
+  adventureFlow.markCombatStarted("capture");
+  screenRouter.show(gameScreens.huntBriefing);
+  renderAll();
+  cleanupEncounterTransition(encounterTransition);
+  briefingScreen.playRadarIntro();
+  window.scrollTo({ top: 0, behavior: "auto" });
+
+  // Overlay tutoriel sur le briefing
+  const tutorialBriefing = new TutorialBriefingController({
+    overlayNode: tutorialBriefingOverlay,
+    dialogLog: tutorialBriefingDialogLog,
+    behaviorButton,
+    captureConditionsButton,
+    startCaptureButton,
+    briefingModalClose,
+    t,
+    heroName,
+    flamillonName: t(creature.nameKey)
+  });
+  await tutorialBriefing.start();
+
+  const noraName = t("map.npc.nora.name");
+  const turnMessages = {
+    2: `${noraName} : ${t("tuto.combat.turn2")}`,
+    3: `${noraName} : ${t("tuto.combat.turn3")}`,
+    4: `${noraName} : ${t("tuto.combat.turn4")}`,
+    5: `${noraName} : ${t("tuto.combat.turn5")}`
+  };
+
+  const noraHighlight = { highlights: [noraName] };
+
+  function startTutorialCombat() {
+    combatController.onAfterEnemyTurn = (turn) => {
+      const msg = turnMessages[turn];
+      if (msg) combatController.addLog(msg, null, noraHighlight);
+    };
+    combatController.onCombatReadyToContinue = async (result) => {
+      if (result?.won && result?.outcome === "capture") {
+        combatController.onAfterEnemyTurn = null;
+        combatController.onCombatReadyToContinue = (r) => adventureFlow?.waitForAdventureContinue(r);
+        const mapReadyPromise = adventureFlow.openMapFromMenu();
+        await tutorialScreen.playEpilogue(heroName, mapReadyPromise);
+      } else {
+        const retryMsg = `${noraName} : ${t("tuto.combat.retry")}`;
+        combatController.addLog(retryMsg, () => {
+          combatController.addContinueIndicator(() => startTutorialCombat());
+        }, noraHighlight);
+      }
+    };
+    startCaptureSequence();
+  }
+
+  startTutorialCombat();
+});
+
 if (document.fonts) {
   document.fonts.ready.then(scheduleViewportFit);
 }
@@ -1150,3 +1358,7 @@ screenRouter.show(gameScreens.start);
 renderAll();
 scheduleViewportFit();
 combatController.addLog(t("log.initial"));
+if (requestedBotMode === "combat") {
+  combatBot.start();
+  console.info("[CombatBot] Mode URL actif. Lancez un combat pour demarrer les decisions automatiques.");
+}

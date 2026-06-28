@@ -15,6 +15,9 @@ export function queryDomNodes(root = document) {
   const chooseCreatureHuntButton = root.querySelector("#chooseCreatureHunt");
   const chooseHumanCombatButton = root.querySelector("#chooseHumanCombat");
   const chooseMapButton = root.querySelector("#chooseMap");
+  const chooseTutorialButton = root.querySelector("#chooseTutorial");
+  const chooseTutorialEpilogueButton = root.querySelector("#chooseTutorialEpilogue");
+  const tutorialOverlayCanvas = root.querySelector("#tutorialOverlayCanvas");
   const optionsSection = root.querySelector("#optionsSection");
   const optionsSaveButton = root.querySelector("#optionsSaveButton");
   const optionsSaveGauge = root.querySelector("#optionsSaveGauge");
@@ -60,8 +63,14 @@ export function queryDomNodes(root = document) {
   const mapJoystick = root.querySelector("#mapJoystick");
   const mapJoystickBase = root.querySelector("#mapJoystick .map-joystick-base");
   const mapJoystickStick = root.querySelector("#mapJoystickStick");
+  const tutorialBriefingOverlay = root.querySelector("#tutorialBriefingOverlay");
+  const tutorialBriefingDialogLog = root.querySelector("#tutorialBriefingDialogLog");
   const mapDialogFrame = root.querySelector("#mapDialogFrame");
   const mapDialogLog = root.querySelector("#mapDialogLog");
+  const mapNameInputFrame = root.querySelector("#mapNameInputFrame");
+  const mapNameInputPrompt = root.querySelector("#mapNameInputPrompt");
+  const mapNameInput = root.querySelector("#mapNameInput");
+  const mapNameInputOk = root.querySelector("#mapNameInputOk");
   const mapChoicePanel = root.querySelector("#mapChoicePanel");
   const mapChoiceList = root.querySelector("#mapChoiceList");
   const encounterTransition = root.querySelector("#encounterTransition");
@@ -191,6 +200,9 @@ export function queryDomNodes(root = document) {
     chooseCreatureHuntButton,
     chooseHumanCombatButton,
     chooseMapButton,
+    chooseTutorialButton,
+    chooseTutorialEpilogueButton,
+    tutorialOverlayCanvas,
     combatNodes,
     combatSection,
     creatureSprite,
@@ -253,8 +265,14 @@ export function queryDomNodes(root = document) {
     logNode,
     mapCanvas,
     mapCreaturesButton,
+    tutorialBriefingOverlay,
+    tutorialBriefingDialogLog,
     mapDialogFrame,
     mapDialogLog,
+    mapNameInputFrame,
+    mapNameInputPrompt,
+    mapNameInput,
+    mapNameInputOk,
     mapChoiceList,
     mapChoicePanel,
     mapInventoryButton,

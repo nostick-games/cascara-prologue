@@ -7,6 +7,8 @@ const appShellTemplate = `
       <button id="chooseCreatureHunt" class="secondary" type="button"></button>
       <button id="chooseHumanCombat" class="secondary" type="button"></button>
       <button id="chooseMap" class="secondary" type="button"></button>
+      <button id="chooseTutorial" class="secondary" type="button"></button>
+      <button id="chooseTutorialEpilogue" class="secondary" type="button"></button>
     </div>
   </section>
 
@@ -33,6 +35,7 @@ const appShellTemplate = `
 
   <section class="map-section game-panel" id="mapSection" hidden>
     <canvas class="map-canvas" id="mapCanvas" width="960" height="540"></canvas>
+    <canvas class="tutorial-overlay-canvas" id="tutorialOverlayCanvas" aria-hidden="true" hidden></canvas>
     <div class="map-quick-actions" aria-label="Raccourcis de la map">
       <button class="map-quick-action" id="mapPopulationButton" type="button" hidden>
         <img src="${assetPath("assets/inventaire/minimap.png")}" alt="">
@@ -54,6 +57,15 @@ const appShellTemplate = `
     </div>
     <div class="map-dialog-frame" id="mapDialogFrame" hidden>
       <div class="map-dialog-log" id="mapDialogLog"></div>
+    </div>
+    <div class="map-dialog-frame map-name-input-frame" id="mapNameInputFrame" hidden>
+      <div class="map-name-input-inner">
+        <p class="map-name-input-prompt" id="mapNameInputPrompt"></p>
+        <div class="map-name-input-row">
+          <input type="text" id="mapNameInput" class="map-name-input" maxlength="12" autocomplete="off" spellcheck="false" />
+        </div>
+        <button type="button" id="mapNameInputOk" class="map-name-input-ok"></button>
+      </div>
     </div>
     <div class="map-choice-panel" id="mapChoicePanel" hidden>
       <div class="map-choice-list" id="mapChoiceList"></div>
@@ -234,6 +246,12 @@ const appShellTemplate = `
           <button id="fleeButton" class="secondary" type="button"></button>
           <button id="startCapture" class="primary"></button>
         </div>
+      </div>
+    </div>
+
+    <div class="tutorial-briefing-overlay" id="tutorialBriefingOverlay" hidden>
+      <div class="map-dialog-frame tutorial-briefing-dialog" id="tutorialBriefingDialogFrame" hidden>
+        <div class="map-dialog-log" id="tutorialBriefingDialogLog"></div>
       </div>
     </div>
 

@@ -82,7 +82,6 @@ export class MapPopulationModal {
     this.legend.innerHTML = `
       <span><i class="minimap-legend-dot"></i>${this.t("ui.map_population_available")}</span>
       <span><i class="minimap-legend-empty"></i>${this.t("ui.map_population_empty")}</span>
-      <span><i class="minimap-legend-unknown"></i>${this.t("ui.map_population_unknown")}</span>
     `;
     setPixelButtonLabel(this.closeButton, this.t("ui.ok"));
   }

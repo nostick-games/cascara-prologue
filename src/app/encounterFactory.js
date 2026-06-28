@@ -1,7 +1,8 @@
 import { getAffixesByIds } from "../data/affixes.js";
 import { selectCaptureObjectives } from "../data/captureObjectives.js";
-import { encounterIntroKeys } from "../data/creatures.js";
-import { selectRandomCaptureEncounter } from "../data/encounters.js";
+import { creatures, encounterIntroKeys } from "../data/creatures.js";
+import { captureEncounterPool, selectRandomCaptureEncounter } from "../data/encounters.js";
+import { tutorialObjectives } from "../data/tutorialObjectives.js";
 import { createHumanEncounter, selectHumanEncounterIntroKey } from "../data/humanEncounters.js";
 import { worldMapPerceptionBonus } from "../game/mapProgression.js";
 import { calculateEncounterScalingFromXp } from "../game/scaling.js";
@@ -28,6 +29,28 @@ export function createCaptureEncounterState({
     objectives: selectCaptureObjectives({
       huntNumber: (progression.captureHuntsCompleted ?? defaultCompletedHunts) + 1
     })
+  };
+}
+
+export function createTutorialCaptureEncounterState({ progression }) {
+  const encounterDef = captureEncounterPool.find((e) => e.id === "capture_flamillon");
+  const baseCreature = creatures["flamillon"];
+  const creature = {
+    ...baseCreature,
+    combat: {
+      ...baseCreature.combat,
+      stats: { ...(baseCreature.combat?.stats ?? {}), level: 1, perception: 20 }
+    }
+  };
+  const encounter = { ...encounterDef, scaling: 0, affix: null, creature };
+
+  return {
+    encounter,
+    creature,
+    encounterAffix: null,
+    ownedHuntAffixes: getAffixesByIds(progression.ownedAffixIds),
+    encounterIntroKey: "encounter.intro.tuto_flamillon",
+    objectives: tutorialObjectives
   };
 }
 

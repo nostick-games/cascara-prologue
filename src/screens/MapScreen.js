@@ -183,6 +183,10 @@ export class MapScreen {
     this.simonTileOverlayImages = new Map();
     this.chestImage = null;
     this.respawnImage = null;
+    this.heroHidden = false;
+    this.cameraYOffset = 0;
+    this.onBeforeTileLayers = null;
+    this.onAfterTileLayer = null;
     this.loaded = false;
     this.running = false;
     this.lastTime = 0;
@@ -941,7 +945,7 @@ export class MapScreen {
     const mapWidth = this.map.width * this.map.tilewidth;
     const mapHeight = this.map.height * this.map.tileheight;
     this.camera.x = Math.max(0, Math.min(mapWidth - viewWidth, this.hero.x - viewWidth * 0.34));
-    this.camera.y = Math.max(0, Math.min(mapHeight - viewHeight, this.hero.y - viewHeight * 0.62));
+    this.camera.y = Math.max(0, Math.min(mapHeight - viewHeight, this.hero.y - viewHeight * 0.62)) + this.cameraYOffset;
     this.markNearbyMinimapTiles();
   }
 
@@ -1719,6 +1723,7 @@ export class MapScreen {
     const scale = this.cameraScale();
     ctx.scale(scale, scale);
     ctx.translate(-Math.round(this.camera.x), -Math.round(this.camera.y));
+    if (this.onBeforeTileLayers) this.onBeforeTileLayers(ctx, time);
     this.drawTileLayers(time, { aboveHero: false });
     this.drawSimonTiles(time);
     this.drawRespawnPoints(time);
@@ -1864,6 +1869,7 @@ export class MapScreen {
           ? (aboveHero ? "above" : "below")
           : null;
         this.drawTileLayer(layer, time, { ySortPass, occlusionPass });
+        if (this.onAfterTileLayer) this.onAfterTileLayer(this.ctx, time, layer.name);
       });
   }
 
@@ -2046,6 +2052,7 @@ export class MapScreen {
   }
 
   drawHero(time) {
+    if (this.heroHidden) return;
     if (this.heroRespawnAnimation) {
       const image = this.heroImages.respawn;
       const frame = this.heroRespawnFrame(time);

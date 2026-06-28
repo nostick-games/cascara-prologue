@@ -1,3 +1,5 @@
+import { renderHighlightedDialogText } from "../screens/map/mapDialogUi.js";
+
 const defaultLinePauseMs = 720;
 const defaultTypeDelayMs = 12;
 
@@ -82,9 +84,12 @@ export class CombatLog {
       this.typeNext();
       return;
     }
+    const highlights = options.highlights ?? [];
     let index = 0;
     const step = () => {
-      target.textContent = message.slice(0, index);
+      const slice = message.slice(0, index);
+      if (highlights.length) renderHighlightedDialogText(target, slice, highlights);
+      else target.textContent = slice;
       this.node.scrollTop = this.node.scrollHeight;
       index += 1;
       if (index <= message.length) {

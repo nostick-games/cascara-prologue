@@ -1,5 +1,5 @@
     .start-choice-actions {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .map-section {
@@ -21,6 +21,98 @@
       height: 100%;
       image-rendering: pixelated;
       background: #101116;
+    }
+
+    .tutorial-overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .tutorial-briefing-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .tutorial-briefing-overlay.is-blocking {
+      pointer-events: auto;
+    }
+
+    .tutorial-briefing-dialog {
+      position: absolute;
+      left: clamp(14px, 4vw, 36px);
+      right: clamp(14px, 4vw, 36px);
+      bottom: clamp(14px, 4vh, 28px);
+      z-index: 51;
+    }
+
+    .is-tutorial-target {
+      position: relative;
+      z-index: 55 !important;
+      outline: 4px solid var(--combat-fire, #e03030);
+      outline-offset: 3px;
+    }
+
+    .map-name-input-frame {
+      z-index: 95;
+    }
+
+    .map-name-input-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 18px;
+      min-height: 118px;
+      justify-content: center;
+    }
+
+    .map-name-input-prompt {
+      color: var(--ink);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      white-space: pre-line;
+      margin: 0;
+    }
+
+    .map-name-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .map-name-input {
+      flex: 1;
+      background: var(--ink);
+      color: var(--ui-blue);
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 6px 8px;
+      image-rendering: pixelated;
+      caret-color: var(--ui-blue);
+      letter-spacing: 0.04em;
+    }
+
+    .map-name-input-ok {
+      flex-shrink: 0;
+      background: var(--ink);
+      color: var(--ui-blue);
+      border: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 6px 10px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
     }
 
     .map-quick-actions {
