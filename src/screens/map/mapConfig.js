@@ -211,8 +211,7 @@ export const mapNpcDialogs = {
           value: "fight",
           action: "humanEncounter",
           enemyId: "chad",
-          messageKey: "map.npc.chad.training_intro",
-          continueDelayMs: 650
+          messageKey: "map.npc.chad.training_intro"
         },
         {
           labelKey: "map.npc.chad.option.learn",

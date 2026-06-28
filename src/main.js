@@ -39,6 +39,7 @@ import { hpRechargeStepDelay } from "./utils/hpRechargeTiming.js";
 import { nativeHaptic, nativeLoad, nativeSave } from "./utils/nativeBridge.js";
 import { TutorialScreen } from "./screens/TutorialScreen.js";
 import { TutorialBriefingController } from "./screens/TutorialBriefingController.js";
+import { ChadTutorialController } from "./screens/ChadTutorialController.js";
 import { playEncounterTransition, cleanupEncounterTransition } from "./app/encounterTransition.js";
 
 const mapQuickActionsFreezeMs = 650;
@@ -132,6 +133,8 @@ const {
   mapNameInputOk,
   tutorialBriefingOverlay,
   tutorialBriefingDialogLog,
+  humanBriefingTutorialOverlay,
+  humanBriefingTutorialDialogLog,
   combatNodes,
   combatSection,
   creatureSprite,
@@ -1036,6 +1039,28 @@ adventureFlow = createAdventureFlow({
       baseProgression.completedTrainerBattleIds.push(enemyId);
     }
   },
+  onHumanBriefingOpen: (enemyId) => {
+    if (enemyId === "chad" && !hasCompletedChadTrainingCombat()) {
+      const chadTutorial = new ChadTutorialController({
+        overlayNode: humanBriefingTutorialOverlay,
+        dialogLog: humanBriefingTutorialDialogLog,
+        rosterSlots: humanRosterSlots,
+        enemyRadarButton: humanEnemyRadarButton,
+        enemyRadarModalClose: humanEnemyRadarModalClose,
+        enemyRadarModalShield: humanEnemyRadarModalShield,
+        instinctButton: humanInstinctButton,
+        instinctModalClose,
+        instinctModalShield,
+        instinctModalList,
+        startCombatButton: startHumanCombatButton,
+        humanBriefingScreen,
+        t,
+        heroName,
+        chadName: t("map.npc.chad.name")
+      });
+      chadTutorial.start();
+    }
+  },
   prepareNextHumanCombat,
   prepareNextHunt,
   renderAll,
@@ -1342,13 +1367,7 @@ chooseTutorialButton.addEventListener("click", async () => {
       } else {
         const retryMsg = `${noraName} : ${t("tuto.combat.retry")}`;
         combatController.addLog(retryMsg, () => {
-          combatController.addContinueIndicator(null);
-          const eventName = mobileFitQuery.matches ? "pointerdown" : "keydown";
-          const handler = () => {
-            window.removeEventListener(eventName, handler, true);
-            startTutorialCombat();
-          };
-          window.addEventListener(eventName, handler, true);
+          combatController.addContinueIndicator(() => startTutorialCombat());
         }, noraHighlight);
       }
     };

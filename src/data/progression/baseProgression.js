@@ -1,7 +1,7 @@
 export const baseProgression = {
   availableXp: 0,
   stars: 0,
-  gold: 99,
+  gold: 30,
   arachnideHpRestoreCost: 10,
   arachnideGemRestoreCost: 15,
   heroHp: 13,
@@ -10,12 +10,14 @@ export const baseProgression = {
   openedMapFlags: [],
   visitedMapIds: ["prologue"],
   completedTrainerBattleIds: [],
-  capturedCreatures: [],
+  capturedCreatures: [
+    { id: "flamillon_test_1", creatureId: "flamillon", level: 1, capturedAt: 1, completedObjectives: 3, affixId: "etincelle_critique", affixLevel: 0 }
+  ],
   inventory: {
     potion_100: 3,
     antipara: 3,
     pommade: 2
   },
   preparedHuntAffixId: null,
-  ownedAffixIds: []
+  ownedAffixIds: ["etincelle_critique"]
 };

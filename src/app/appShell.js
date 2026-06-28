@@ -336,6 +336,12 @@ const appShellTemplate = `
         </div>
       </div>
     </div>
+
+    <div class="tutorial-briefing-overlay" id="humanBriefingTutorialOverlay" hidden>
+      <div class="map-dialog-frame tutorial-briefing-dialog" id="humanBriefingTutorialDialogFrame" hidden>
+        <div class="map-dialog-log" id="humanBriefingTutorialDialogLog"></div>
+      </div>
+    </div>
   </section>
 
   <div class="briefing-modal-shield" id="humanEnemyRadarModalShield" hidden></div>

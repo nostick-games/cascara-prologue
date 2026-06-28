@@ -38,7 +38,6 @@ export class MapPopulationModal {
     this.currentModel = null;
 
     bindPress(closeButton, () => this.close());
-    shield?.addEventListener("click", () => this.close());
   }
 
   async open() {

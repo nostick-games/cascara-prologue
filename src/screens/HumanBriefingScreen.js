@@ -193,6 +193,7 @@ export class HumanBriefingScreen {
     this.updateAdaptiveEnemy();
     this.syncSelectedInstinct();
     this.render();
+    this.onSlotAssigned?.(slotIndex, entryId);
   }
 
   saveState() {

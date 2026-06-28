@@ -125,6 +125,8 @@ export function queryDomNodes(root = document) {
   const humanRadarModalShield = root.querySelector("#humanRadarModalShield");
   const humanPointsLeftNode = root.querySelector("#humanPointsLeft");
   const humanPointsUnitNode = root.querySelector("#humanPointsUnit");
+  const humanBriefingTutorialOverlay = root.querySelector("#humanBriefingTutorialOverlay");
+  const humanBriefingTutorialDialogLog = root.querySelector("#humanBriefingTutorialDialogLog");
   const humanResetBuildButton = root.querySelector("#humanResetBuild");
   const startHumanCombatButton = root.querySelector("#startHumanCombat");
   const humanEncounterSentenceNode = root.querySelector("#humanEncounterSentence");
@@ -267,6 +269,8 @@ export function queryDomNodes(root = document) {
     mapCreaturesButton,
     tutorialBriefingOverlay,
     tutorialBriefingDialogLog,
+    humanBriefingTutorialOverlay,
+    humanBriefingTutorialDialogLog,
     mapDialogFrame,
     mapDialogLog,
     mapNameInputFrame,

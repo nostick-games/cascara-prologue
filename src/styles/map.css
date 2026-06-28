@@ -45,6 +45,13 @@
       pointer-events: auto;
     }
 
+    /* Overlay du briefing humain : z-index élevé pour passer
+       au-dessus des modales fixed (roster, instinct, talents)
+       qui n'ont pas de z-index explicite. */
+    #humanBriefingTutorialOverlay {
+      z-index: 500;
+    }
+
     .tutorial-briefing-dialog {
       position: absolute;
       left: clamp(14px, 4vw, 36px);
@@ -55,7 +62,7 @@
 
     .is-tutorial-target {
       position: relative;
-      z-index: 55 !important;
+      z-index: 505 !important;
       outline: 4px solid var(--combat-fire, #e03030);
       outline-offset: 3px;
     }
@@ -937,7 +944,7 @@
         height: 126px;
       }
 
-      body.map-active .map-dialog-frame {
+      .map-dialog-frame {
         left: max(10px, env(safe-area-inset-left));
         right: max(10px, env(safe-area-inset-right));
         bottom: max(8px, env(safe-area-inset-bottom));
@@ -946,7 +953,7 @@
         max-height: min(44vh, 176px);
       }
 
-      body.map-active .map-dialog-log {
+      .map-dialog-log {
         gap: 4px;
         align-content: start;
         box-sizing: border-box;

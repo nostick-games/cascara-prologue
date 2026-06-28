@@ -22,6 +22,7 @@ export function createAdventureFlow({
   onCaptureCompleted = () => {},
   onMapVisited = () => {},
   onTrainingCompleted = () => {},
+  onHumanBriefingOpen = () => {},
   prepareNextHumanCombat,
   prepareNextHunt,
   renderAll,
@@ -207,6 +208,7 @@ export function createAdventureFlow({
     cleanupEncounterTransition(transitionNode);
     humanBriefingScreen.playRadarIntro();
     scrollTop();
+    onHumanBriefingOpen(enemyId);
   }
 
   async function returnToMapFromHunt(result = null) {
