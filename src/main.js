@@ -876,6 +876,7 @@ bindPress(mapPopulationButton, async () => {
     const noraName = t("map.npc.nora.name");
     const heroNameStr = mapScreen.heroName;
     mapScreen.lockMapDialogInput();
+    mapPopulationModalClose.disabled = true;
     const choice = await mapScreen.playChoiceDialog({
       message: t("map.npc.nora.minimap_tutorial.prompt"),
       options: [
@@ -902,6 +903,8 @@ bindPress(mapPopulationButton, async () => {
     }
     mapScreen.hideDialog();
     mapScreen.unlockMapDialogInput();
+    await new Promise((resolve) => window.setTimeout(resolve, 600));
+    mapPopulationModalClose.disabled = false;
     unlockMapFlag(tutorialFlag);
   }
 });
