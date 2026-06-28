@@ -1310,7 +1310,8 @@ chooseTutorialButton.addEventListener("click", async () => {
     briefingModalClose,
     t,
     heroName,
-    flamillonName: t(creature.nameKey)
+    flamillonName: t(creature.nameKey),
+    radar: briefingScreen.radar
   });
   await tutorialBriefing.start();
 
@@ -1338,7 +1339,13 @@ chooseTutorialButton.addEventListener("click", async () => {
       } else {
         const retryMsg = `${noraName} : ${t("tuto.combat.retry")}`;
         combatController.addLog(retryMsg, () => {
-          combatController.addContinueIndicator(() => startTutorialCombat());
+          combatController.addContinueIndicator(null);
+          const eventName = mobileFitQuery.matches ? "pointerdown" : "keydown";
+          const handler = () => {
+            window.removeEventListener(eventName, handler, true);
+            startTutorialCombat();
+          };
+          window.addEventListener(eventName, handler, true);
         }, noraHighlight);
       }
     };

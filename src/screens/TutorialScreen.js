@@ -272,6 +272,10 @@ export class TutorialScreen {
       messageHighlights: [noraName, heroName],
       autoHide: true
     });
+    await mapScreen.playMessageDialog({
+      message: t("tuto.nora.intro.2b"),
+      autoHide: true
+    });
     mapScreen.hideDialog();
 
     // Phase 6 : pause puis Flamillon apparaît en haut du viewport et saute

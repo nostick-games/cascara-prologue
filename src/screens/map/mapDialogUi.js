@@ -481,7 +481,8 @@ export function renderHighlightedDialogText(target, text, highlights = []) {
       target.append(document.createTextNode(text.slice(cursor, match.index)));
     }
     const span = document.createElement("span");
-    span.className = "map-dialog-enemy-name";
+    span.className = "map-dialog-enemy-name enemy-name";
+    span.style.color = "var(--ui-enemy-red)";
     span.textContent = text.slice(match.index, match.index + match.highlight.length);
     target.append(span);
     cursor = match.index + match.highlight.length;

@@ -12,7 +12,8 @@ export class TutorialBriefingController {
     briefingModalClose,
     t,
     heroName,
-    flamillonName
+    flamillonName,
+    radar = null
   }) {
     this.overlayNode = overlayNode;
     this.dialogLog = dialogLog;
@@ -23,6 +24,7 @@ export class TutorialBriefingController {
     this.t = t;
     this.heroName = heroName;
     this.flamillonName = flamillonName;
+    this.radar = radar;
     this._highlightedButton = null;
     this._typingToken = 0;
   }
@@ -175,6 +177,38 @@ export class TutorialBriefingController {
     return new Promise((resolve) => window.setTimeout(resolve, ms));
   }
 
+  animateRadarDemo() {
+    if (!this.radar) return Promise.resolve();
+    const radar = this.radar;
+    const stats = radar.stats;
+    const originalBuild = { ...radar.build };
+
+    const animateTo = (targetBuild, duration) => new Promise((resolve) => {
+      const start = { ...radar.displayedBuild };
+      const statIds = stats.map((s) => s.id);
+      radar.runRadarAnimation(duration, (eased) => {
+        statIds.forEach((id) => {
+          radar.displayedBuild[id] = start[id] + (targetBuild[id] - start[id]) * eased;
+        });
+        radar.updateValueTexts();
+        radar.draw();
+      });
+      setTimeout(resolve, duration + 60);
+    });
+
+    const maxBuild = {};
+    stats.forEach((s) => { maxBuild[s.id] = s.max; });
+
+    return animateTo(maxBuild, 700)
+      .then(() => this.wait(300))
+      .then(() => animateTo(originalBuild, 600))
+      .then(() => {
+        radar.displayedBuild = { ...originalBuild };
+        radar.updateValueTexts();
+        radar.draw();
+      });
+  }
+
   async start() {
     const { t } = this;
     const noraName = t("map.npc.nora.name");
@@ -199,6 +233,8 @@ export class TutorialBriefingController {
 
     await this.playDialog(`${noraName} : ${t("tuto.briefing.instinct")}`);
     await this.playDialog(`${noraName} : ${t("tuto.briefing.4")}`);
+    this.hideDialog();
+    await this.animateRadarDemo();
     await this.playDialog(`${noraName} : ${t("tuto.briefing.5a")}`);
     await this.playDialog(`${noraName} : ${t("tuto.briefing.5b")}`);
 

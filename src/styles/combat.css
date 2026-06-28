@@ -815,6 +815,11 @@
       margin-top: 6px;
     }
 
+    .log .map-dialog-enemy-name,
+    .enemy-name {
+      color: var(--ui-enemy-red);
+    }
+
     .log-reward {
       display: grid;
       gap: 8px;

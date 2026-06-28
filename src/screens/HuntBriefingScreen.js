@@ -363,6 +363,15 @@ export class HuntBriefingScreen {
         row.textContent = `${completed ? "✓" : hidden ? "?" : "•"} ${hidden ? t("objective.hidden.preview") : this.objectiveLabel(objective)}`;
         nodes.briefingModalObjectives.append(row);
       });
+      if (this.encounterAffix) {
+        const footer = document.createElement("div");
+        footer.className = "objective-affix-footer";
+        footer.textContent = t("ui.objective_affix_reward", {
+          name: this.huntAffixName(this.encounterAffix),
+          description: t(this.encounterAffix.descriptionKey)
+        });
+        nodes.briefingModalObjectives.append(footer);
+      }
     } else if (isAffix) {
       this.renderHuntAffixList();
     } else if (isRewards) {

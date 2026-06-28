@@ -22,7 +22,8 @@ export const tutorialObjectives = [
   },
   {
     id: "tuto_hidden",
-    type: "artOnce",
+    type: "captureAboveHp",
+    threshold: 0.9,
     labelKey: "objective.tuto_hidden.label",
     reward: 28,
     hiddenUntilPerception: true

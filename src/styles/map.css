@@ -601,6 +601,10 @@
       color: var(--ui-enemy-red);
     }
 
+    .log .map-dialog-enemy-name {
+      color: var(--ui-enemy-red);
+    }
+
     .map-dialog-log .map-dialog-options {
       display: flex;
       gap: 22px;

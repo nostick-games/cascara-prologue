@@ -720,6 +720,15 @@
         font-size: calc(0.74rem - 2px);
       }
 
+      .briefing-modal .modal-objectives .objective-affix-footer {
+        margin-top: 10px;
+        padding-top: 8px;
+        border-top: 1px solid var(--ui-border);
+        font-size: calc(0.74rem - 2px);
+        color: var(--ui-text-muted);
+        font-style: italic;
+      }
+
       .affix-row {
         padding: 6px;
       }

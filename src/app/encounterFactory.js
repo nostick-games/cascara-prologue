@@ -1,4 +1,4 @@
-import { getAffixesByIds } from "../data/affixes.js";
+import { getAffixesByIds, selectRandomAffixForType } from "../data/affixes.js";
 import { selectCaptureObjectives } from "../data/captureObjectives.js";
 import { creatures, encounterIntroKeys } from "../data/creatures.js";
 import { captureEncounterPool, selectRandomCaptureEncounter } from "../data/encounters.js";
@@ -42,12 +42,13 @@ export function createTutorialCaptureEncounterState({ progression }) {
       stats: { ...(baseCreature.combat?.stats ?? {}), level: 1, perception: 20 }
     }
   };
-  const encounter = { ...encounterDef, scaling: 0, affix: null, creature };
+  const affix = selectRandomAffixForType(creature.type);
+  const encounter = { ...encounterDef, scaling: 0, affix, creature };
 
   return {
     encounter,
     creature,
-    encounterAffix: null,
+    encounterAffix: affix,
     ownedHuntAffixes: getAffixesByIds(progression.ownedAffixIds),
     encounterIntroKey: "encounter.intro.tuto_flamillon",
     objectives: tutorialObjectives
