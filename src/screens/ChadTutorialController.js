@@ -4,6 +4,8 @@ import { nativeHaptic } from "../utils/nativeBridge.js";
 const TYPE_DELAY_MS = 12;
 const SKIP_ARM_DELAY_MS = 180;
 const CHOICE_FREEZE_MS = 420;
+const MODAL_TOUCH_RELEASE_GUARD_MS = 600;
+const tutorialDominantTypes = new Set(["feu", "eau", "vent"]);
 
 export class ChadTutorialController {
   constructor({
@@ -14,14 +16,13 @@ export class ChadTutorialController {
     enemyRadarModalClose,
     enemyRadarModalShield,
     instinctButton,
-    instinctModalClose,
-    instinctModalShield,
     instinctModalList,
     startCombatButton,
     humanBriefingScreen,
     t,
     heroName,
     chadName,
+    tutorialScenario = "auto",
     onTutorialSeen = () => {}
   }) {
     this.overlayNode = overlayNode;
@@ -31,17 +32,20 @@ export class ChadTutorialController {
     this.enemyRadarModalClose = enemyRadarModalClose;
     this.enemyRadarModalShield = enemyRadarModalShield;
     this.instinctButton = instinctButton;
-    this.instinctModalClose = instinctModalClose;
-    this.instinctModalShield = instinctModalShield;
     this.instinctModalList = instinctModalList;
     this.startCombatButton = startCombatButton;
     this.humanBriefingScreen = humanBriefingScreen;
     this.t = t;
     this.heroName = heroName;
     this.chadName = chadName;
+    this.tutorialScenario = tutorialScenario;
     this.onTutorialSeen = onTutorialSeen;
     this._highlightedButtons = [];
     this._typingToken = 0;
+    this._previousOnSlotAssigned = undefined;
+    this._scenario2StartGuard = null;
+    this._scenario2Completed = false;
+    this._scenario2Completing = false;
   }
 
   get highlights() {
@@ -52,15 +56,15 @@ export class ChadTutorialController {
     this.overlayNode.hidden = false;
     this.overlayNode.classList.add("is-blocking");
     this._overlayClickHandler = (e) => {
-      const highlighted = this._highlightedButtons[0];
+      const highlighted = this._highlightedButtons.find((button) => {
+        const rect = button.getBoundingClientRect();
+        return (
+          e.clientX >= rect.left && e.clientX <= rect.right &&
+          e.clientY >= rect.top && e.clientY <= rect.bottom
+        );
+      });
       if (!highlighted) return;
-      const rect = highlighted.getBoundingClientRect();
-      if (
-        e.clientX >= rect.left && e.clientX <= rect.right &&
-        e.clientY >= rect.top && e.clientY <= rect.bottom
-      ) {
-        highlighted.click();
-      }
+      highlighted.click();
     };
     this.overlayNode.addEventListener("click", this._overlayClickHandler);
   }
@@ -249,18 +253,53 @@ export class ChadTutorialController {
     });
   }
 
-  waitForContinue() {
+  // Primitive unique : attend le premier des événements listés, résout avec l'élément déclencheur.
+  // targets : tableau de [element, ...types]. armDelayMs : délai avant d'armer les écouteurs.
+  waitForEvent(targets, { armDelayMs = 0 } = {}) {
     return new Promise((resolve) => {
-      const handler = () => {
-        this.overlayNode.removeEventListener("click", handler);
-        document.removeEventListener("keydown", handler);
-        resolve();
+      let resolved = false;
+      const bindings = [];
+      const fire = (element) => {
+        if (resolved) return;
+        resolved = true;
+        bindings.forEach((b) => b.element.removeEventListener(b.type, b.handler));
+        resolve(element);
       };
-      window.setTimeout(() => {
-        this.overlayNode.addEventListener("click", handler);
-        document.addEventListener("keydown", handler);
-      }, 200);
+      const arm = () => {
+        targets.forEach(([element, ...types]) => {
+          types.forEach((type) => {
+            const handler = () => fire(element);
+            element.addEventListener(type, handler);
+            bindings.push({ element, type, handler });
+          });
+        });
+      };
+      if (armDelayMs > 0) window.setTimeout(arm, armDelayMs);
+      else arm();
     });
+  }
+
+  // Primitive unique : attend que la modale atteigne l'état voulu ("open" ou "close").
+  // S'appuie sur l'émetteur de cycle de vie de la modale (plus de MutationObserver).
+  waitForVisibility(visibility, state) {
+    const target = state === "open";
+    if (visibility.isOpen === target) return Promise.resolve();
+    return new Promise((resolve) => {
+      const off = state === "open"
+        ? visibility.onOpen(fire)
+        : visibility.onClose(fire);
+      function fire() {
+        off();
+        resolve();
+      }
+    });
+  }
+
+  waitForContinue() {
+    return this.waitForEvent(
+      [[this.overlayNode, "click"], [document, "keydown"]],
+      { armDelayMs: 200 }
+    );
   }
 
   highlightButton(button) {
@@ -278,53 +317,11 @@ export class ChadTutorialController {
   }
 
   waitForAnyPress(elements) {
-    return new Promise((resolve) => {
-      let resolved = false;
-      elements.forEach((el) => {
-        const done = (e) => {
-          if (resolved) return;
-          resolved = true;
-          elements.forEach((el2) => {
-            el2.removeEventListener("pointerup", done);
-            el2.removeEventListener("click", done);
-          });
-          resolve(el);
-        };
-        el.addEventListener("pointerup", done);
-        el.addEventListener("click", done);
-      });
-    });
+    return this.waitForEvent(elements.map((el) => [el, "pointerup", "click"]));
   }
 
   waitForPress(element) {
-    return new Promise((resolve) => {
-      let resolved = false;
-      const done = () => {
-        if (resolved) return;
-        resolved = true;
-        element.removeEventListener("pointerup", done);
-        element.removeEventListener("click", done);
-        resolve();
-      };
-      element.addEventListener("pointerup", done);
-      element.addEventListener("click", done);
-    });
-  }
-
-  waitForSlotAssigned({ requireEntry = false } = {}) {
-    return new Promise((resolve) => {
-      const prev = this.humanBriefingScreen.onSlotAssigned;
-      this.humanBriefingScreen.onSlotAssigned = (...args) => {
-        const entryId = args[1];
-        if (requireEntry && !entryId) {
-          prev?.(...args);
-          return;
-        }
-        this.humanBriefingScreen.onSlotAssigned = prev ?? null;
-        prev?.(...args);
-        resolve(...args);
-      };
-    });
+    return this.waitForEvent([[element, "pointerup", "click"]]);
   }
 
   setRosterModalFawnaChoiceOnly(enabled, allowedButton = null) {
@@ -371,93 +368,26 @@ export class ChadTutorialController {
     });
   }
 
-  waitForRosterModalInteraction() {
-    const shield = this.humanBriefingScreen.rosterModal.shield;
-    return new Promise((resolve) => {
-      let resolved = false;
-      const done = () => {
-        if (resolved) return;
-        resolved = true;
-        shield.removeEventListener("pointerdown", done, true);
-        shield.removeEventListener("keydown", done, true);
-        this.hideDialog();
-        resolve();
-      };
-      shield.addEventListener("pointerdown", done, true);
-      shield.addEventListener("keydown", done, true);
-    });
-  }
-
   waitForRosterModalOpen() {
-    const shield = this.humanBriefingScreen.rosterModal.shield;
-    if (!shield.hidden) return Promise.resolve();
-    return new Promise((resolve) => {
-      const obs = new MutationObserver(() => {
-        if (!shield.hidden) {
-          obs.disconnect();
-          resolve();
-        }
-      });
-      obs.observe(shield, { attributes: true, attributeFilter: ["hidden"] });
-    });
+    return this.waitForVisibility(this.humanBriefingScreen.rosterModal.visibility, "open");
   }
 
   waitForRosterModalClose() {
-    const shield = this.humanBriefingScreen.rosterModal.shield;
-    if (shield.hidden) return Promise.resolve();
-    return new Promise((resolve) => {
-      const obs = new MutationObserver(() => {
-        if (shield.hidden) {
-          obs.disconnect();
-          resolve();
-        }
-      });
-      obs.observe(shield, { attributes: true, attributeFilter: ["hidden"] });
-    });
+    return this.waitForVisibility(this.humanBriefingScreen.rosterModal.visibility, "close");
   }
 
   waitForModalClose(closeButton, shieldButton = null) {
-    return new Promise((resolve) => {
-      let resolved = false;
-      const done = () => {
-        if (resolved) return;
-        resolved = true;
-        closeButton.removeEventListener("click", done);
-        shieldButton?.removeEventListener("click", done);
-        resolve();
-      };
-      closeButton.addEventListener("click", done);
-      shieldButton?.addEventListener("click", done);
-    });
+    const targets = [[closeButton, "click"]];
+    if (shieldButton) targets.push([shieldButton, "click"]);
+    return this.waitForEvent(targets);
   }
 
-  // Attend que l'écran instinct se ferme (depuis l'intérieur de la modale).
   waitForInstinctModalClose() {
-    const shield = this.instinctModalShield;
-    if (shield.hidden) return Promise.resolve();
-    return new Promise((resolve) => {
-      const obs = new MutationObserver(() => {
-        if (shield.hidden) {
-          obs.disconnect();
-          resolve();
-        }
-      });
-      obs.observe(shield, { attributes: true, attributeFilter: ["hidden"] });
-    });
+    return this.waitForVisibility(this.humanBriefingScreen.instinctModal.visibility, "close");
   }
 
   waitForInstinctModalOpen() {
-    const shield = this.instinctModalShield;
-    if (!shield.hidden) return Promise.resolve();
-    return new Promise((resolve) => {
-      const obs = new MutationObserver(() => {
-        if (!shield.hidden) {
-          obs.disconnect();
-          resolve();
-        }
-      });
-      obs.observe(shield, { attributes: true, attributeFilter: ["hidden"] });
-    });
+    return this.waitForVisibility(this.humanBriefingScreen.instinctModal.visibility, "open");
   }
 
   // Attend que la première entrée de la liste d'instincts soit sélectionnée.
@@ -487,7 +417,7 @@ export class ChadTutorialController {
 
   async start() {
     const { t, chadName, heroName } = this;
-    const ownedCount = this.humanBriefingScreen.ownedCreatureCount?.() ?? 0;
+    const duplicatedType = this.firstOwnedDuplicateType();
 
     await this.wait(600);
     this.showOverlay();
@@ -500,17 +430,33 @@ export class ChadTutorialController {
         { label: t("tuto.chad.intro_no"), value: "no" }
       ]
     );
-    this.onTutorialSeen();
     await this.wait(CHOICE_FREEZE_MS);
     if (choice === "no") {
+      this.onTutorialSeen({ choice, scenario: this.tutorialScenario });
       this.hideOverlay();
       return;
     }
 
-    if (ownedCount >= 2) {
-      await this.runScenario2();
+    if (this.tutorialScenario === "first") {
+      await this.runScenario1();
+      this.onTutorialSeen({ choice, scenario: "first", completed: true });
+      return;
+    }
+
+    if (this.tutorialScenario === "type") {
+      if (duplicatedType) {
+        await this.runScenario2(duplicatedType);
+      } else {
+        this.hideOverlay();
+      }
+      return;
+    }
+
+    if (duplicatedType) {
+      await this.runScenario2(duplicatedType);
     } else {
       await this.runScenario1();
+      this.onTutorialSeen({ choice, scenario: "first", completed: true });
     }
   }
 
@@ -622,8 +568,118 @@ export class ChadTutorialController {
     this.hideOverlay();
   }
 
-  async runScenario2() {
-    // À implémenter ultérieurement.
+  ownedCreatureTypeCounts() {
+    return this.humanBriefingScreen.getOwnedCreatures()
+      .reduce((counts, { creature }) => {
+        if (!tutorialDominantTypes.has(creature?.type)) return counts;
+        counts.set(creature.type, (counts.get(creature.type) ?? 0) + 1);
+        return counts;
+      }, new Map());
+  }
+
+  firstOwnedDuplicateType() {
+    const counts = this.ownedCreatureTypeCounts();
+    return [...counts.entries()].find(([, count]) => count >= 2)?.[0] ?? null;
+  }
+
+  sameTypeEquippedTeam() {
+    const equipped = this.humanBriefingScreen.equippedCreatures();
+    const counts = equipped.reduce((map, entry) => {
+      if (!entry?.type) return map;
+      map.set(entry.type, (map.get(entry.type) ?? 0) + 1);
+      return map;
+    }, new Map());
+    const type = [...counts.entries()].find(([, count]) => count >= 2)?.[0] ?? null;
+    return type ? { type, count: counts.get(type) } : null;
+  }
+
+  typeLabel(type) {
+    return this.t(`affix.type.${type}`);
+  }
+
+  installScenario2SlotWatcher() {
+    if (this._previousOnSlotAssigned !== undefined) return;
+    this._previousOnSlotAssigned = this.humanBriefingScreen.onSlotAssigned ?? null;
+    this.humanBriefingScreen.onSlotAssigned = (slotIndex, entryId) => {
+      this._previousOnSlotAssigned?.(slotIndex, entryId);
+      if (this._scenario2Completed || this._scenario2Completing) return;
+      if (!this.sameTypeEquippedTeam()) return;
+      window.setTimeout(() => this.completeScenario2IfReady(), 0);
+    };
+  }
+
+  uninstallScenario2SlotWatcher() {
+    if (this._previousOnSlotAssigned === undefined) return;
+    this.humanBriefingScreen.onSlotAssigned = this._previousOnSlotAssigned;
+    this._previousOnSlotAssigned = undefined;
+  }
+
+  installScenario2StartGuard() {
+    if (this._scenario2StartGuard) return;
+    this._scenario2StartGuard = async (event) => {
+      if (this._scenario2Completed) return;
+      if (this.sameTypeEquippedTeam()) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        await this.completeScenario2IfReady();
+        return;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.showOverlay();
+      await this.playDialog(`${this.chadName} : ${this.t("tuto.chad.s2.reminder")}`);
+      this.hideDialog();
+      this.hideOverlay();
+    };
+    this.startCombatButton.addEventListener("click", this._scenario2StartGuard, true);
+  }
+
+  uninstallScenario2StartGuard() {
+    if (!this._scenario2StartGuard) return;
+    this.startCombatButton.removeEventListener("click", this._scenario2StartGuard, true);
+    this._scenario2StartGuard = null;
+  }
+
+  async completeScenario2IfReady() {
+    const match = this.sameTypeEquippedTeam();
+    if (!match || this._scenario2Completed || this._scenario2Completing) return false;
+    this._scenario2Completing = true;
+    this.uninstallScenario2StartGuard();
+    this.showOverlay();
+    await this.playDialog(`${this.chadName} : ${this.t("tuto.chad.s2.success_1", { type: this.typeLabel(match.type) })}`);
+    await this.playDialog(`${this.chadName} : ${this.t("tuto.chad.s2.success_2")}`);
+    await this.playDialog(`${this.chadName} : ${this.t("tuto.chad.s2.success_3")}`);
+    this.hideDialog();
     this.hideOverlay();
+    this.uninstallScenario2SlotWatcher();
+    this._scenario2Completed = true;
+    this._scenario2Completing = false;
+    this.onTutorialSeen({ scenario: "type", completed: true });
+    return true;
+  }
+
+  async runScenario2(duplicatedType) {
+    const { t, chadName } = this;
+
+    this.installScenario2SlotWatcher();
+    await this.playDialog(`${chadName} : ${t("tuto.chad.s2.1", { type: this.typeLabel(duplicatedType) })}`);
+
+    this.hideDialog();
+    this.highlightButtons(this.rosterSlots);
+    await this.waitForAnyPress(this.rosterSlots);
+    this.unhighlightAll();
+
+    await this.waitForRosterModalOpen();
+    await this.wait(600);
+    await this.playDialog(`${chadName} : ${t("tuto.chad.s2.2")}`);
+    this.hideDialog();
+    await this.wait(MODAL_TOUCH_RELEASE_GUARD_MS);
+    this.hideOverlay();
+
+    await this.waitForRosterModalClose();
+
+    if (await this.completeScenario2IfReady()) return;
+
+    this.installScenario2StartGuard();
   }
 }

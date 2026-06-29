@@ -942,6 +942,20 @@ function hasSeenChadHumanCombatTutorial() {
   return baseProgression.openedMapFlags?.includes("chad_human_combat_tutorial_seen") ?? false;
 }
 
+function hasSeenChadSameTypeTutorial() {
+  return baseProgression.openedMapFlags?.includes("chad_same_type_fawnas_tutorial_seen") ?? false;
+}
+
+function hasOwnedDuplicateCreatureType() {
+  const tutorialDominantTypes = new Set(["feu", "eau", "vent"]);
+  const counts = ownedCreatures().reduce((map, { creature }) => {
+    if (!tutorialDominantTypes.has(creature?.type)) return map;
+    map.set(creature.type, (map.get(creature.type) ?? 0) + 1);
+    return map;
+  }, new Map());
+  return [...counts.values()].some((count) => count >= 2);
+}
+
 function unlockMapFlag(flag) {
   if (!flag) return;
   baseProgression.openedMapFlags ??= [];
@@ -1044,7 +1058,11 @@ adventureFlow = createAdventureFlow({
     }
   },
   onHumanBriefingOpen: (enemyId) => {
-    if (enemyId === "chad" && !hasSeenChadHumanCombatTutorial()) {
+    const shouldShowHumanCombatTutorial = enemyId === "chad" && !hasSeenChadHumanCombatTutorial();
+    const shouldShowSameTypeTutorial = hasSeenChadHumanCombatTutorial()
+      && hasOwnedDuplicateCreatureType()
+      && !hasSeenChadSameTypeTutorial();
+    if (shouldShowHumanCombatTutorial || shouldShowSameTypeTutorial) {
       const chadTutorial = new ChadTutorialController({
         overlayNode: humanBriefingTutorialOverlay,
         dialogLog: humanBriefingTutorialDialogLog,
@@ -1053,15 +1071,17 @@ adventureFlow = createAdventureFlow({
         enemyRadarModalClose: humanEnemyRadarModalClose,
         enemyRadarModalShield: humanEnemyRadarModalShield,
         instinctButton: humanInstinctButton,
-        instinctModalClose,
-        instinctModalShield,
         instinctModalList,
         startCombatButton: startHumanCombatButton,
         humanBriefingScreen,
         t,
         heroName,
         chadName: t("map.npc.chad.name"),
-        onTutorialSeen: () => unlockMapFlag("chad_human_combat_tutorial_seen")
+        tutorialScenario: shouldShowHumanCombatTutorial ? "first" : "type",
+        onTutorialSeen: () => {
+          if (shouldShowHumanCombatTutorial) unlockMapFlag("chad_human_combat_tutorial_seen");
+          if (shouldShowSameTypeTutorial) unlockMapFlag("chad_same_type_fawnas_tutorial_seen");
+        }
       });
       chadTutorial.start();
     }

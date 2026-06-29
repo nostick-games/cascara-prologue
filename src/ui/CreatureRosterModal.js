@@ -1,5 +1,6 @@
 import { setPixelButtonLabel } from "./PixelButton.js";
 import { applyCreatureIdleSprite } from "./creatureIdleSprite.js";
+import { createVisibilityEmitter } from "./visibilityEmitter.js";
 import { affixes } from "../data/affixes.js";
 import { computeEquippedCreatureStats } from "../data/humanEnemies/inheritedStats.js";
 import { statDefinitions } from "../data/stats.js";
@@ -56,6 +57,7 @@ export class CreatureRosterModal {
     this.slotIndex = null;
     this.pendingSelection = null;
     this.browseOnly = false;
+    this.visibility = createVisibilityEmitter();
 
     this.okButton.addEventListener("click", () => this.confirm());
     this.signatureButton?.addEventListener("click", () => this.onSignature?.(this.draftTeam()));
@@ -118,6 +120,7 @@ export class CreatureRosterModal {
     this.getMountNode()?.append(this.shield);
     this.shield.hidden = false;
     this.okButton.focus();
+    this.visibility.emitOpen();
   }
 
   openBrowser() {
@@ -130,6 +133,7 @@ export class CreatureRosterModal {
     this.getMountNode()?.append(this.shield);
     this.shield.hidden = false;
     this.okButton.focus();
+    this.visibility.emitOpen();
   }
 
   close() {
@@ -138,6 +142,7 @@ export class CreatureRosterModal {
     this.browseOnly = false;
     this.shield.hidden = true;
     this.shield.classList.remove("is-browse-only");
+    this.visibility.emitClose();
   }
 
   confirm() {

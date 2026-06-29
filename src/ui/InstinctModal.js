@@ -1,5 +1,6 @@
 import { setPixelButtonLabel } from "./PixelButton.js";
 import { renderInstinctList } from "./instinctList.js";
+import { createVisibilityEmitter } from "./visibilityEmitter.js";
 
 // Modale de sélection d'un instinct (affixe), réutilisable.
 export class InstinctModal {
@@ -29,6 +30,7 @@ export class InstinctModal {
     this.onSelect = onSelect;
     this.getEmptyText = getEmptyText;
     this.promptKey = promptKey;
+    this.visibility = createVisibilityEmitter();
 
     this.closeButton.addEventListener("click", () => this.close());
   }
@@ -38,11 +40,13 @@ export class InstinctModal {
     this.shield.hidden = false;
     this.modal.hidden = false;
     this.resetScroll();
+    this.visibility.emitOpen();
   }
 
   close() {
     this.modal.hidden = true;
     this.shield.hidden = true;
+    this.visibility.emitClose();
   }
 
   render(scrollTop = 0) {

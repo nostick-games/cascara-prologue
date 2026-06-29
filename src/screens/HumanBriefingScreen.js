@@ -507,6 +507,9 @@ export class HumanBriefingScreen {
     nodes.instinctModalShield.hidden = false;
     nodes.instinctModal.hidden = false;
     this.resetSignatureModalScroll();
+    // Le shield est partagé avec la modale instinct : on émet via son émetteur
+    // pour que les abonnés (tuto Chad) détectent l'ouverture, peu importe le chemin.
+    this.instinctModal.visibility.emitOpen();
   }
 
   appendSignatureModalRow(label, value) {
