@@ -10,6 +10,10 @@ export function createStaticTextRenderer({
     document.title = t("ui.page_title");
     nodes.orientationTitle.textContent = t("ui.orientation.title");
     nodes.orientationPrompt.textContent = t("ui.orientation.prompt");
+    setPixelButtonLabel(nodes.homeFrenchButton, t("ui.home.french"));
+    setPixelButtonLabel(nodes.homeEnglishButton, t("ui.home.english"));
+    setPixelButtonLabel(nodes.homeStartButton, t("ui.home.start"));
+    setPixelButtonLabel(nodes.homeCheatButton, t("ui.home.cheat"));
     nodes.startChoiceTitle.textContent = t("ui.start_choice.title");
     setPixelButtonLabel(nodes.chooseCreatureHuntButton, t("ui.start_choice.creature"));
     setPixelButtonLabel(nodes.chooseHumanCombatButton, t("ui.start_choice.human"));

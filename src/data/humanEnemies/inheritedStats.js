@@ -1,6 +1,6 @@
 import { creatures } from "../creatures.js";
 
-const inheritableStatIds = ["power", "defense", "vitality", "crit", "speed", "perception"];
+const inheritableStatIds = ["power", "defense", "vitality", "crit", "speed"];
 
 function createEmptyStats() {
   return Object.fromEntries(inheritableStatIds.map((statId) => [statId, 0]));

@@ -140,7 +140,7 @@
     }
 
     .enemy-zone {
-      --combat-enemy-zone-top: -78px;
+      --combat-enemy-zone-top: -58px;
       --combat-enemy-zone-right: -24px;
       --combat-enemy-aura-bottom: 120px;
       --combat-enemy-aura-line-bottom: 158px;

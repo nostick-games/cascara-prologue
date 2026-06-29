@@ -10,6 +10,11 @@ export function queryDomNodes(root = document) {
   const pointsLeftNode = root.querySelector("#pointsLeft");
   const pointsUnitNode = root.querySelector("#pointsUnit");
   const appNode = root.querySelector(".app");
+  const homeSection = root.querySelector("#homeSection");
+  const homeFrenchButton = root.querySelector("#homeFrenchButton");
+  const homeEnglishButton = root.querySelector("#homeEnglishButton");
+  const homeStartButton = root.querySelector("#homeStartButton");
+  const homeCheatButton = root.querySelector("#homeCheatButton");
   const startSection = root.querySelector("#startSection");
   const startChoiceTitle = root.querySelector("#startChoiceTitle");
   const chooseCreatureHuntButton = root.querySelector("#chooseCreatureHunt");
@@ -215,6 +220,11 @@ export function queryDomNodes(root = document) {
     enemySprite,
     fleeButton,
     heroSprite,
+    homeCheatButton,
+    homeEnglishButton,
+    homeFrenchButton,
+    homeSection,
+    homeStartButton,
     humanBriefingSection,
     humanEncounterSentenceNode,
     humanEnemyRadarButton,

@@ -142,6 +142,11 @@ const {
   encounterSentenceNode,
   encounterTransition,
   fleeButton,
+  homeCheatButton,
+  homeEnglishButton,
+  homeFrenchButton,
+  homeSection,
+  homeStartButton,
   humanBriefingSection,
   humanEncounterSentenceNode,
   humanEnemyRadarButton,
@@ -261,6 +266,7 @@ let mapScreen = null;
 const screenRouter = createScreenRouter({
   body: document.body,
   screens: {
+    [gameScreens.home]: homeSection,
     [gameScreens.start]: startSection,
     [gameScreens.map]: mapSection,
     [gameScreens.options]: optionsSection,
@@ -269,6 +275,7 @@ const screenRouter = createScreenRouter({
     [gameScreens.combat]: combatSection
   },
   bodyClassByScreen: {
+    [gameScreens.home]: "home-active",
     [gameScreens.start]: "start-active",
     [gameScreens.map]: "map-active",
     [gameScreens.options]: "options-active",
@@ -1110,6 +1117,10 @@ staticTextRenderer = createStaticTextRenderer({
     chooseMapButton,
     chooseTutorialButton,
     chooseTutorialEpilogueButton,
+    homeCheatButton,
+    homeEnglishButton,
+    homeFrenchButton,
+    homeStartButton,
     mapCreaturesButton,
     mapInventoryButton,
     mapPopulationButton,
@@ -1261,6 +1272,25 @@ chooseMapButton.addEventListener("click", () => {
   adventureFlow.openMapFromMenu();
 });
 
+function selectHomeLanguage(language) {
+  i18n.setLanguage(language);
+  homeFrenchButton?.setAttribute("aria-pressed", language === "fr" ? "true" : "false");
+  homeEnglishButton?.setAttribute("aria-pressed", language === "en" ? "true" : "false");
+}
+
+homeFrenchButton.addEventListener("click", () => {
+  selectHomeLanguage("fr");
+});
+
+homeEnglishButton.addEventListener("click", () => {
+  selectHomeLanguage("en");
+});
+
+homeCheatButton.addEventListener("click", () => {
+  screenRouter.show(gameScreens.start);
+  renderAll();
+});
+
 chooseTutorialEpilogueButton.addEventListener("click", async () => {
   const mapReadyPromise = adventureFlow.openMapFromMenu();
   const epilogueScreen = new TutorialScreen({
@@ -1279,7 +1309,7 @@ chooseTutorialEpilogueButton.addEventListener("click", async () => {
   await epilogueScreen.playEpilogue(heroName, mapReadyPromise);
 });
 
-chooseTutorialButton.addEventListener("click", async () => {
+async function startNoraTutorial() {
   [mapInventoryButton, mapCreaturesButton].forEach((b) => { if (b) b.hidden = true; });
   screenRouter.show(gameScreens.map);
   renderAll();
@@ -1400,6 +1430,14 @@ chooseTutorialButton.addEventListener("click", async () => {
   }
 
   startTutorialCombat();
+}
+
+homeStartButton.addEventListener("click", () => {
+  startNoraTutorial();
+});
+
+chooseTutorialButton.addEventListener("click", () => {
+  startNoraTutorial();
 });
 
 if (document.fonts) {
@@ -1408,7 +1446,8 @@ if (document.fonts) {
 
 window.setPrototypeLanguage = (language) => i18n.setLanguage(language);
 validateLocales();
-screenRouter.show(gameScreens.start);
+selectHomeLanguage(i18n.getLanguage());
+screenRouter.show(gameScreens.home);
 renderAll();
 scheduleViewportFit();
 combatController.addLog(t("log.initial"));

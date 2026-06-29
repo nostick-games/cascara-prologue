@@ -1,7 +1,22 @@
 import { assetPath } from "../utils/assetPath.js";
 
 const appShellTemplate = `
-  <section class="start-section panel" id="startSection">
+  <section class="home-section" id="homeSection">
+    <div class="home-title-block" aria-label="Cascara prologue">
+      <h1>CASCARA</h1>
+      <p>- prologue -</p>
+    </div>
+    <div class="home-actions home-language-actions">
+      <button id="homeFrenchButton" class="secondary" type="button" lang="fr"></button>
+      <button id="homeEnglishButton" class="secondary" type="button" lang="en"></button>
+    </div>
+    <div class="home-actions">
+      <button id="homeStartButton" class="primary" type="button"></button>
+      <button id="homeCheatButton" class="secondary" type="button"></button>
+    </div>
+  </section>
+
+  <section class="start-section panel" id="startSection" hidden>
     <h1 id="startChoiceTitle"></h1>
     <div class="start-choice-actions">
       <button id="chooseCreatureHunt" class="secondary" type="button"></button>

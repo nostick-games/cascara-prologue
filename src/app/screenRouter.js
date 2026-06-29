@@ -1,4 +1,5 @@
 export const gameScreens = {
+  home: "home",
   start: "start",
   huntBriefing: "huntBriefing",
   humanBriefing: "humanBriefing",
