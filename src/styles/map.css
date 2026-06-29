@@ -918,7 +918,8 @@
       }
     }
 
-    @media (orientation: landscape) and (max-height: 560px) {
+    @media (orientation: landscape) and (max-height: 560px),
+      (orientation: landscape) and (pointer: coarse) and (max-height: 1100px) {
       body.map-active:has(.inventory-modal-shield:not([hidden])) .map-quick-actions,
       body.map-active:has(.roster-modal-shield:not([hidden])) .map-quick-actions,
       body.map-active:has(.map-population-modal-shield:not([hidden])) .map-quick-actions,

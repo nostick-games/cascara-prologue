@@ -5,7 +5,8 @@
       }
     }
 
-    @media (orientation: landscape) and (max-height: 560px) {
+    @media (orientation: landscape) and (max-height: 560px),
+      (orientation: landscape) and (pointer: coarse) and (max-height: 1100px) {
       html {
         -webkit-text-size-adjust: none;
         text-size-adjust: none;

@@ -1,5 +1,5 @@
 export function createViewportFit({ appNode, body = document.body }) {
-  const mobileFitQuery = window.matchMedia("(orientation: landscape) and (max-height: 560px)");
+  const mobileFitQuery = window.matchMedia("(orientation: landscape) and (max-height: 560px), (orientation: landscape) and (pointer: coarse) and (max-height: 1100px)");
 
   function clearFit() {
     appNode.style.removeProperty("--fit-scale");
