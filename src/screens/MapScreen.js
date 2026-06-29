@@ -24,8 +24,6 @@ import {
   humanEncounterNudgeSpeed,
   humanEncounterTriggerBox,
   joystickDeadZone,
-  joystickMaxDistance,
-  mapCameraZoom,
   npcLayerName,
   respawnSprite,
   respawnDiscoveryBounds,
@@ -68,7 +66,6 @@ import {
   ensureMapChoiceScrollControls as ensureMapChoiceScrollControlsUi,
   hideDialog as hideMapDialog,
   hideMapChoicePanel as hideMapChoicePanelUi,
-  isMapChoiceScrollControlTarget,
   playChoiceDialog as playMapChoiceDialog,
   playMessageDialog as playMapMessageDialog,
   renderHighlightedDialogText as renderMapHighlightedDialogText,
@@ -81,6 +78,20 @@ import {
   updateMapChoiceScrollControls as updateMapChoiceScrollControlsUi,
   waitForDialogContinue as waitForMapDialogContinue
 } from "./map/mapDialogUi.js";
+import {
+  bindJoystick as bindMapJoystick,
+  canStartMovableJoystick as canStartMapMovableJoystick,
+  joystickDirection as getMapJoystickDirection,
+  onJoystickPointerDown as onMapJoystickPointerDown,
+  onJoystickPointerMove as onMapJoystickPointerMove,
+  onJoystickPointerUp as onMapJoystickPointerUp,
+  onMapPointerDown as onMapJoystickMapPointerDown,
+  placeMovableJoystick as placeMapMovableJoystick,
+  resetJoystick as resetMapJoystick,
+  setJoystickMode as setMapJoystickMode,
+  updateJoystickFromEvent as updateMapJoystickFromEvent,
+  updateJoystickModeUi as updateMapJoystickModeUi
+} from "./map/mapJoystickControls.js";
 import {
   isHeroInsideDoor as isHeroInDoorBounds,
   isHeroInsideHumanTrigger as isHeroInHumanTrigger,
@@ -100,21 +111,49 @@ import {
   minimapTerrainModel as buildMinimapTerrainModel
 } from "./map/mapMinimapModel.js";
 import {
+  loadImage,
+  mapUrlForId,
+  normalizeLayerName
+} from "./map/mapUtils.js";
+import {
+  completeSimonStage as completeMapSimonStage,
+  currentSimonColorTile as getCurrentSimonColorTile,
+  drawSimonTiles as drawMapSimonTiles,
+  failSimonPuzzle as failMapSimonPuzzle,
+  isCurrentSimonPuzzle as isCurrentMapSimonPuzzle,
+  isHeroCenteredOnSimonOrigin as isHeroCenteredOnMapSimonOrigin,
+  isHeroOnSimonTile as isHeroOnMapSimonTile,
+  isSimonLockedChest as isMapSimonLockedChest,
+  isSimonPuzzleSolved as isMapSimonPuzzleSolved,
+  launchSimonSequence as launchMapSimonSequence,
+  randomSimonSequence as randomMapSimonSequence,
+  resolveSimonInput as resolveMapSimonInput,
+  setSimonFlash as setMapSimonFlash,
+  simonColorTiles as getMapSimonColorTiles,
+  simonOriginTile as getMapSimonOriginTile,
+  simonSolvedFlag as getMapSimonSolvedFlag,
+  simonTileOverlayImage as getMapSimonTileOverlayImage,
+  startSimonPuzzleForChest as startMapSimonPuzzleForChest,
+  updateSimonPuzzle as updateMapSimonPuzzle
+} from "./map/mapSimonPuzzle.js";
+import {
+  cameraScale as getMapCameraScale,
   drawChests as drawMapChests,
+  drawCloudLayer as drawMapCloudLayer,
+  drawHero as drawMapHero,
   drawHumanEncounterNpcs as drawMapHumanEncounterNpcs,
   drawMapNpcs as drawMapNpcSprites,
   drawPixelAnimations as drawMapPixelAnimations,
-  drawRespawnPoints as drawMapRespawnPoints
-} from "./map/mapObjectRenderers.js";
-import {
-  animationKey,
-  loadImage,
-  mapUrlForId,
-  normalizeLayerName,
-  positiveModulo
-} from "./map/mapUtils.js";
-
-const simonOriginTriggerRadius = 3;
+  drawRespawnPoints as drawMapRespawnPoints,
+  drawTileLayer as drawMapTileLayer,
+  drawTileLayers as drawMapTileLayers,
+  heroScreenPosition as getMapHeroScreenPosition,
+  render as renderMap,
+  renderScale as getMapRenderScale,
+  resolveAnimatedTileId as resolveMapAnimatedTileId,
+  resolveTile as resolveMapTile,
+  updateCamera as updateMapCamera
+} from "./map/mapRenderer.js";
 
 export class MapScreen {
   constructor({
@@ -388,22 +427,11 @@ export class MapScreen {
   }
 
   setJoystickMode(mode) {
-    this.joystickMode = mode === "movable" ? "movable" : "fixed";
-    this.resetJoystick();
-    this.updateJoystickModeUi();
+    setMapJoystickMode(this, mode);
   }
 
   updateJoystickModeUi() {
-    const joystick = this.nodes.joystick;
-    if (!joystick) return;
-    joystick.classList.toggle("is-movable", this.joystickMode === "movable");
-    joystick.classList.toggle("is-fixed", this.joystickMode !== "movable");
-    joystick.hidden = !this.running || this.joystickMode === "movable";
-    if (this.joystickMode !== "movable") {
-      joystick.style.left = "";
-      joystick.style.top = "";
-      joystick.style.bottom = "";
-    }
+    updateMapJoystickModeUi(this);
   }
 
   placeHeroBottomLeft() {
@@ -696,119 +724,39 @@ export class MapScreen {
   }
 
   bindJoystick() {
-    const { joystick } = this.nodes;
-    if (!joystick) return;
-    joystick.addEventListener("pointerdown", this.handleJoystickPointerDown);
-    joystick.addEventListener("pointermove", this.handleJoystickPointerMove);
-    joystick.addEventListener("pointerup", this.handleJoystickPointerUp);
-    joystick.addEventListener("pointercancel", this.handleJoystickPointerUp);
-    joystick.addEventListener("lostpointercapture", this.handleJoystickPointerUp);
-    this.nodes.section?.addEventListener("pointerdown", this.handleMapPointerDown);
-    this.nodes.section?.addEventListener("pointermove", this.handleJoystickPointerMove);
-    this.nodes.section?.addEventListener("pointerup", this.handleJoystickPointerUp);
-    this.nodes.section?.addEventListener("pointercancel", this.handleJoystickPointerUp);
-    this.nodes.section?.addEventListener("lostpointercapture", this.handleJoystickPointerUp);
+    bindMapJoystick(this);
   }
 
   onJoystickPointerDown(event) {
-    if (this.joystickMode === "movable") return;
-    if (!this.running || this.inputLocked) return;
-    event.preventDefault();
-    this.joystick.active = true;
-    this.joystick.pointerId = event.pointerId;
-    this.joystick.captureTarget = this.nodes.joystick;
-    this.joystick.captureTarget?.setPointerCapture?.(event.pointerId);
-    this.updateJoystickFromEvent(event);
+    onMapJoystickPointerDown(this, event);
   }
 
   onMapPointerDown(event) {
-    if (this.joystickMode !== "movable" || !this.canStartMovableJoystick(event)) return;
-    event.preventDefault();
-    this.joystick.active = true;
-    this.joystick.pointerId = event.pointerId;
-    this.joystick.captureTarget = this.nodes.section;
-    this.placeMovableJoystick(event);
-    this.nodes.joystick.hidden = false;
-    this.joystick.captureTarget?.setPointerCapture?.(event.pointerId);
-    this.updateJoystickFromEvent(event);
+    onMapJoystickMapPointerDown(this, event);
   }
 
   canStartMovableJoystick(event) {
-    const simonPuzzleControlsMap = Boolean(this.activeSimonPuzzle);
-    if (!this.running || this.inputLocked || this.joystick.active) return false;
-    if (this.encounterPaused && !simonPuzzleControlsMap) return false;
-    if (event.pointerType && event.pointerType !== "touch") return false;
-    const target = event.target;
-    if (!(target instanceof Element)) return false;
-    if (isMapChoiceScrollControlTarget(target)) return false;
-    if (target.closest("button, a, input, select, textarea, [role='button']")) return false;
-    if (target.closest(".map-quick-actions, .map-dialog-frame, .map-choice-panel, .map-choice-scroll-controls, .map-joystick")) return false;
-    return target === this.nodes.canvas || target === this.nodes.section || this.nodes.canvas?.contains(target);
+    return canStartMapMovableJoystick(this, event);
   }
 
   placeMovableJoystick(event) {
-    const joystick = this.nodes.joystick;
-    const section = this.nodes.section;
-    if (!joystick || !section) return;
-    const rect = section.getBoundingClientRect();
-    const size = joystick.offsetWidth || 136;
-    const maxLeft = Math.max(0, rect.width - size);
-    const maxTop = Math.max(0, rect.height - size);
-    const left = Math.max(0, Math.min(maxLeft, event.clientX - rect.left - size / 2));
-    const top = Math.max(0, Math.min(maxTop, event.clientY - rect.top - size / 2));
-    joystick.style.left = `${Math.round(left)}px`;
-    joystick.style.top = `${Math.round(top)}px`;
-    joystick.style.bottom = "auto";
+    placeMapMovableJoystick(this, event);
   }
 
   onJoystickPointerMove(event) {
-    if (this.joystickMode === "movable" && event.currentTarget !== this.nodes.section) return;
-    if (this.joystickMode !== "movable" && event.currentTarget !== this.nodes.joystick) return;
-    if (!this.joystick.active || event.pointerId !== this.joystick.pointerId) return;
-    event.preventDefault();
-    this.updateJoystickFromEvent(event);
+    onMapJoystickPointerMove(this, event);
   }
 
   onJoystickPointerUp(event) {
-    if (this.joystickMode === "movable" && event.currentTarget !== this.nodes.section) return;
-    if (this.joystickMode !== "movable" && event.currentTarget !== this.nodes.joystick) return;
-    if (event.pointerId !== this.joystick.pointerId) return;
-    event.preventDefault();
-    this.resetJoystick();
+    onMapJoystickPointerUp(this, event);
   }
 
   updateJoystickFromEvent(event) {
-    const base = this.nodes.joystickBase;
-    const rect = base.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const rawX = event.clientX - centerX;
-    const rawY = event.clientY - centerY;
-    const distance = Math.hypot(rawX, rawY);
-    const clampedDistance = Math.min(joystickMaxDistance, distance);
-    const angle = Math.atan2(rawY, rawX);
-    const x = distance > 0 ? Math.cos(angle) * clampedDistance : 0;
-    const y = distance > 0 ? Math.sin(angle) * clampedDistance : 0;
-    this.joystick.x = x / joystickMaxDistance;
-    this.joystick.y = y / joystickMaxDistance;
-    this.nodes.joystickStick.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+    updateMapJoystickFromEvent(this, event);
   }
 
   resetJoystick() {
-    if (this.joystick.pointerId !== null && this.joystick.captureTarget?.hasPointerCapture?.(this.joystick.pointerId)) {
-      this.joystick.captureTarget.releasePointerCapture(this.joystick.pointerId);
-    }
-    this.joystick.active = false;
-    this.joystick.pointerId = null;
-    this.joystick.captureTarget = null;
-    this.joystick.x = 0;
-    this.joystick.y = 0;
-    if (this.nodes.joystickStick) {
-      this.nodes.joystickStick.style.transform = "translate(0, 0)";
-    }
-    if (this.nodes.joystick && this.joystickMode === "movable") {
-      this.nodes.joystick.hidden = true;
-    }
+    resetMapJoystick(this);
   }
 
   tick(time) {
@@ -933,20 +881,11 @@ export class MapScreen {
   }
 
   joystickDirection(dx, dy) {
-    if (!this.joystick.active || (dx === 0 && dy === 0)) return null;
-    if (Math.abs(dx) > Math.abs(dy)) return dx > 0 ? "right" : "left";
-    return dy > 0 ? "down" : "up";
+    return getMapJoystickDirection(this, dx, dy);
   }
 
   updateCamera() {
-    const scale = this.cameraScale();
-    const viewWidth = this.nodes.canvas.width / scale;
-    const viewHeight = this.nodes.canvas.height / scale;
-    const mapWidth = this.map.width * this.map.tilewidth;
-    const mapHeight = this.map.height * this.map.tileheight;
-    this.camera.x = Math.max(0, Math.min(mapWidth - viewWidth, this.hero.x - viewWidth * 0.34));
-    this.camera.y = Math.max(0, Math.min(mapHeight - viewHeight, this.hero.y - viewHeight * 0.62)) + this.cameraYOffset;
-    this.markNearbyMinimapTiles();
+    updateMapCamera(this);
   }
 
   markNearbyMinimapTiles() {
@@ -1108,13 +1047,7 @@ export class MapScreen {
   }
 
   heroScreenPosition() {
-    const rect = this.nodes.canvas.getBoundingClientRect();
-    const canvasToCss = rect.width / Math.max(1, this.nodes.canvas.width);
-    const scale = this.cameraScale();
-    return {
-      x: rect.left + (this.hero.x - this.camera.x) * scale * canvasToCss,
-      y: rect.top + (this.hero.y - this.camera.y) * scale * canvasToCss
-    };
+    return getMapHeroScreenPosition(this);
   }
 
   zoneForHero() {
@@ -1277,243 +1210,71 @@ export class MapScreen {
   }
 
   isSimonLockedChest(chest) {
-    return chest.id === "puits_chest_01";
+    return isMapSimonLockedChest(chest);
   }
 
   simonSolvedFlag(chest) {
-    return `${chest.openedFlag}_simon_solved`;
+    return getMapSimonSolvedFlag(chest);
   }
 
   isSimonPuzzleSolved(chest) {
-    return this.isChestOpened(this.simonSolvedFlag(chest));
+    return isMapSimonPuzzleSolved(this, chest);
   }
 
   simonOriginTile() {
-    return this.simonTiles.find((tile) => tile.key === "origin") ?? null;
+    return getMapSimonOriginTile(this);
   }
 
   simonColorTiles() {
-    return this.simonTiles.filter((tile) => tile.color);
+    return getMapSimonColorTiles(this);
   }
 
   isHeroOnSimonTile(tile, { padding = 5 } = {}) {
-    if (!tile) return false;
-    const pointX = this.hero.x;
-    const pointY = this.hero.y + heroCollisionBox.bottomOffset;
-    return pointX >= tile.x - padding
-      && pointX <= tile.x + tile.width + padding
-      && pointY >= tile.y - padding
-      && pointY <= tile.y + tile.height + padding;
+    return isHeroOnMapSimonTile(this, tile, { padding });
   }
 
   currentSimonColorTile() {
-    return this.simonColorTiles().find((tile) => this.isHeroOnSimonTile(tile, { padding: 5 })) ?? null;
+    return getCurrentSimonColorTile(this);
   }
 
   isHeroCenteredOnSimonOrigin() {
-    const tile = this.simonOriginTile();
-    if (!tile) return false;
-    const pointX = this.hero.x;
-    const pointY = this.hero.y - 12;
-    return Math.abs(pointX - tile.centerX) <= simonOriginTriggerRadius
-      && Math.abs(pointY - tile.centerY) <= simonOriginTriggerRadius;
+    return isHeroCenteredOnMapSimonOrigin(this);
   }
 
   updateSimonPuzzle() {
-    const puzzle = this.activeSimonPuzzle;
-    if (!puzzle) return false;
-    const now = performance.now();
-    if (puzzle.phase === "waitingOrigin" && this.isHeroCenteredOnSimonOrigin()) {
-      this.launchSimonSequence(puzzle);
-      return true;
-    }
-    if (puzzle.phase !== "listening") return true;
-
-    const tile = this.currentSimonColorTile();
-    if (!tile) {
-      puzzle.holdColor = null;
-      puzzle.holdStartedAt = 0;
-      puzzle.holdConsumed = false;
-      return true;
-    }
-    if (puzzle.holdColor !== tile.color) {
-      puzzle.holdColor = tile.color;
-      puzzle.holdStartedAt = now;
-      puzzle.holdConsumed = false;
-      return true;
-    }
-    if (puzzle.holdConsumed || now - puzzle.holdStartedAt < 280) return true;
-    puzzle.holdConsumed = true;
-    this.resolveSimonInput(tile.color);
-    return true;
+    return updateMapSimonPuzzle(this);
   }
 
   async launchSimonSequence(puzzle) {
-    if (!puzzle || puzzle.phase !== "waitingOrigin") return;
-    const token = puzzle.token;
-    const sequence = puzzle.sequences[puzzle.stage];
-    puzzle.phase = "showing";
-    puzzle.inputIndex = 0;
-    puzzle.holdColor = null;
-    puzzle.holdStartedAt = 0;
-    puzzle.holdConsumed = false;
-    this.inputLocked = true;
-    this.heroMoving = false;
-    this.keys.clear();
-    this.resetJoystick();
-    nativeHaptic("medium");
-    await this.delay(320);
-    for (const color of sequence) {
-      if (!this.isCurrentSimonPuzzle(token)) return;
-      this.setSimonFlash(color, { durationMs: 620 });
-      nativeHaptic("light");
-      await this.delay(680);
-      await this.delay(120);
-    }
-    if (!this.isCurrentSimonPuzzle(token)) return;
-    puzzle.phase = "listening";
-    this.inputLocked = false;
+    await launchMapSimonSequence(this, puzzle);
   }
 
   resolveSimonInput(color) {
-    const puzzle = this.activeSimonPuzzle;
-    if (!puzzle || puzzle.phase !== "listening") return;
-    const expected = puzzle.sequences[puzzle.stage][puzzle.inputIndex];
-    if (color !== expected) {
-      this.failSimonPuzzle(color);
-      return;
-    }
-    nativeHaptic("light");
-    this.setSimonFlash(color, { durationMs: 320 });
-    puzzle.inputIndex += 1;
-    if (puzzle.inputIndex >= puzzle.sequences[puzzle.stage].length) {
-      this.completeSimonStage();
-    }
+    resolveMapSimonInput(this, color);
   }
 
   async completeSimonStage() {
-    const puzzle = this.activeSimonPuzzle;
-    if (!puzzle || puzzle.phase === "resolving") return;
-    const token = puzzle.token;
-    puzzle.phase = "resolving";
-    this.inputLocked = true;
-    this.heroMoving = false;
-    this.keys.clear();
-    this.resetJoystick();
-    await this.delay(420);
-    if (!this.isCurrentSimonPuzzle(token)) return;
-    nativeHaptic("success");
-
-    const isLastStage = puzzle.stage >= puzzle.sequences.length - 1;
-    const messageKey = isLastStage
-      ? "map.simon.complete"
-      : puzzle.stage === 0
-        ? "map.simon.stage_1_clear"
-        : "map.simon.stage_2_clear";
-    if (isLastStage) {
-      this.onMapFlagUnlocked(puzzle.solvedFlag);
-    }
-    await this.playMessageDialog({
-      message: this.t(messageKey),
-      messageHighlights: ["Echo"]
-    });
-    if (!this.isCurrentSimonPuzzle(token)) return;
-    if (isLastStage) {
-      this.activeSimonPuzzle = null;
-      this.simonFlash = null;
-      this.encounterPaused = false;
-      this.inputLocked = false;
-      return;
-    }
-    puzzle.stage += 1;
-    puzzle.phase = "waitingOrigin";
-    puzzle.inputIndex = 0;
-    puzzle.holdColor = null;
-    puzzle.holdStartedAt = 0;
-    puzzle.holdConsumed = false;
-    this.inputLocked = false;
+    await completeMapSimonStage(this);
   }
 
   async failSimonPuzzle(color) {
-    const puzzle = this.activeSimonPuzzle;
-    if (!puzzle || puzzle.phase === "resolving") return;
-    const token = puzzle.token;
-    puzzle.phase = "resolving";
-    this.inputLocked = true;
-    this.heroMoving = false;
-    this.keys.clear();
-    this.resetJoystick();
-    nativeHaptic("error");
-    this.setSimonFlash(color, { durationMs: 420, black: true });
-    await this.delay(500);
-    if (!this.isCurrentSimonPuzzle(token)) return;
-    await this.playMessageDialog({
-      message: this.t("map.simon.fail"),
-      messageHighlights: ["Echo"]
-    });
-    if (!this.isCurrentSimonPuzzle(token)) return;
-    this.activeSimonPuzzle = null;
-    this.simonFlash = null;
-    this.encounterPaused = false;
-    this.inputLocked = false;
+    await failMapSimonPuzzle(this, color);
   }
 
   isCurrentSimonPuzzle(token) {
-    return this.activeSimonPuzzle?.token === token;
+    return isCurrentMapSimonPuzzle(this, token);
   }
 
   setSimonFlash(color, { durationMs = 500, black = false } = {}) {
-    this.simonFlash = {
-      color,
-      black,
-      startedAt: performance.now(),
-      durationMs
-    };
+    setMapSimonFlash(this, color, { durationMs, black });
   }
 
   randomSimonSequence(length) {
-    const colors = ["green", "blue", "orange", "red"];
-    return Array.from({ length }, () => colors[Math.floor(Math.random() * colors.length)]);
+    return randomMapSimonSequence(length);
   }
 
   async startSimonPuzzleForChest(chest) {
-    if (!this.simonOriginTile() || this.simonColorTiles().length < 4) {
-      await this.playMessageDialog({
-        message: this.t("map.simon.fail"),
-        messageHighlights: ["Echo"]
-      });
-      this.encounterPaused = false;
-      this.inputLocked = false;
-      return;
-    }
-    await this.playMessageDialog({
-      message: this.t("map.simon.chest_locked")
-    });
-    await this.playMessageDialog({
-      message: this.t("map.simon.locked_intro"),
-      messageHighlights: ["Echo"]
-    });
-    this.activeSimonPuzzle = {
-      chestId: chest.id,
-      solvedFlag: this.simonSolvedFlag(chest),
-      token: Symbol(chest.id),
-      stage: 0,
-      phase: "waitingOrigin",
-      sequences: [
-        ["green", "blue", "orange", "red"],
-        this.randomSimonSequence(4),
-        this.randomSimonSequence(6)
-      ],
-      inputIndex: 0,
-      holdColor: null,
-      holdStartedAt: 0,
-      holdConsumed: false
-    };
-    this.encounterPaused = true;
-    this.inputLocked = false;
-    this.heroMoving = false;
-    this.keys.clear();
-    this.resetJoystick();
+    await startMapSimonPuzzleForChest(this, chest);
   }
 
   delay(ms) {
@@ -1707,141 +1468,43 @@ export class MapScreen {
   }
 
   renderScale() {
-    return Math.max(1, Math.floor((window.devicePixelRatio || 1) * 2));
+    return getMapRenderScale();
   }
 
   cameraScale() {
-    return this.renderScale() * mapCameraZoom;
+    return getMapCameraScale(this);
   }
 
   render(time) {
-    const { canvas } = this.nodes;
-    const ctx = this.ctx;
-    ctx.imageSmoothingEnabled = false;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.save();
-    const scale = this.cameraScale();
-    ctx.scale(scale, scale);
-    ctx.translate(-Math.round(this.camera.x), -Math.round(this.camera.y));
-    if (this.onBeforeTileLayers) this.onBeforeTileLayers(ctx, time);
-    this.drawTileLayers(time, { aboveHero: false });
-    this.drawSimonTiles(time);
-    this.drawRespawnPoints(time);
-    this.drawChests(time, { ySortPass: "below" });
-    this.drawMapNpcs(time, { ySortPass: "below" });
-    this.drawHumanEncounterNpcs(time);
-    this.drawHero(time);
-    this.drawMapNpcs(time, { ySortPass: "above" });
-    this.drawChests(time, { ySortPass: "above" });
-    this.drawTileLayers(time, { aboveHero: true });
-    this.drawPixelAnimations(time);
-    this.drawCloudLayer(time);
-    ctx.restore();
+    renderMap(this, time);
   }
 
   drawHumanEncounterNpcs(time) {
-    drawMapHumanEncounterNpcs({
-      ctx: this.ctx,
-      time,
-      encounters: this.activeHumanEncounters(),
-      images: this.humanEncounterImages
-    });
+    drawMapHumanEncounterNpcs(this, time);
   }
 
   drawSimonTiles(time) {
-    if (!this.simonTiles.length) return;
-    const ctx = this.ctx;
-    const active = Boolean(this.activeSimonPuzzle);
-    this.simonTiles.forEach((tile) => {
-      if (!tile.visible) return;
-      const sprite = simonTileSprites[tile.key];
-      const image = this.simonTileImages.get(tile.key);
-      if (!sprite || !image) return;
-      const drawSize = sprite.drawSize;
-      const drawX = Math.round(tile.centerX - drawSize / 2);
-      const drawY = Math.round(tile.centerY - drawSize / 2);
-      ctx.drawImage(image, drawX, drawY, drawSize, drawSize);
-      if (!tile.color || !active) return;
-
-      const flash = this.simonFlash;
-      const isFlashing = flash?.color === tile.color;
-      const progress = isFlashing
-        ? Math.max(0, Math.min(1, (time - flash.startedAt) / flash.durationMs))
-        : 1;
-      const intensity = isFlashing ? 1 - Math.abs(progress * 2 - 1) : 0;
-      const baseAlpha = 0.66;
-      const overlayAlpha = flash?.black && isFlashing
-        ? baseAlpha + intensity * (0.96 - baseAlpha)
-        : baseAlpha * (1 - intensity);
-
-      if (overlayAlpha <= 0.01) return;
-      const overlay = this.simonTileOverlayImage(tile.key, image, drawSize);
-      ctx.save();
-      ctx.globalAlpha = overlayAlpha;
-      ctx.drawImage(overlay, drawX, drawY, drawSize, drawSize);
-      ctx.restore();
-    });
+    drawMapSimonTiles(this, time);
   }
 
   simonTileOverlayImage(key, image, drawSize) {
-    const cacheKey = `${key}:${drawSize}`;
-    const cached = this.simonTileOverlayImages.get(cacheKey);
-    if (cached) return cached;
-
-    const canvas = document.createElement("canvas");
-    canvas.width = drawSize;
-    canvas.height = drawSize;
-    const ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
-    ctx.fillStyle = "#050507";
-    ctx.fillRect(0, 0, drawSize, drawSize);
-    ctx.globalCompositeOperation = "destination-in";
-    ctx.drawImage(image, 0, 0, drawSize, drawSize);
-    ctx.globalCompositeOperation = "source-over";
-    this.simonTileOverlayImages.set(cacheKey, canvas);
-    return canvas;
+    return getMapSimonTileOverlayImage(this, key, image, drawSize);
   }
 
   drawRespawnPoints(time) {
-    drawMapRespawnPoints({
-      ctx: this.ctx,
-      time,
-      image: this.respawnImage,
-      respawnPoints: this.respawnPoints,
-      discoveredRespawnIds: this.discoveredRespawnIds
-    });
+    drawMapRespawnPoints(this, time);
   }
 
   drawMapNpcs(time, { ySortPass }) {
-    drawMapNpcSprites({
-      ctx: this.ctx,
-      time,
-      mapNpcs: this.mapNpcs,
-      heroY: this.hero.y,
-      images: this.mapNpcImages,
-      ySortPass
-    });
+    drawMapNpcSprites(this, time, { ySortPass });
   }
 
   drawChests(time, { ySortPass }) {
-    drawMapChests({
-      ctx: this.ctx,
-      time,
-      image: this.chestImage,
-      chests: this.chests,
-      heroY: this.hero.y,
-      ySortPass,
-      isChestOpen: (chest) => this.isChestOpen(chest)
-    });
+    drawMapChests(this, time, { ySortPass });
   }
 
   drawPixelAnimations(time) {
-    drawMapPixelAnimations({
-      ctx: this.ctx,
-      time,
-      pixelAnimationLayers: this.pixelAnimationLayers,
-      resolveTile: (gid, frameTime) => this.resolveTile(gid, frameTime)
-    });
+    drawMapPixelAnimations(this, time);
   }
 
   resolveNpcAnchor(objectName) {
@@ -1855,22 +1518,7 @@ export class MapScreen {
   }
 
   drawTileLayers(time, { aboveHero = false } = {}) {
-    this.map.layers
-      .filter((layer) => this.shouldDrawTileLayer(layer))
-      .filter((layer) => aboveHero
-        ? this.isAboveHeroLayer(layer)
-        : !this.isDecorUpLayer(layer) || this.layerOcclusionHeight(layer) > 0)
-      .sort((left, right) => this.aboveHeroLayerOrder(left) - this.aboveHeroLayerOrder(right))
-      .forEach((layer) => {
-        const ySortPass = this.isDecorYSortLayer(layer)
-          ? (aboveHero ? "above" : "below")
-          : null;
-        const occlusionPass = this.layerOcclusionHeight(layer) > 0 && this.isAboveHeroLayer(layer)
-          ? (aboveHero ? "above" : "below")
-          : null;
-        this.drawTileLayer(layer, time, { ySortPass, occlusionPass });
-        if (this.onAfterTileLayer) this.onAfterTileLayer(this.ctx, time, layer.name);
-      });
+    drawMapTileLayers(this, time, { aboveHero });
   }
 
   shouldDrawTileLayer(layer) {
@@ -1926,167 +1574,22 @@ export class MapScreen {
   }
 
   drawTileLayer(layer, time, { ySortPass = null, occlusionPass = null } = {}) {
-    const { tilewidth, tileheight } = this.map;
-    const occlusionHeight = this.layerOcclusionHeight(layer);
-    const layerFade = this.tileLayerFades.get(layer.name);
-    const previousAlpha = this.ctx.globalAlpha;
-    if (typeof layerFade === "number") {
-      this.ctx.globalAlpha = previousAlpha * Math.max(0, Math.min(1, layerFade));
-    }
-    layer.data.forEach((rawGid, index) => {
-      const gid = rawGid & ~tileFlipFlags;
-      if (gid === 0) return;
-      const tile = this.resolveTile(gid, time);
-      if (!tile) return;
-      const x = (index % layer.width) * tilewidth;
-      const y = Math.floor(index / layer.width) * tileheight;
-      if (ySortPass && occlusionPass !== "below") {
-        const tileDepthY = y + tileheight + this.ySortOffset(layer);
-        const isAboveHero = tileDepthY > this.hero.y;
-        if ((ySortPass === "above") !== isAboveHero) return;
-      }
-      const drawX = x;
-      const drawY = y + tileheight - tile.tileset.tileheight;
-      if (occlusionPass === "above" && occlusionHeight > 0) {
-        const clippedHeight = Math.min(tile.tileset.tileheight, occlusionHeight);
-        const occlusionSide = this.layerOcclusionSide(layer);
-        const sourceY = occlusionSide === "top"
-          ? tile.sy
-          : tile.sy + tile.tileset.tileheight - clippedHeight;
-        const targetY = occlusionSide === "top"
-          ? drawY
-          : drawY + tile.tileset.tileheight - clippedHeight;
-        this.ctx.drawImage(
-          tile.tileset.image,
-          tile.sx,
-          sourceY,
-          tile.tileset.tilewidth,
-          clippedHeight,
-          drawX,
-          targetY,
-          tile.tileset.tilewidth,
-          clippedHeight
-        );
-        return;
-      }
-      this.ctx.drawImage(
-        tile.tileset.image,
-        tile.sx,
-        tile.sy,
-        tile.tileset.tilewidth,
-        tile.tileset.tileheight,
-        drawX,
-        drawY,
-        tile.tileset.tilewidth,
-        tile.tileset.tileheight
-      );
-    });
-    this.ctx.globalAlpha = previousAlpha;
+    drawMapTileLayer(this, layer, time, { ySortPass, occlusionPass });
   }
 
   drawCloudLayer(time) {
-    const layer = this.cloudLayer;
-    if (!layer || layer.visible === false) return;
-    const opacity = Math.max(0, Math.min(1, this.layerNumber(layer, "opacity", layer.opacity ?? 1)));
-    if (opacity <= 0) return;
-    const speedX = this.layerNumber(layer, "speedX", 0);
-    const speedY = this.layerNumber(layer, "speedY", 0);
-    const { tilewidth, tileheight } = this.map;
-    const repeatWidth = layer.width * tilewidth;
-    const repeatHeight = layer.height * tileheight;
-    if (repeatWidth <= 0 || repeatHeight <= 0) return;
-    const offsetX = positiveModulo((time / 1000) * speedX, repeatWidth);
-    const offsetY = positiveModulo((time / 1000) * speedY, repeatHeight);
-
-    this.ctx.save();
-    this.ctx.globalAlpha *= opacity;
-    layer.data.forEach((rawGid, index) => {
-      const gid = rawGid & ~tileFlipFlags;
-      if (gid === 0) return;
-      const tile = this.resolveTile(gid, time);
-      if (!tile) return;
-      const baseX = (index % layer.width) * tilewidth + offsetX;
-      const baseY = Math.floor(index / layer.width) * tileheight + offsetY;
-      const drawY = baseY + tileheight - tile.tileset.tileheight;
-      [-repeatWidth, 0, repeatWidth].forEach((wrapX) => {
-        [-repeatHeight, 0, repeatHeight].forEach((wrapY) => {
-          this.ctx.drawImage(
-            tile.tileset.image,
-            tile.sx,
-            tile.sy,
-            tile.tileset.tilewidth,
-            tile.tileset.tileheight,
-            Math.round(baseX + wrapX),
-            Math.round(drawY + wrapY),
-            tile.tileset.tilewidth,
-            tile.tileset.tileheight
-          );
-        });
-      });
-    });
-    this.ctx.restore();
+    drawMapCloudLayer(this, time);
   }
 
   resolveTile(gid, time) {
-    const tileset = this.tilesets.find((candidate) => gid >= candidate.firstgid && gid <= candidate.lastgid);
-    if (!tileset) return null;
-    const localId = gid - tileset.firstgid;
-    const animatedId = this.resolveAnimatedTileId(tileset, localId, time);
-    return {
-      tileset,
-      sx: (animatedId % tileset.columns) * tileset.tilewidth,
-      sy: Math.floor(animatedId / tileset.columns) * tileset.tileheight
-    };
+    return resolveMapTile(this, gid, time);
   }
 
   resolveAnimatedTileId(tileset, localId, time) {
-    const tile = tileset.tiles?.find?.((entry) => entry.id === localId);
-    if (!tile?.animation?.length) return localId;
-    const totalDuration = tile.animation.reduce((sum, frame) => sum + frame.duration, 0);
-    let cursor = time % totalDuration;
-    const frame = tile.animation.find((candidate) => {
-      cursor -= candidate.duration;
-      return cursor <= 0;
-    });
-    return frame?.tileid ?? localId;
+    return resolveMapAnimatedTileId(tileset, localId, time);
   }
 
   drawHero(time) {
-    if (this.heroHidden) return;
-    if (this.heroRespawnAnimation) {
-      const image = this.heroImages.respawn;
-      const frame = this.heroRespawnFrame(time);
-      const size = 32;
-      this.ctx.drawImage(
-        image,
-        frame * size,
-        0,
-        size,
-        size,
-        Math.round(this.hero.x - size / 2),
-        Math.round(this.hero.y - size + 4),
-        size,
-        size
-      );
-      return;
-    }
-
-    const moving = this.heroMoving;
-    const key = animationKey(this.hero.direction, moving);
-    const image = this.heroImages[key];
-    const animation = heroAnimations[key];
-    const frame = Math.floor(time / (moving ? 110 : 140)) % animation.frames;
-    const size = 32;
-    this.ctx.drawImage(
-      image,
-      frame * size,
-      0,
-      size,
-      size,
-      Math.round(this.hero.x - size / 2),
-      Math.round(this.hero.y - size + 4),
-      size,
-      size
-    );
+    drawMapHero(this, time);
   }
 }
