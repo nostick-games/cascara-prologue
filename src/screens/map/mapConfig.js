@@ -73,6 +73,7 @@ export const humanEncounterNudgeSpeed = 84;
 export const joystickMaxDistance = 34;
 export const joystickDeadZone = 0.18;
 export const mapCameraZoom = 1.5;
+export const mapTabletCameraZoom = 2.5;
 export const heroSpawnTile = { x: 8.5, y: 37.2 };
 export const minimapDiscoveryRadiusTiles = 5;
 export const humanEncounterConfigs = [

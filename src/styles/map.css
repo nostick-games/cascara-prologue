@@ -945,6 +945,43 @@
         height: 126px;
       }
 
+      @media (pointer: coarse) and (min-height: 561px) {
+        body.map-active .map-quick-actions {
+          right: calc(env(safe-area-inset-right) + 72px);
+          gap: 12px;
+        }
+
+        body.map-active .map-quick-action {
+          width: 78px;
+          height: 78px;
+        }
+
+        body.map-active .map-quick-action img {
+          width: 51px;
+          height: 51px;
+        }
+
+        body.map-active .map-joystick {
+          left: calc(env(safe-area-inset-left) + 18px);
+          bottom: calc(max(8px, env(safe-area-inset-bottom)) + 28px);
+          width: 252px;
+          height: 252px;
+        }
+
+        body.map-active .map-joystick-base {
+          width: 168px;
+          height: 168px;
+          border-width: 6px;
+        }
+
+        body.map-active .map-joystick-stick {
+          width: 68px;
+          height: 68px;
+          margin: -34px 0 0 -34px;
+          border-width: 6px;
+        }
+      }
+
       .map-dialog-frame {
         left: max(10px, env(safe-area-inset-left));
         right: max(10px, env(safe-area-inset-right));
@@ -1112,6 +1149,13 @@
       body.map-active .map-joystick-base {
         width: 78px;
         height: 78px;
+      }
+
+      @media (pointer: coarse) and (min-height: 561px) {
+        body.map-active .map-joystick-base {
+          width: 168px;
+          height: 168px;
+        }
       }
     }
 

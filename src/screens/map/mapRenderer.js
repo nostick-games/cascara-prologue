@@ -1,4 +1,4 @@
-import { heroAnimations, mapCameraZoom, tileFlipFlags } from "./mapConfig.js";
+import { heroAnimations, mapCameraZoom, mapTabletCameraZoom, tileFlipFlags } from "./mapConfig.js";
 import {
   drawChests as drawMapChests,
   drawHumanEncounterNpcs as drawMapHumanEncounterNpcs,
@@ -13,7 +13,8 @@ export function renderScale() {
 }
 
 export function cameraScale(host) {
-  return host.renderScale() * mapCameraZoom;
+  const isTabletLandscape = window.matchMedia("(orientation: landscape) and (pointer: coarse) and (min-height: 561px)").matches;
+  return host.renderScale() * (isTabletLandscape ? mapTabletCameraZoom : mapCameraZoom);
 }
 
 export function updateCamera(host) {
