@@ -938,6 +938,10 @@ function hasCompletedChadTrainingCombat() {
   return baseProgression.completedTrainerBattleIds?.includes("chad") ?? false;
 }
 
+function hasSeenChadHumanCombatTutorial() {
+  return baseProgression.openedMapFlags?.includes("chad_human_combat_tutorial_seen") ?? false;
+}
+
 function unlockMapFlag(flag) {
   if (!flag) return;
   baseProgression.openedMapFlags ??= [];
@@ -1040,7 +1044,7 @@ adventureFlow = createAdventureFlow({
     }
   },
   onHumanBriefingOpen: (enemyId) => {
-    if (enemyId === "chad" && !hasCompletedChadTrainingCombat()) {
+    if (enemyId === "chad" && !hasSeenChadHumanCombatTutorial()) {
       const chadTutorial = new ChadTutorialController({
         overlayNode: humanBriefingTutorialOverlay,
         dialogLog: humanBriefingTutorialDialogLog,
@@ -1056,7 +1060,8 @@ adventureFlow = createAdventureFlow({
         humanBriefingScreen,
         t,
         heroName,
-        chadName: t("map.npc.chad.name")
+        chadName: t("map.npc.chad.name"),
+        onTutorialSeen: () => unlockMapFlag("chad_human_combat_tutorial_seen")
       });
       chadTutorial.start();
     }

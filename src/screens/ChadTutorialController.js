@@ -3,6 +3,7 @@ import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const TYPE_DELAY_MS = 12;
 const SKIP_ARM_DELAY_MS = 180;
+const CHOICE_FREEZE_MS = 420;
 
 export class ChadTutorialController {
   constructor({
@@ -20,7 +21,8 @@ export class ChadTutorialController {
     humanBriefingScreen,
     t,
     heroName,
-    chadName
+    chadName,
+    onTutorialSeen = () => {}
   }) {
     this.overlayNode = overlayNode;
     this.dialogLog = dialogLog;
@@ -37,6 +39,7 @@ export class ChadTutorialController {
     this.t = t;
     this.heroName = heroName;
     this.chadName = chadName;
+    this.onTutorialSeen = onTutorialSeen;
     this._highlightedButtons = [];
     this._typingToken = 0;
   }
@@ -497,6 +500,8 @@ export class ChadTutorialController {
         { label: t("tuto.chad.intro_no"), value: "no" }
       ]
     );
+    this.onTutorialSeen();
+    await this.wait(CHOICE_FREEZE_MS);
     if (choice === "no") {
       this.hideOverlay();
       return;
