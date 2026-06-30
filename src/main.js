@@ -1,5 +1,6 @@
 import "./styles/index.css";
 import { actionDefinitions } from "./data/actions.js";
+import { affixes } from "./data/affixes.js";
 import { creatures } from "./data/creatures.js";
 import { baseHero } from "./data/hero/index.js";
 import { playerRadarAllocatableStatIds, playerRadarStatDefinitions } from "./data/playerRadarStats.js";
@@ -890,10 +891,13 @@ const levelDemoSequence = new CreatureLevelUpSequence({
 function randomLevelDemoPayload() {
   const creaturePool = Object.values(creatures).filter((entry) => entry?.sprites?.briefing || entry?.sprites?.combat);
   const selectedCreature = creaturePool[Math.floor(Math.random() * creaturePool.length)];
+  const selectedAffix = affixes[Math.floor(Math.random() * affixes.length)];
   const previousLevel = Math.random() < 0.5 ? 1 : 2;
   return {
     entryId: `demo_${selectedCreature.id}`,
     creatureId: selectedCreature.id,
+    affixId: selectedAffix?.id ?? null,
+    affixLevel: Math.floor(Math.random() * 3),
     previousLevel,
     level: previousLevel + 1,
     name: t(selectedCreature.nameKey)

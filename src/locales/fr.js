@@ -150,6 +150,7 @@ export const fr = {
   "creature_level.evolves": "{creature} évolue !",
   "creature_level.level_up": "{creature} passe du niveau {from} au niveau {to} !",
   "creature_level.stats_title": "Stats héritables",
+  "creature_level.instinct_title": "Instinct",
   "creature_level.congrats": "Bravo à vous et à {creature}…",
   "ui.instinct_prompt": "Choisissez un instinct pour ce combat !",
   "ui.instinct_none_owned": "Vous ne possédez aucun instinct.",

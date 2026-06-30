@@ -1,6 +1,9 @@
+import { affixes } from "../data/affixes.js";
 import { creatures } from "../data/creatures.js";
 import { inheritedStatsForCreature } from "../data/humanEnemies/inheritedStats.js";
 import { statDefinitions } from "../data/stats.js";
+import { huntAffixLevel } from "../game/affixEffects.js";
+import { creatureInstinctLevel } from "../game/creatureProgression.js";
 import { applyCreatureIdleSprite } from "./creatureIdleSprite.js";
 
 const inheritableStatIds = ["power", "defense", "vitality", "crit", "speed"];
@@ -17,6 +20,12 @@ function wait(ms) {
 
 function nextFrame() {
   return new Promise((resolve) => window.requestAnimationFrame(resolve));
+}
+
+function instinctForLevelUp(levelUp, creature) {
+  return affixes.find((affix) => affix.id === levelUp.affixId)
+    ?? affixes.find((affix) => affix.sourceCreature === creature.id)
+    ?? null;
 }
 
 export class CreatureLevelUpSequence {
@@ -42,9 +51,16 @@ export class CreatureLevelUpSequence {
         <div class="creature-level-up-orbit">
           <div class="creature-level-up-sprite" role="img"></div>
         </div>
-        <div class="creature-level-up-stats" hidden>
+        <div class="creature-level-up-panel creature-level-up-stats" hidden>
           <h2></h2>
           <div class="creature-level-up-stat-list"></div>
+        </div>
+        <div class="creature-level-up-panel creature-level-up-instinct" hidden>
+          <h2></h2>
+          <div class="creature-level-up-instinct-card">
+            <span class="creature-level-up-instinct-name"></span>
+            <span class="creature-level-up-instinct-value"></span>
+          </div>
         </div>
       </div>
       <div class="map-dialog-frame creature-level-up-dialog" hidden>
@@ -60,6 +76,10 @@ export class CreatureLevelUpSequence {
       stats: overlay.querySelector(".creature-level-up-stats"),
       statsTitle: overlay.querySelector(".creature-level-up-stats h2"),
       statList: overlay.querySelector(".creature-level-up-stat-list"),
+      instinct: overlay.querySelector(".creature-level-up-instinct"),
+      instinctTitle: overlay.querySelector(".creature-level-up-instinct h2"),
+      instinctName: overlay.querySelector(".creature-level-up-instinct-name"),
+      instinctValue: overlay.querySelector(".creature-level-up-instinct-value"),
       dialog: overlay.querySelector(".creature-level-up-dialog"),
       dialogLog: overlay.querySelector(".creature-level-up-dialog .map-dialog-log")
     };
@@ -101,7 +121,7 @@ export class CreatureLevelUpSequence {
       from: romanLevels[previousLevel] ?? previousLevel,
       to: romanLevels[nextLevel] ?? nextLevel
     }));
-    await this.showStats({ creature, previousLevel, nextLevel });
+    await this.showStats({ levelUp, creature, previousLevel, nextLevel });
     await this.showDialog(this.t("creature_level.congrats", { creature: creatureName }));
 
     nodes.overlay.classList.add("is-leaving");
@@ -119,6 +139,11 @@ export class CreatureLevelUpSequence {
     nodes.stats.hidden = true;
     nodes.stats.classList.remove("is-visible");
     nodes.statList.innerHTML = "";
+    nodes.instinct.hidden = true;
+    nodes.instinct.classList.remove("is-visible");
+    nodes.instinctName.textContent = "";
+    nodes.instinctValue.textContent = "";
+    nodes.instinctValue.classList.remove("is-up");
     nodes.dialog.hidden = true;
     nodes.dialogLog.innerHTML = "";
   }
@@ -159,11 +184,12 @@ export class CreatureLevelUpSequence {
     });
   }
 
-  async showStats({ creature, previousLevel, nextLevel }) {
+  async showStats({ levelUp, creature, previousLevel, nextLevel }) {
     const nodes = this.ensureNodes();
     const before = inheritedStatsForCreature(creature, previousLevel);
     const after = inheritedStatsForCreature(creature, nextLevel);
     const definitions = Object.fromEntries(statDefinitions.map((stat) => [stat.id, stat]));
+    const instinctRow = this.renderInstinct({ levelUp, creature, previousLevel, nextLevel });
 
     nodes.statsTitle.textContent = this.t("creature_level.stats_title");
     nodes.statList.innerHTML = "";
@@ -189,10 +215,45 @@ export class CreatureLevelUpSequence {
     });
 
     nodes.stats.hidden = false;
+    nodes.instinct.hidden = !instinctRow;
     await nextFrame();
     nodes.stats.classList.add("is-visible");
+    if (instinctRow) nodes.instinct.classList.add("is-visible");
     await wait(650);
-    await this.animateStatRows(rows);
+    await Promise.all([
+      this.animateStatRows(rows),
+      this.animateInstinct(instinctRow)
+    ]);
+  }
+
+  renderInstinct({ levelUp, creature, previousLevel, nextLevel }) {
+    const nodes = this.ensureNodes();
+    const instinct = instinctForLevelUp(levelUp, creature);
+    if (!instinct) return null;
+
+    const baseAffixLevel = Math.max(0, Math.trunc(levelUp.affixLevel ?? 0) || 0);
+    const from = creatureInstinctLevel({ affixLevel: baseAffixLevel, level: previousLevel });
+    const to = creatureInstinctLevel({ affixLevel: baseAffixLevel, level: nextLevel });
+
+    nodes.instinctTitle.textContent = this.t("creature_level.instinct_title");
+    nodes.instinctName.textContent = this.t(instinct.nameKey);
+    nodes.instinctValue.textContent = huntAffixLevel(this.t, { ...instinct, level: from });
+    nodes.instinctValue.classList.remove("is-up");
+
+    return {
+      value: nodes.instinctValue,
+      instinct,
+      from,
+      to
+    };
+  }
+
+  async animateInstinct(row) {
+    if (!row || row.to <= row.from) return;
+    await wait(920);
+    row.value.textContent = huntAffixLevel(this.t, { ...row.instinct, level: row.to });
+    row.value.classList.add("is-up");
+    await wait(680);
   }
 
   animateStatRows(rows) {

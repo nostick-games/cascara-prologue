@@ -58,6 +58,8 @@ export function recordEquippedCreatureVictory({ progression, equippedCreatures =
     levelUps.push({
       entryId: entry.id,
       creatureId: entry.creatureId,
+      affixId: entry.affixId ?? null,
+      affixLevel: entry.affixLevel ?? 0,
       previousLevel,
       level: entry.level
     });
