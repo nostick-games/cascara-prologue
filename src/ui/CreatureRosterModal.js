@@ -16,12 +16,12 @@ const rosterTypeLabels = {
   utilitaire: "Util."
 };
 const sortOptions = [
-  { id: "captureAsc", label: "Ancien" },
-  { id: "captureDesc", label: "Récent" },
-  { id: "nameAsc", label: "A > Z" },
-  { id: "nameDesc", label: "Z > A" },
-  { id: "typeAsc", label: "Type" },
-  { id: "levelDesc", label: "Niveau" }
+  { id: "captureAsc", labelKey: "ui.roster.sort.capture_asc" },
+  { id: "captureDesc", labelKey: "ui.roster.sort.capture_desc" },
+  { id: "nameAsc", labelKey: "ui.roster.sort.name_asc" },
+  { id: "nameDesc", labelKey: "ui.roster.sort.name_desc" },
+  { id: "typeAsc", labelKey: "ui.roster.sort.type_asc" },
+  { id: "levelDesc", labelKey: "ui.roster.sort.level_desc" }
 ];
 
 // Type dont l'équipe ne peut contenir qu'un seul exemplaire.
@@ -242,7 +242,8 @@ export class CreatureRosterModal {
       button.type = "button";
       button.className = "secondary roster-sort-button";
       button.dataset.sortMode = option.id;
-      setPixelButtonLabel(button, option.label);
+      button.dataset.labelKey = option.labelKey;
+      setPixelButtonLabel(button, this.t(option.labelKey));
       button.addEventListener("click", () => {
         this.sortMode = option.id;
         this.grid.scrollTop = 0;
@@ -258,6 +259,7 @@ export class CreatureRosterModal {
     this.sortControls.setAttribute("aria-label", this.t("ui.roster.sort_options"));
     this.sortControls.querySelectorAll(".roster-sort-button").forEach((button) => {
       const selected = button.dataset.sortMode === this.sortMode;
+      setPixelButtonLabel(button, this.t(button.dataset.labelKey));
       button.classList.toggle("is-selected", selected);
       button.setAttribute("aria-pressed", selected ? "true" : "false");
     });

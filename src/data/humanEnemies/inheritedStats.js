@@ -18,7 +18,7 @@ function resolveCreature(creatureId) {
     ?? null;
 }
 
-function inheritedStatsForCreature(creature, level = 1) {
+export function inheritedStatsForCreature(creature, level = 1) {
   const stats = createEmptyStats();
   addStats(stats, creature.combat?.typeProfile?.inheritedStats);
   addStats(stats, creature.inheritedStats?.speciesBonus);

@@ -131,7 +131,7 @@ export class CombatController {
     this.combat = null;
     this.lastCombatResult = null;
     this.debug = new CombatDebug({ getCombat: () => this.combat });
-    this.log = new CombatLog({ node: logNode });
+    this.log = new CombatLog({ node: logNode, t });
     this.turns = new CombatTurns(this);
     this.affixes = new CombatAffixes({
       addLog: (message, afterTyped) => this.addLog(message, afterTyped),
@@ -1380,12 +1380,12 @@ export class CombatController {
         progression: this.baseProgression,
         equippedCreatures: combat.build?.equippedCreatures ?? []
       });
-      levelUps.forEach((levelUp) => {
+      this.lastCombatResult.levelUps = levelUps.map((levelUp) => {
         const creature = creatures[levelUp.creatureId];
-        this.addRewardLog(this.t("log.creature_level_up", {
-          creature: this.t(creature?.nameKey ?? levelUp.creatureId),
-          level: levelUp.level
-        }), levelUp);
+        return {
+          ...levelUp,
+          name: this.t(creature?.nameKey ?? levelUp.creatureId)
+        };
       });
     }
     this.addContinueIndicator(() => this.onCombatReadyToContinue(this.lastCombatResult));

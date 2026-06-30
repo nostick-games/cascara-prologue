@@ -330,12 +330,12 @@ export function ensureMapChoiceScrollControls(host) {
   upButton.type = "button";
   upButton.className = "map-choice-scroll-button";
   upButton.textContent = "▲";
-  upButton.setAttribute("aria-label", "Faire défiler vers le haut");
+  upButton.setAttribute("aria-label", host.t("ui.scroll_up"));
   const downButton = document.createElement("button");
   downButton.type = "button";
   downButton.className = "map-choice-scroll-button";
   downButton.textContent = "▼";
-  downButton.setAttribute("aria-label", "Faire défiler vers le bas");
+  downButton.setAttribute("aria-label", host.t("ui.scroll_down"));
   controls.append(upButton, downButton);
   host.nodes.mapSection.append(controls);
   host.nodes.mapChoiceScrollControls = controls;

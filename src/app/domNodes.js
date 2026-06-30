@@ -22,6 +22,7 @@ export function queryDomNodes(root = document) {
   const chooseMapButton = root.querySelector("#chooseMap");
   const chooseTutorialButton = root.querySelector("#chooseTutorial");
   const chooseTutorialEpilogueButton = root.querySelector("#chooseTutorialEpilogue");
+  const chooseLevelDemoButton = root.querySelector("#chooseLevelDemo");
   const tutorialOverlayCanvas = root.querySelector("#tutorialOverlayCanvas");
   const optionsSection = root.querySelector("#optionsSection");
   const optionsSaveButton = root.querySelector("#optionsSaveButton");
@@ -33,6 +34,7 @@ export function queryDomNodes(root = document) {
   const optionsJoystickFixedButton = root.querySelector("#optionsJoystickFixedButton");
   const optionsJoystickMovableButton = root.querySelector("#optionsJoystickMovableButton");
   const optionsBackButton = root.querySelector("#optionsBackButton");
+  const levelDemoSection = root.querySelector("#levelDemoSection");
   const mapSection = root.querySelector("#mapSection");
   const mapCanvas = root.querySelector("#mapCanvas");
   const mapPopulationButton = root.querySelector("#mapPopulationButton");
@@ -209,6 +211,7 @@ export function queryDomNodes(root = document) {
     chooseMapButton,
     chooseTutorialButton,
     chooseTutorialEpilogueButton,
+    chooseLevelDemoButton,
     tutorialOverlayCanvas,
     combatNodes,
     combatSection,
@@ -274,6 +277,7 @@ export function queryDomNodes(root = document) {
     inventoryModalClose,
     inventoryModalOptions,
     inventoryModalShield,
+    levelDemoSection,
     logNode,
     mapCanvas,
     mapCreaturesButton,

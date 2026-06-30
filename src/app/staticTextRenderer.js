@@ -20,6 +20,7 @@ export function createStaticTextRenderer({
     setPixelButtonLabel(nodes.chooseMapButton, t("ui.start_choice.map"));
     setPixelButtonLabel(nodes.chooseTutorialButton, t("ui.start_choice.tutorial"));
     setPixelButtonLabel(nodes.chooseTutorialEpilogueButton, t("ui.start_choice.tutorial_epilogue"));
+    setPixelButtonLabel(nodes.chooseLevelDemoButton, t("ui.start_choice.level_demo"));
     nodes.mapPopulationButton.setAttribute("aria-label", t("ui.map_population"));
     nodes.mapPopulationButton.title = t("ui.map_population");
     nodes.mapRadarButton.setAttribute("aria-label", t("ui.map_radar"));

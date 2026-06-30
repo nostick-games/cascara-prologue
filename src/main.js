@@ -35,6 +35,7 @@ import { MapPopulationModal } from "./ui/MapPopulationModal.js";
 import { MapHealerFlow } from "./ui/MapHealerFlow.js";
 import { MapShopFlow } from "./ui/MapShopFlow.js";
 import { setPixelButtonLabel } from "./ui/PixelButton.js";
+import { CreatureLevelUpSequence } from "./ui/CreatureLevelUpSequence.js";
 import { hpRechargeStepDelay } from "./utils/hpRechargeTiming.js";
 import { nativeHaptic, nativeLoad, nativeSave } from "./utils/nativeBridge.js";
 import { TutorialScreen } from "./screens/TutorialScreen.js";
@@ -126,6 +127,7 @@ const {
   chooseMapButton,
   chooseTutorialButton,
   chooseTutorialEpilogueButton,
+  chooseLevelDemoButton,
   tutorialOverlayCanvas,
   mapNameInputFrame,
   mapNameInputPrompt,
@@ -191,6 +193,7 @@ const {
   inventoryModalOptions,
   inventoryModalShield,
   inventoryStarsText,
+  levelDemoSection,
   logNode,
   mapCanvas,
   mapCreaturesButton,
@@ -269,6 +272,7 @@ const screenRouter = createScreenRouter({
     [gameScreens.home]: homeSection,
     [gameScreens.start]: startSection,
     [gameScreens.map]: mapSection,
+    [gameScreens.levelDemo]: levelDemoSection,
     [gameScreens.options]: optionsSection,
     [gameScreens.huntBriefing]: prepSection,
     [gameScreens.humanBriefing]: humanBriefingSection,
@@ -278,6 +282,7 @@ const screenRouter = createScreenRouter({
     [gameScreens.home]: "home-active",
     [gameScreens.start]: "start-active",
     [gameScreens.map]: "map-active",
+    [gameScreens.levelDemo]: "level-demo-active",
     [gameScreens.options]: "options-active",
     [gameScreens.huntBriefing]: "briefing-active hunt-briefing-active",
     [gameScreens.humanBriefing]: "briefing-active human-briefing-active",
@@ -876,6 +881,39 @@ mapRadarModalController = new MapRadarModal({
   }
 });
 
+const levelDemoSequence = new CreatureLevelUpSequence({
+  t,
+  container: levelDemoSection,
+  contained: true
+});
+
+function randomLevelDemoPayload() {
+  const creaturePool = Object.values(creatures).filter((entry) => entry?.sprites?.briefing || entry?.sprites?.combat);
+  const selectedCreature = creaturePool[Math.floor(Math.random() * creaturePool.length)];
+  const previousLevel = Math.random() < 0.5 ? 1 : 2;
+  return {
+    entryId: `demo_${selectedCreature.id}`,
+    creatureId: selectedCreature.id,
+    previousLevel,
+    level: previousLevel + 1,
+    name: t(selectedCreature.nameKey)
+  };
+}
+
+async function playLevelDemo() {
+  if (!chooseLevelDemoButton || chooseLevelDemoButton.disabled) return;
+  chooseLevelDemoButton.disabled = true;
+  try {
+    screenRouter.show(gameScreens.levelDemo);
+    renderAll();
+    await levelDemoSequence.play([randomLevelDemoPayload()]);
+    screenRouter.show(gameScreens.start);
+    renderAll();
+  } finally {
+    chooseLevelDemoButton.disabled = false;
+  }
+}
+
 bindPress(mapPopulationButton, async () => {
   nativeHaptic("light");
   mapPopulationModal.open();
@@ -984,9 +1022,9 @@ function collectMapChestReward(chest) {
     });
     const creatureName = t(queuedCaptureEncounterState.creature.nameKey);
     return openMapRewardModal({
-      title: "Oh non !",
-      description: `${creatureName} était caché dans le coffre !`,
-      okLabel: "OK"
+      title: t("map.chest.creature_reward_title"),
+      description: t("map.chest.creature_reward_description", { creature: creatureName }),
+      okLabel: t("ui.ok")
     }).then(() => adventureFlow?.openHuntBriefingFromMap(null));
   }
   if (chest.contentType === "talents" && chest.contentId === "perception") {
@@ -1002,9 +1040,9 @@ function collectMapChestReward(chest) {
     });
   }
   return openMapRewardModal({
-    title: "Félicitations !",
-    description: "Vous avez trouvé 1 gemme !",
-    okLabel: "OK"
+    title: t("map.chest.gem_reward_title"),
+    description: t("map.chest.gem_reward_description", { quantity: chest.quantity ?? 1 }),
+    okLabel: t("ui.ok")
   }).then(() => {
     baseProgression.availableXp += chest.quantity;
     renderAll();
@@ -1097,6 +1135,7 @@ adventureFlow = createAdventureFlow({
   prepareNextHunt,
   renderAll,
   screenRouter,
+  t,
   transitionNode: encounterTransition
 });
 
@@ -1117,6 +1156,7 @@ staticTextRenderer = createStaticTextRenderer({
     chooseMapButton,
     chooseTutorialButton,
     chooseTutorialEpilogueButton,
+    chooseLevelDemoButton,
     homeCheatButton,
     homeEnglishButton,
     homeFrenchButton,
@@ -1270,6 +1310,10 @@ chooseHumanCombatButton.addEventListener("click", () => {
 
 chooseMapButton.addEventListener("click", () => {
   adventureFlow.openMapFromMenu();
+});
+
+chooseLevelDemoButton?.addEventListener("click", () => {
+  void playLevelDemo();
 });
 
 function selectHomeLanguage(language) {

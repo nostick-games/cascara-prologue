@@ -11,7 +11,7 @@ export const baseProgression = {
   visitedMapIds: ["prologue"],
   completedTrainerBattleIds: [],
   capturedCreatures: [
-    { id: "flamillon_test_1", creatureId: "flamillon", level: 1, capturedAt: 1, completedObjectives: 3, affixId: "etincelle_critique", affixLevel: 0 }
+    { id: "flamillon_test_1", creatureId: "flamillon", level: 1, capturedAt: 1, completedObjectives: 3, affixId: "etincelle_critique", affixLevel: 0, teamWins: 2, levelWins: 2 }
   ],
   inventory: {
     potion_100: 3,

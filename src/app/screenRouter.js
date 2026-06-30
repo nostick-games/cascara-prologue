@@ -5,6 +5,7 @@ export const gameScreens = {
   humanBriefing: "humanBriefing",
   combat: "combat",
   options: "options",
+  levelDemo: "levelDemo",
   map: "map"
 };
 

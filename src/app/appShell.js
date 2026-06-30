@@ -24,6 +24,7 @@ const appShellTemplate = `
       <button id="chooseMap" class="secondary" type="button"></button>
       <button id="chooseTutorial" class="secondary" type="button"></button>
       <button id="chooseTutorialEpilogue" class="secondary" type="button"></button>
+      <button id="chooseLevelDemo" class="secondary" type="button"></button>
     </div>
   </section>
 
@@ -47,6 +48,8 @@ const appShellTemplate = `
       <button id="optionsBackButton" class="primary" type="button"></button>
     </div>
   </section>
+
+  <section class="map-section level-demo-section game-panel" id="levelDemoSection" hidden></section>
 
   <section class="map-section game-panel" id="mapSection" hidden>
     <canvas class="map-canvas" id="mapCanvas" width="960" height="540"></canvas>

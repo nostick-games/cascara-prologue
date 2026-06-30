@@ -9,6 +9,7 @@ import {
 } from "./encounterTransition.js";
 import { humanGenderTextVars } from "../data/humanEnemies/gender.js";
 import { aragorObjectName, caveOpenLayerName } from "../screens/map/mapConfig.js";
+import { CreatureLevelUpSequence } from "../ui/CreatureLevelUpSequence.js";
 
 export function createAdventureFlow({
   briefingScreen,
@@ -27,6 +28,7 @@ export function createAdventureFlow({
   prepareNextHunt,
   renderAll,
   screenRouter,
+  t,
   transitionNode
 }) {
   const heroName = "Houdini";
@@ -36,6 +38,11 @@ export function createAdventureFlow({
   let huntBriefingSource = "menu";
   let humanBriefingSource = "menu";
   let activeMapEncounterZone = null;
+  const creatureLevelUpSequence = new CreatureLevelUpSequence({
+    t,
+    container: mapScreen.nodes.section,
+    contained: true
+  });
 
   function scrollTop() {
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -70,6 +77,20 @@ export function createAdventureFlow({
         }
       })
     ]);
+  }
+
+  async function playCreatureLevelUpsOnMap(levelUps = []) {
+    const pending = Array.isArray(levelUps) ? levelUps.filter(Boolean) : [];
+    if (!pending.length) return;
+
+    for (const levelUp of pending) {
+      const creatureName = levelUp.name ?? levelUp.creatureId;
+      await mapScreen.playMessageDialog({
+        message: t("creature_level.map_prompt", { creature: creatureName }),
+        messageHighlights: [creatureName]
+      });
+      await creatureLevelUpSequence.play([levelUp]);
+    }
   }
 
   function isGameStarted() {
@@ -223,7 +244,8 @@ export function createAdventureFlow({
     }
     screenRouter.show(gameScreens.map);
     scrollTop();
-    mapScreen.resumeFromEncounter();
+    await mapScreen.resumeFromEncounter();
+    await playCreatureLevelUpsOnMap(result?.levelUps);
   }
 
   function fleeHuntBriefing() {
@@ -288,6 +310,7 @@ export function createAdventureFlow({
           });
           await mapScreen.fadeTileLayer(caveOpenLayerName, 1200, { from: 0, to: 1 });
         }
+        await playCreatureLevelUpsOnMap(result?.levelUps);
         return;
       }
       if (mapDialog.defeatBehavior === "stay") {
@@ -301,7 +324,8 @@ export function createAdventureFlow({
     }
     screenRouter.show(gameScreens.map);
     scrollTop();
-    mapScreen.resumeFromEncounter();
+    await mapScreen.resumeFromEncounter();
+    await playCreatureLevelUpsOnMap(result?.levelUps);
   }
 
   async function continueAdventureFromCombat(result) {

@@ -4,10 +4,11 @@ const defaultLinePauseMs = 720;
 const defaultTypeDelayMs = 12;
 
 export class CombatLog {
-  constructor({ node, linePauseMs = defaultLinePauseMs, typeDelayMs = defaultTypeDelayMs }) {
+  constructor({ node, linePauseMs = defaultLinePauseMs, typeDelayMs = defaultTypeDelayMs, t = (key) => key }) {
     this.node = node;
     this.linePauseMs = linePauseMs;
     this.typeDelayMs = typeDelayMs;
+    this.t = t;
     this.queue = [];
     this.typing = false;
     this.idleCallbacks = [];
@@ -142,13 +143,13 @@ export class CombatLog {
       counters.className = "xp-reward-counters";
       const { counter: starsCounter, value: starsValue } = this.createRewardCounter({
         icon: "assets/inventaire/XP.png",
-        alt: "Étoiles",
+        alt: this.t("combat.reward.stars_alt"),
         value: `${before}/${starsPerXp}`,
         align: "left"
       });
       const { counter: gemsCounter, value: gemsValue } = this.createRewardCounter({
         icon: "assets/inventaire/gemme.png",
-        alt: "Gemmes",
+        alt: this.t("combat.reward.gems_alt"),
         value: unspentXpBefore,
         align: "right"
       });
