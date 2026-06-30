@@ -1,6 +1,7 @@
 export const affixes = [
   {
     id: "pas_de_rafale",
+    number: 1,
     nameKey: "affix.pas_de_rafale.name",
     descriptionKey: "affix.pas_de_rafale.description",
     level: 0,
@@ -21,6 +22,7 @@ export const affixes = [
   },
   {
     id: "etincelle_critique",
+    number: 2,
     nameKey: "affix.etincelle_critique.name",
     descriptionKey: "affix.etincelle_critique.description",
     level: 0,
@@ -42,6 +44,7 @@ export const affixes = [
   },
   {
     id: "refuge_clair",
+    number: 3,
     nameKey: "affix.refuge_clair.name",
     descriptionKey: "affix.refuge_clair.description",
     level: 0,
@@ -62,6 +65,7 @@ export const affixes = [
   },
   {
     id: "morsure_sure",
+    number: 4,
     nameKey: "affix.morsure_sure.name",
     descriptionKey: "affix.morsure_sure.description",
     level: 0,
@@ -82,6 +86,7 @@ export const affixes = [
   },
   {
     id: "instinct_ecaille",
+    number: 5,
     nameKey: "affix.instinct_ecaille.name",
     descriptionKey: "affix.instinct_ecaille.description",
     level: 0,
@@ -102,6 +107,7 @@ export const affixes = [
   },
   {
     id: "instinct_concentration",
+    number: 6,
     nameKey: "affix.instinct_concentration.name",
     descriptionKey: "affix.instinct_concentration.description",
     level: 0,
@@ -122,6 +128,7 @@ export const affixes = [
   },
   {
     id: "marque_de_braise",
+    number: 7,
     nameKey: "affix.marque_de_braise.name",
     descriptionKey: "affix.marque_de_braise.description",
     level: 0,
@@ -141,6 +148,7 @@ export const affixes = [
   },
   {
     id: "souffle_relatif",
+    number: 8,
     nameKey: "affix.souffle_relatif.name",
     descriptionKey: "affix.souffle_relatif.description",
     level: 0,
@@ -163,6 +171,7 @@ export const affixes = [
   },
   {
     id: "elan_de_survie",
+    number: 9,
     nameKey: "affix.elan_de_survie.name",
     descriptionKey: "affix.elan_de_survie.description",
     level: 0,
@@ -184,6 +193,7 @@ export const affixes = [
   },
   {
     id: "retour_de_geste",
+    number: 10,
     nameKey: "affix.retour_de_geste.name",
     descriptionKey: "affix.retour_de_geste.description",
     level: 0,
@@ -215,8 +225,15 @@ export function getAffixesByIds(ids) {
   return affixes.filter((affix) => idSet.has(affix.id));
 }
 
-export function selectRandomAffixForType(type, { random = Math.random } = {}) {
-  const candidates = getAffixesByType(type);
+export function selectRandomAffixForType(type, { random = Math.random, maxNumber } = {}) {
+  let candidates = getAffixesByType(type);
+  // Plafond de numéro d'instinct (propriété de map) : on n'attache pas un instinct
+  // dont le numéro dépasse cette valeur. Si le filtre vide le pool du type, on
+  // retombe sur la liste complète du type pour ne jamais renvoyer null par erreur.
+  if (Number.isFinite(maxNumber)) {
+    const capped = candidates.filter((affix) => (affix.number ?? Infinity) <= maxNumber);
+    if (capped.length) candidates = capped;
+  }
   if (candidates.length === 0) return null;
 
   return candidates[Math.floor(random() * candidates.length)];

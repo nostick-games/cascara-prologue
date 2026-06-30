@@ -712,13 +712,14 @@ export class MapScreen {
   onKeyDown(event) {
     const direction = directionByKey[event.code];
     if (!direction) return;
-    event.preventDefault();
     if (this.inputLocked) return;
+    event.preventDefault();
     this.keys.add(event.code);
   }
 
   onKeyUp(event) {
     if (!directionByKey[event.code]) return;
+    if (this.inputLocked) return;
     event.preventDefault();
     this.keys.delete(event.code);
   }

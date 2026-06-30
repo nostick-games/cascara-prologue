@@ -606,7 +606,8 @@
       animation: map-dialog-continue-blink 760ms steps(1) infinite;
     }
 
-    .map-dialog-enemy-name {
+    .map-dialog-enemy-name,
+    .creature-level-up-creature-name {
       color: var(--ui-enemy-red);
     }
 

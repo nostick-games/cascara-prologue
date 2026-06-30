@@ -155,6 +155,15 @@ export function createAdventureFlow({
 
   async function openDoorFromMap(door) {
     gameStarted = false;
+    if (door.id === "exit_prologue") {
+      await playMapFadeToBlack(transitionNode, {
+        boundsNode: mapScreen.nodes.section
+      });
+      mapScreen.stop();
+      screenRouter.show(gameScreens.home);
+      scrollTop();
+      return;
+    }
     await playMapFadeToBlack(transitionNode, {
       boundsNode: mapScreen.nodes.section
     });

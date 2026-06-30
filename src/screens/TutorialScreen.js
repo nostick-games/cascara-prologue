@@ -277,6 +277,11 @@ export class TutorialScreen {
       autoHide: true
     });
     mapScreen.hideDialog();
+    this.baseProgression.gold = (this.baseProgression.gold ?? 0) + 30;
+    this.baseProgression.inventory ??= {};
+    this.baseProgression.inventory.potion_100 = (this.baseProgression.inventory.potion_100 ?? 0) + 3;
+    this.baseProgression.inventory.antipara = (this.baseProgression.inventory.antipara ?? 0) + 3;
+    this.baseProgression.inventory.pommade = (this.baseProgression.inventory.pommade ?? 0) + 2;
 
     // Phase 6 : pause puis Flamillon apparaît en haut du viewport et saute
     await this.wait(1400);

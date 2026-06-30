@@ -41,8 +41,8 @@ export const ilda = {
   activeAffixId: "pas_de_rafale",
   rewards: {
     victory: {
-      stars: 8,
-      gold: 5
+      stars: 14,
+      gold: 10
     }
   }
 };

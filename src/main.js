@@ -1390,7 +1390,10 @@ async function startNoraTutorial() {
   }
 
   // Préparer l'encounter Flamillon fixe
-  const tutorialState = createTutorialCaptureEncounterState({ progression: baseProgression });
+  const tutorialState = createTutorialCaptureEncounterState({
+    progression: baseProgression,
+    maxInstinctNumber: mapScreen.encounterZones[0]?.maxInstinctNumber
+  });
   encounter = tutorialState.encounter;
   creature = tutorialState.creature;
   encounterAffix = tutorialState.encounterAffix;

@@ -40,8 +40,8 @@ export const aragor = {
   activeAffixId: "morsure_sure",
   rewards: {
     victory: {
-      stars: 15,
-      gold: 6
+      stars: 28,
+      gold: 24
     }
   }
 };

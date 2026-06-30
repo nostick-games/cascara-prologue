@@ -37,8 +37,8 @@ export const ranbu = {
   activeAffixId: "instinct_ecaille",
   rewards: {
     victory: {
-      stars: 10,
-      gold: 4
+      stars: 18,
+      gold: 14
     }
   }
 };

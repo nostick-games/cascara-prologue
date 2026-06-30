@@ -13,9 +13,20 @@ const romanLevels = {
   2: "II",
   3: "III"
 };
+const typewriterCharMs = 32;
 
 function wait(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function splitByCreatureName(message, creatureName) {
+  const index = message.indexOf(creatureName);
+  if (index === -1) return [{ text: message, isName: false }];
+  return [
+    { text: message.slice(0, index), isName: false },
+    { text: creatureName, isName: true },
+    { text: message.slice(index + creatureName.length), isName: false }
+  ].filter((seg) => seg.text.length > 0);
 }
 
 function nextFrame() {
@@ -115,14 +126,14 @@ export class CreatureLevelUpSequence {
     nodes.sprite.classList.add("is-swirling");
     await wait(3050);
 
-    await this.showDialog(this.t("creature_level.evolves", { creature: creatureName }));
+    await this.showDialog(this.t("creature_level.evolves", { creature: creatureName }), { creatureName });
     await this.showDialog(this.t("creature_level.level_up", {
       creature: creatureName,
       from: romanLevels[previousLevel] ?? previousLevel,
       to: romanLevels[nextLevel] ?? nextLevel
-    }));
+    }), { creatureName });
     await this.showStats({ levelUp, creature, previousLevel, nextLevel });
-    await this.showDialog(this.t("creature_level.congrats", { creature: creatureName }));
+    await this.showDialog(this.t("creature_level.congrats", { creature: creatureName }), { creatureName });
 
     nodes.overlay.classList.add("is-leaving");
     await wait(260);
@@ -148,17 +159,48 @@ export class CreatureLevelUpSequence {
     nodes.dialogLog.innerHTML = "";
   }
 
-  showDialog(message) {
+  async showDialog(message, { creatureName } = {}) {
     const nodes = this.ensureNodes();
     nodes.dialogLog.innerHTML = "";
     const paragraph = document.createElement("p");
-    paragraph.textContent = message;
+
     const indicator = document.createElement("span");
     indicator.className = "map-dialog-continue-indicator";
     indicator.textContent = "▼";
+    indicator.hidden = true;
     paragraph.append(indicator);
     nodes.dialogLog.append(paragraph);
     nodes.dialog.hidden = false;
+
+    const segments = creatureName
+      ? splitByCreatureName(message, creatureName)
+      : [{ text: message, isName: false }];
+
+    let skipped = false;
+    const skipHandler = () => { skipped = true; };
+    nodes.overlay.addEventListener("pointerdown", skipHandler, { once: true });
+
+    for (const segment of segments) {
+      if (segment.isName) {
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "creature-level-up-creature-name";
+        paragraph.insertBefore(nameSpan, indicator);
+        for (const char of segment.text) {
+          nameSpan.textContent += char;
+          if (!skipped) await wait(typewriterCharMs);
+        }
+      } else {
+        const textNode = document.createTextNode("");
+        paragraph.insertBefore(textNode, indicator);
+        for (const char of segment.text) {
+          textNode.textContent += char;
+          if (!skipped) await wait(typewriterCharMs);
+        }
+      }
+    }
+
+    nodes.overlay.removeEventListener("pointerdown", skipHandler);
+    indicator.hidden = false;
 
     return this.waitForInteraction().then(() => {
       nodes.dialog.hidden = true;

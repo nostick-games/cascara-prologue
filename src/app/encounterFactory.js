@@ -32,7 +32,7 @@ export function createCaptureEncounterState({
   };
 }
 
-export function createTutorialCaptureEncounterState({ progression }) {
+export function createTutorialCaptureEncounterState({ progression, maxInstinctNumber } = {}) {
   const encounterDef = captureEncounterPool.find((e) => e.id === "capture_flamillon");
   const baseCreature = creatures["flamillon"];
   const creature = {
@@ -42,7 +42,7 @@ export function createTutorialCaptureEncounterState({ progression }) {
       stats: { ...(baseCreature.combat?.stats ?? {}), level: 1, perception: 20 }
     }
   };
-  const affix = selectRandomAffixForType(creature.type);
+  const affix = selectRandomAffixForType(creature.type, { maxNumber: maxInstinctNumber });
   const encounter = { ...encounterDef, scaling: 0, affix, creature };
 
   return {

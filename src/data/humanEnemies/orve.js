@@ -41,8 +41,8 @@ export const orve = {
   activeAffixId: "morsure_sure",
   rewards: {
     victory: {
-      stars: 12,
-      gold: 7
+      stars: 22,
+      gold: 18
     }
   }
 };

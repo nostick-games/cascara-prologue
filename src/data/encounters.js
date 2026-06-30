@@ -175,7 +175,10 @@ export function selectRandomCaptureEncounter({
   return {
     ...encounter,
     scaling: encounterScaling,
-    affix: selectRandomAffixForType(creature.type, { random }),
+    affix: selectRandomAffixForType(creature.type, {
+      random,
+      maxNumber: mapEncounterZone?.maxInstinctNumber
+    }),
     creature
   };
 }
