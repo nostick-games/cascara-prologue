@@ -3,6 +3,7 @@ import { setPixelButtonLabel } from "../ui/PixelButton.js";
 import { CreatureRosterModal } from "../ui/CreatureRosterModal.js";
 import { InstinctModal } from "../ui/InstinctModal.js";
 import { applyCreatureIdleSprite } from "../ui/creatureIdleSprite.js";
+import { assetPath } from "../utils/assetPath.js";
 import { computeEquippedCreatureStats } from "../data/humanEnemies/inheritedStats.js";
 import { dominantHumanBuildType } from "../data/humanEnemies/humanBuildTypes.js";
 import { affixes } from "../data/affixes.js";
@@ -19,6 +20,7 @@ const maxAffixLevel = 2;
 const rosterSlotSpriteSize = 180;
 const defaultHumanSpriteFrameCount = 5;
 const defaultHumanSpriteFrameSize = 32;
+const signatureBoilerSprite = assetPath("assets/objects/signature_boiler.png");
 
 // Couleurs de pulsation du radar selon le type dominant (≥ 2 créatures du même type).
 const dominantTypePulseColors = {
@@ -62,22 +64,6 @@ const signatureEffectKeyById = {
   assaut_fulgurant: "signature.effect.assaut_fulgurant",
   verrou_mouvant: "signature.effect.verrou_mouvant"
 };
-const signatureChargeKeyByKind = {
-  fire: "signature.charge.fire",
-  water: "signature.charge.water",
-  wind: "signature.charge.wind",
-  utility: "signature.charge.utility",
-  fireWater: "signature.charge.hybrid",
-  fireWind: "signature.charge.hybrid",
-  waterWind: "signature.charge.hybrid",
-  fireTactical: "signature.charge.tactical",
-  waterTactical: "signature.charge.tactical",
-  windTactical: "signature.charge.tactical",
-  triade: "signature.charge.triade",
-  alchemy: "signature.charge.hybrid",
-  assault: "signature.charge.hybrid",
-  lock: "signature.charge.hybrid"
-};
 
 export class HumanBriefingScreen {
   constructor({
@@ -95,7 +81,8 @@ export class HumanBriefingScreen {
     onChange,
     onReset,
     onStart,
-    getOwnedCreatures
+    getOwnedCreatures,
+    initialTeam = [null, null, null]
   }) {
     this.nodes = nodes;
     this.t = t;
@@ -107,7 +94,7 @@ export class HumanBriefingScreen {
     this.onReset = onReset;
     this.onStart = onStart;
     this.getOwnedCreatures = getOwnedCreatures ?? (() => []);
-    this.team = [null, null, null];
+    this.team = [initialTeam[0] ?? null, initialTeam[1] ?? null, initialTeam[2] ?? null];
     this.selectedAffixId = null;
 
     this.radar = new StatRadar({
@@ -481,27 +468,21 @@ export class HumanBriefingScreen {
   openSignatureModal(team = this.team) {
     const { nodes, t } = this;
     const signature = this.activeSignature(team);
+    const equipped = this.equippedCreatures(team);
     setPixelButtonLabel(nodes.instinctModalClose, t("ui.ok"));
+    nodes.instinctModal.classList.add("signature-modal-active");
+    nodes.instinctModalTitle.textContent = "";
+    nodes.instinctModalPrompt.textContent = "";
     nodes.instinctModalList.innerHTML = "";
-    nodes.instinctModalList.classList.add("signature-plain-list");
+    nodes.instinctModalList.classList.add("signature-plain-list", "signature-sequence-list");
 
     if (!signature) {
-      nodes.instinctModalTitle.textContent = t("ui.signature_title");
-      nodes.instinctModalPrompt.textContent = t("ui.signature_team_empty");
       const empty = document.createElement("div");
-      empty.className = "objective hidden";
+      empty.className = "signature-empty-state";
       empty.textContent = t("ui.signature_empty_hint");
       nodes.instinctModalList.append(empty);
     } else {
-      nodes.instinctModalTitle.textContent = translatedSignatureName(t, signature);
-      nodes.instinctModalPrompt.textContent = this.signaturePromptText(team);
-      this.appendSignatureModalRow(t("ui.signature_composition"), this.signatureCompositionText(team));
-      this.appendSignatureModalRow(t("ui.signature_effect"), t(signatureEffectKeyById[signature.id] ?? "signature.effect.generic"));
-      this.appendSignatureModalRow(t("ui.signature_charge_rule"), t(signatureChargeKeyByKind[signature.kind] ?? "signature.charge.generic"));
-      const note = document.createElement("p");
-      note.className = "signature-modal-note";
-      note.textContent = t("ui.signature_final_note");
-      nodes.instinctModalList.append(note);
+      nodes.instinctModalList.append(this.createSignatureSequence({ signature, team, equipped }));
     }
 
     nodes.instinctModalShield.hidden = false;
@@ -512,15 +493,73 @@ export class HumanBriefingScreen {
     this.instinctModal.visibility.emitOpen();
   }
 
-  appendSignatureModalRow(label, value) {
-    const row = document.createElement("section");
-    row.className = "signature-info-row";
-    const title = document.createElement("strong");
-    title.textContent = `${label} :`;
-    const description = document.createElement("p");
-    description.textContent = value;
-    row.append(title, description);
-    this.nodes.instinctModalList.append(row);
+  createSignatureSequence({ signature, team, equipped }) {
+    const sequence = document.createElement("div");
+    sequence.className = "signature-sequence";
+    const orbitDuration = 1350;
+    const revealDelay = Math.max(1, equipped.length) * orbitDuration + 760;
+    sequence.style.setProperty("--fawna-count", String(equipped.length));
+    sequence.style.setProperty("--signature-flash-delay", `${revealDelay - 420}ms`);
+    sequence.style.setProperty("--signature-reveal-delay", `${revealDelay}ms`);
+    sequence.style.setProperty("--signature-details-delay", `${revealDelay + 1450}ms`);
+
+    const stage = document.createElement("div");
+    stage.className = "signature-cauldron-stage";
+
+    const boiler = document.createElement("div");
+    boiler.className = "signature-boiler-sprite";
+    boiler.style.backgroundImage = `url("${signatureBoilerSprite}")`;
+    stage.append(boiler);
+
+    equipped.forEach((entry, index) => {
+      const creature = creaturesById[entry.creatureId];
+      if (!creature) return;
+      const drop = document.createElement("div");
+      drop.className = `signature-fawna-drop orbit-${index % 3}`;
+      drop.style.setProperty("--drop-delay", `${index * orbitDuration}ms`);
+      drop.setAttribute("aria-label", this.t(creature.nameKey));
+
+      const sprite = document.createElement("div");
+      sprite.className = "creature-idle-sprite signature-fawna-sprite";
+      applyCreatureIdleSprite(sprite, {
+        spriteUrl: creature.sprites?.briefing ?? creature.sprites?.combat,
+        frameCountHint: creature.sprites?.frameCount,
+        size: 430
+      });
+      drop.append(sprite);
+      stage.append(drop);
+    });
+
+    const flash = document.createElement("div");
+    flash.className = "signature-white-flash";
+    stage.append(flash);
+
+    const result = document.createElement("section");
+    result.className = "signature-result-panel";
+
+    const title = document.createElement("h4");
+    title.className = "signature-result-title";
+    title.textContent = translatedSignatureName(this.t, signature);
+
+    const details = document.createElement("div");
+    details.className = "signature-result-details";
+
+    const source = document.createElement("p");
+    source.className = "signature-result-source";
+    source.textContent = this.signaturePromptText(team);
+
+    const composition = document.createElement("p");
+    composition.className = "signature-result-composition";
+    composition.textContent = this.signatureCompositionText(team);
+
+    const effect = document.createElement("p");
+    effect.className = "signature-result-effect";
+    effect.textContent = this.t(signatureEffectKeyById[signature.id] ?? "signature.effect.generic");
+
+    details.append(source, composition, effect);
+    result.append(title, details);
+    sequence.append(stage, result);
+    return sequence;
   }
 
   signatureCompositionText(team = this.team) {

@@ -199,6 +199,20 @@
         filter: drop-shadow(0 4px 0 rgba(45, 57, 68, 0.2)) drop-shadow(0 9px 12px rgba(17, 18, 24, 0.14));
       }
 
+      .combat-status-icon {
+        top: 1px;
+        width: 34px;
+        height: 34px;
+      }
+
+      .enemy-status-icon {
+        left: calc(100% + 6px);
+      }
+
+      .hero-status-icon {
+        right: calc(100% + 6px);
+      }
+
       @media (max-width: 760px) {
         body.combat-active .enemy-zone {
           top: var(--combat-enemy-zone-mobile-top, -42px);
@@ -288,6 +302,19 @@
         body.combat-active .hero-gauges .bar {
           height: 6px;
           border-width: 1px;
+        }
+
+        body.combat-active .combat-status-icon {
+          width: 24px;
+          height: 24px;
+        }
+
+        body.combat-active .enemy-status-icon {
+          left: calc(100% + 4px);
+        }
+
+        body.combat-active .hero-status-icon {
+          right: calc(100% + 4px);
         }
 
         body.combat-active .enemy-gauges .pa-row,

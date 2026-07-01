@@ -74,7 +74,7 @@ export function signatureComponents(signature, kind) {
     windTactical: { ...reinforcedElement("wind"), utility: true },
     alchemy: { direct: ["fire", "water"], secondary: ["fire"], utility: true },
     assault: { direct: ["fire", "wind"], secondary: ["fire"], utility: true, assaultBonus: true },
-    lock: { direct: ["water", "wind"], secondary: ["water", "wind"], utility: true }
+    lock: { direct: ["water", "wind"], secondary: ["wind"], utility: true }
   };
 
   return componentsByKind[kind] ?? { direct: [], secondary: [], utility: false };

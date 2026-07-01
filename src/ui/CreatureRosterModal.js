@@ -13,7 +13,7 @@ const statDefinitionById = Object.fromEntries(statDefinitions.map((stat) => [sta
 const affixById = Object.fromEntries(affixes.map((affix) => [affix.id, affix]));
 const romanLevels = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 const rosterTypeLabels = {
-  utilitaire: "Util."
+  utilitaire: "Arc."
 };
 const sortOptions = [
   { id: "captureAsc", labelKey: "ui.roster.sort.capture_asc" },
@@ -24,7 +24,7 @@ const sortOptions = [
   { id: "levelDesc", labelKey: "ui.roster.sort.level_desc" }
 ];
 
-// Type dont l'équipe ne peut contenir qu'un seul exemplaire.
+// Type Arcane : l'équipe ne peut contenir qu'un seul exemplaire.
 const uniquePerTeamType = "utilitaire";
 
 export class CreatureRosterModal {
@@ -180,8 +180,8 @@ export class CreatureRosterModal {
     }
 
     const team = this.browseOnly ? [] : this.getTeam();
-    // L'équipe ne peut contenir qu'un seul utilitaire : s'il y en a déjà un dans un AUTRE
-    // slot, tous les utilitaires deviennent non sélectionnables (comme déjà équipés).
+    // L'équipe ne peut contenir qu'un seul Arcane : s'il y en a déjà un dans un AUTRE
+    // slot, tous les Arcanes deviennent non sélectionnables (comme déjà équipés).
     const typeOfEntry = (entryId) => owned.find((o) => o.entry.id === entryId)?.creature?.type;
     const uniqueTypeTakenElsewhere = team.some(
       (id, index) => index !== this.slotIndex && typeOfEntry(id) === uniquePerTeamType

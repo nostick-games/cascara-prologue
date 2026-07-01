@@ -712,6 +712,54 @@
         margin-bottom: 8px;
       }
 
+      .briefing-modal.signature-modal-active .briefing-modal-content {
+        min-height: 0;
+        height: auto;
+        padding: 14px;
+      }
+
+      .briefing-modal.signature-modal-active {
+        height: min(430px, calc(100% - 20px));
+        max-height: min(430px, calc(100% - 20px));
+      }
+
+      .signature-sequence {
+        --signature-stage-height: 260px;
+      }
+
+      .signature-boiler-sprite {
+        --signature-boiler-offset: -576px;
+        width: 48px;
+        height: 48px;
+        background-size: 576px 48px;
+      }
+
+      .signature-fawna-drop,
+      .signature-fawna-sprite {
+        width: 300px;
+        height: 300px;
+      }
+
+      .signature-result-title {
+        font-size: clamp(0.76rem, 4dvh, 1rem);
+      }
+
+      .signature-result-details {
+        top: 86px;
+        gap: 7px;
+      }
+
+      .signature-result-source,
+      .signature-result-composition {
+        font-size: clamp(0.48rem, 2.2dvh, 0.58rem);
+      }
+
+      .signature-result-effect {
+        max-width: 92%;
+        font-size: clamp(0.44rem, 1.9dvh, 0.52rem);
+        line-height: 1.42;
+      }
+
       .affix-dropdown {
         max-height: 148px;
         margin-bottom: 8px;

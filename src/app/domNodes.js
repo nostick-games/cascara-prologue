@@ -178,6 +178,8 @@ export function queryDomNodes(root = document) {
     guardBarLabel: root.querySelector("#guardBarLabel"),
     enemyBarLabel: root.querySelector("#enemyBarLabel"),
     enemyGuardBarLabel: root.querySelector("#enemyGuardBarLabel"),
+    heroStatusIcon: root.querySelector("#heroStatusIcon"),
+    enemyStatusIcon: root.querySelector("#enemyStatusIcon"),
     combatObjectivesTitle: root.querySelector("#combatObjectivesTitle"),
     heroHpText: root.querySelector("#heroHpText"),
     heroHpBar: root.querySelector("#heroHpBar"),

@@ -12,7 +12,7 @@ Le joueur controle directement un heros qui combat avec :
 - les creatures qu'il equipe ;
 - les instincts portes par ces creatures.
 
-Contrairement a un jeu de capture classique, les creatures ne combattent pas directement. Elles servent de modificateurs de gameplay, de sources de synergies, de specialisations tactiques et d'outils utilitaires.
+Contrairement a un jeu de capture classique, les creatures ne combattent pas directement. Elles servent de modificateurs de gameplay, de sources de synergies, de specialisations tactiques et d'outils Arcanes.
 
 Le jeu repose sur :
 
@@ -39,7 +39,7 @@ Le joueur doit choisir entre :
 
 - des builds extremes tres puissants ;
 - des compositions hybrides plus flexibles ;
-- des outils utilitaires qui stabilisent ou ouvrent des options ;
+- des outils Arcanes qui stabilisent ou ouvrent des options ;
 - une progression permanente qui enrichit le heros sans remplacer les builds.
 
 Les systemes doivent etre :
@@ -97,6 +97,57 @@ Composition du monde :
 - zones de capture.
 
 Les donjons restent separes de l'overworld.
+
+### Interieurs, services et secrets de map
+
+La verticale actuelle distingue les maps exterieures des interieurs.
+
+Regles de lecture :
+
+- les maps exterieures portent l'exploration, les zones de capture, la mini-map et les portes de progression ;
+- les interieurs servent aux dialogues importants, aux services, aux secrets et aux respirations de rythme ;
+- les interieurs ne comptent pas dans la progression de Perception liee aux maps monde visitees ;
+- une porte ou sortie peut porter un identifiant narratif special, par exemple `exit_prologue`, pour declencher une transition de fin de verticale.
+
+Le prologue utilise deja cette logique :
+
+- arrivee par sequence tutoriel avec Nora ;
+- retour vers la maison de Nora apres la premiere capture ;
+- dialogue de mission dans l'interieur de Nora ;
+- acces au monde exterieur avec mini-map et zones de fawnas ;
+- maison du puits comme lieu de service et de secret ;
+- sortie de prologue qui remet le joueur vers l'ecran d'accueil et peut reinitialiser l'etat de progression.
+
+Les services de map doivent rester data-driven.
+
+Exemple actuel :
+
+| Service | Role | Cout initial |
+| ------- | ---- | ------------ |
+| Archnide - soin PV | restaure les PV du heros | 10 or |
+| Archnide - gemmes | rend les gemmes disponibles et reinitialise les talents | 15 or |
+
+Archnide donne une premiere version jouable du specialiste marchand : le joueur achete un confort ou une reorientation, mais la progression permanente conserve une contrepartie claire.
+
+### Secrets et mini-jeux environnementaux
+
+Les secrets ne doivent pas seulement etre des coffres poses sur la map. Ils peuvent demander une interaction simple avec l'espace.
+
+Le puits du prologue introduit un mini-jeu de type Simon :
+
+- un coffre verrouille appelle une voix, Echo ;
+- le joueur doit se placer sur une dalle d'origine ;
+- une sequence de couleurs est montree ;
+- le joueur reproduit la sequence en marchant sur les dalles colorees ;
+- les etapes montent en longueur ;
+- l'echec ne punit pas durablement, le joueur peut recommencer ;
+- la resolution ouvre le coffre et pose un flag de puzzle resolu.
+
+Objectif de design :
+
+> Un secret de map doit faire manipuler le corps du heros dans l'espace, pas seulement tester un menu.
+
+Les mini-jeux doivent respecter les controles mobiles : joystick deplacable, pas de fermeture accidentelle d'un dialogue important, et possibilite de continuer a bouger lorsque le puzzle attend une entree spatiale.
 
 ### Populations de zones de capture
 
@@ -222,6 +273,48 @@ Deroule recommande :
 Revelation apres la capture-tutoriel :
 
 > Nora n'a pas seulement besoin d'aide pour etudier des creatures inhabituelles. Elle cherche a comprendre pourquoi le Sanctuaire ne repond plus, et pourquoi des creatures autrefois pacifiques deviennent agressives. La premiere capture prouve que le joueur peut approcher ces creatures sans simplement les repousser.
+
+### Etat actuel du prologue jouable
+
+La verticale prototype a maintenant un fil jouable plus proche d'une ouverture de jeu :
+
+1. Ecran d'accueil avec choix de langue, lancement normal et bouton de triche pour tests rapides.
+2. Sequence d'arrivee sur l'ile : le heros debarque, Nora arrive, le joueur saisit son nom.
+3. Premiere chasse guidee contre Flamillon.
+4. Capture tutoriel avec objectifs simplifies et bot de combat pour accompagner la sequence.
+5. Retour narratif : Nora donne quelques gemmes et demande au joueur de venir la voir chez elle.
+6. Dialogue chez Nora : revelation de la vraie mission et du silence du Sanctuaire de Cascara.
+7. Deblocage de la mini-map exterieure et lecture des zones de fawnas.
+8. Chad devient le mentor des combats humains et de la composition d'equipe.
+9. Exploration libre du prologue : zones de capture, maison du puits, services d'Archnide, coffre Simon.
+10. Progression vers les combats humains clefs et la sortie de prologue.
+
+Cette structure remplace le simple "mini village puis duel" comme livrable actuel. Le premier livrable conseille reste utile comme principe de production, mais le prototype a depasse ce stade.
+
+### Tutorisation progressive
+
+Le prologue doit enseigner les systemes par situations courtes plutot que par manuel.
+
+Tutoriels deja presents dans la verticale :
+
+| Tutoriel | Enseigne |
+| -------- | -------- |
+| Nora - arrivee | ton du jeu, nom du heros, presence narrative de Nora |
+| Nora - chasse | Entaille, Garde, survie, capture, objectifs visibles et cache possible |
+| Nora - maison | mission du Sanctuaire, mini-map, zones de fawnas |
+| Chad - combat humain | briefing humain, radar ennemi, choix d'equipe, lancement de duel |
+| Chad - meme type | composition avec fawnas du meme type et lecture du type dominant |
+| Simon - puits | interaction spatiale, observation de sequence, coffre a secret |
+
+Le tutoriel de Chad doit rester contextuel :
+
+- il s'affiche quand le joueur va affronter Chad pour la premiere fois ;
+- il peut guider les boutons du briefing humain sans masquer toute l'interface ;
+- il utilise un effet typewriter et des choix comme les dialogues de map ;
+- il memorise les etapes vues pour ne pas repeter inutilement la lecon ;
+- le second tutoriel se declenche lorsque le joueur a assez de creatures pour comprendre la logique des types.
+
+Le combat bot du tutoriel Nora sert a proteger le rythme d'apprentissage. Il ne doit pas jouer a la place du joueur dans les combats normaux ; il accompagne seulement une sequence pedagogique.
 
 ### Trame narrative globale
 
@@ -419,6 +512,17 @@ Limites recommandees :
 - choix verrouille avant la revelation complete des objectifs caches ;
 - certains instincts peuvent etre marques `combat`, `capture` ou `mixte`.
 
+Etat actuel du prototype :
+
+- les instincts sont declares dans une table d'affixes numerotes ;
+- chaque zone de capture peut limiter le numero maximum d'instinct tirable ;
+- ce cap permet d'introduire les instincts progressivement dans le prologue ;
+- si le filtre d'une zone vide le pool, le jeu retombe sur le pool complet du type pour eviter une rencontre invalide ;
+- les instincts portent un `mode` : `combat`, `capture`, `mixte` ou `utilitaire` pour les données legacy ; côté joueur, ce mode est présenté comme Arcane ;
+- le niveau effectif d'instinct est calcule depuis la qualite de capture et la progression de la creature.
+
+Cette numerotation n'est pas une rarete narrative. C'est un outil de pacing : le joueur ne doit pas recevoir trop tot un instinct trop complexe pour le moment du prologue.
+
 Hierarchie recommandee :
 
 - heros : base stable ;
@@ -525,7 +629,7 @@ Regle PA :
 
 Cet achat doit rester rare. Il ne doit pas transformer les PA en progression ouverte.
 
-Les gains de PA, maximums de PA, reductions de cout importantes et effets d'economie d'action doivent rester principalement le privilege des creatures utilitaires, de quelques instincts tres limites ou de bonus temporaires specifiques. Cela protege l'equilibrage du combat et donne une identite forte aux utilitaires.
+Les gains de PA, maximums de PA, reductions de cout importantes et effets d'economie d'action doivent rester principalement le privilege des creatures Arcanes, de quelques instincts tres limites ou de bonus temporaires specifiques. Cela protege l'equilibrage du combat et donne une identite forte aux Arcanes.
 
 La Perception doit utiliser une economie separee, liee a la preparation de chasse : runes, objets, services ou creatures specialisees. Cela evite qu'un joueur puisse investir des points d'XP pendant un briefing, reveler un objectif cache, puis reinitialiser ses choix.
 
@@ -721,7 +825,7 @@ Les creatures modifient :
 Deux categories existent :
 
 - creatures de type ;
-- creatures utilitaires.
+- creatures Arcanes.
 
 Une creature doit donner une habitude de jeu reconnaissable. Elle ne doit pas seulement ajouter un pourcentage.
 
@@ -739,7 +843,7 @@ Chaque creature equipee apporte trois choses distinctes :
 
 Le type donne la direction generale du bonus. L'instinct donne la personnalite precise de la creature. Les statistiques donnent une consequence lisible et immediate dans le radar.
 
-En combat standard contre un humain, le joueur peut equiper jusqu'a 3 creatures, dont au maximum 1 creature utilitaire. Ces creatures ne remplacent pas le heros : elles modifient son radar et lui donnent acces a des instincts.
+En combat standard contre un humain, le joueur peut equiper jusqu'a 3 creatures, dont au maximum 1 creature Arcane. Ces creatures ne remplacent pas le heros : elles modifient son radar et lui donnent acces a des instincts.
 
 Regle importante :
 
@@ -785,7 +889,7 @@ Le type dominant vient des creatures equipees :
 | 2 creatures du meme type | Build de ce type |
 | 3 creatures du meme type | Build de ce type renforce |
 | 3 creatures de types differents | Build normal polyvalent |
-| 2 creatures typees + 1 utilitaire | Build du type majoritaire |
+| 2 creatures typees + 1 Arcane | Build du type majoritaire |
 
 Le type dominant transforme l'habillage des actions du heros et peut leur donner une coloration elementaire.
 
@@ -845,7 +949,7 @@ La charge ne doit pas etre un simple forfait identique pour toutes les actions. 
 | Feu | le combattant inflige des degats |
 | Eau | le combattant gagne de la Garde ou finit son tour avec des PA conserves |
 | Vent | le combattant reussit une Feinte, agit en premier ou gagne un peu de Garde |
-| Utilitaire | le combattant joue regulierement, conserve des PA ou gagne de la Garde |
+| Arcane | le combattant joue regulierement, conserve des PA ou gagne de la Garde |
 
 Les signatures hybrides cumulent plusieurs sources de charge, avec un plafond par evenement pour eviter qu'une seule action remplisse toute la jauge. Exemple : Feu + Eau charge a la fois par degats infliges et par economie defensive ; Feu + Vent charge par pression offensive et Feinte ; Eau + Vent charge par Garde, PA conserves et Feinte.
 
@@ -853,17 +957,17 @@ Hierarchie recommandee :
 
 | Composition | Signature |
 | ----------- | --------- |
-| 1 fawna | Signature simple du type ou utilitaire |
+| 1 fawna | Signature simple du type ou Arcane |
 | 2 fawnas du meme type | Signature renforcee du type |
 | 2 fawnas elementaires differents | Signature hybride des deux types |
-| 1 type elementaire + 1 Utilitaire | Signature tactique du type |
+| 1 type elementaire + 1 Arcane | Signature tactique du type |
 | 3 fawnas avec majorite claire | Signature dominante |
 | Feu + Eau + Vent | Triade instable |
-| Feu + Eau + Utilitaire | Alchimie de guerre |
-| Feu + Vent + Utilitaire | Assaut fulgurant |
-| Eau + Vent + Utilitaire | Verrou mouvant |
+| Feu + Eau + Arcane | Alchimie de guerre |
+| Feu + Vent + Arcane | Assaut fulgurant |
+| Eau + Vent + Arcane | Verrou mouvant |
 
-Un seul fawna utilitaire peut etre equipe a la fois. La table ne doit donc jamais prevoir de cas avec 2 Utilitaires.
+Un seul fawna Arcane peut etre equipe a la fois. La table ne doit donc jamais prevoir de cas avec 2 Arcanes.
 
 Les Signatures sont actives, contrairement aux instincts qui restent passifs ou conditionnels. Elles doivent avoir un effet immediatement comprehensible et un message de resolution simple.
 
@@ -874,7 +978,7 @@ La resolution doit suivre une grammaire d'effets atomiques :
 | Feu | degats | Brulure |
 | Eau | retrait de `1 PA` au prochain tour | Paralysie |
 | Vent | rupture de Garde, avec degats d'excedent | Blessure |
-| Utilitaire | - | rider : `+1 PA` au lanceur |
+| Arcane | - | rider : `+1 PA` au lanceur |
 
 La composition applique ensuite ces briques :
 
@@ -883,7 +987,7 @@ La composition applique ensuite ces briques :
 | 1 element | partie directe seule | annule Feu/Vent, ne contre pas le controle Eau pur |
 | 2 memes elements | directe + secondaire de l'element | effet direct Feu/Vent annule, secondaire conserve |
 | 2 elements differents | directes reduites des deux elements + 1 secondaire | effet direct Feu/Vent annule, secondaire conserve |
-| element + Utilitaire | directe + secondaire de l'element + `+1 PA` lanceur | comme renforcee |
+| element + Arcane | directe + secondaire de l'element + `+1 PA` lanceur | comme renforcee |
 | 3 fawnas | signature propre, mais doit exprimer tous les types presents | selon ses effets directs |
 
 Exemples d'effets dans le prototype :
@@ -893,14 +997,14 @@ Exemples d'effets dans le prototype :
 | Signature Feu simple | 1 Feu | inflige des degats |
 | Signature Eau simple | 1 Eau | retire `1 PA` au prochain tour |
 | Signature Vent simple | 1 Vent | reduit la Garde et convertit l'excedent en degats de rupture |
-| Signature utilitaire simple | 1 Utilitaire | donne `+1 PA`, sans depasser le maximum de PA sauf effet special |
+| Signature Arcane simple | 1 Arcane | donne `+1 PA`, sans depasser le maximum de PA sauf effet special |
 | Signature Feu renforcee | 2 Feu ou majorite Feu | inflige des degats et Brulure avec une valeur plus forte |
 | Signature Eau renforcee | 2 Eau ou majorite Eau | retire `1 PA` au prochain tour et applique Paralysie |
 | Signature Vent renforcee | 2 Vent ou majorite Vent | reduit fortement la Garde, convertit l'excedent en degats de rupture et applique Blessure |
 | Triade instable | Feu + Eau + Vent | utilise l'element actif courant : Feu, Eau ou Vent |
-| Alchimie de guerre | Feu + Eau + Utilitaire | degats + Brulure, `+1 PA` lanceur et `-1 PA` cible au prochain tour |
-| Assaut fulgurant | Feu + Vent + Utilitaire | degats Feu, rupture Vent, Brulure, `+1 PA` lanceur et bonus si la cible est a `0 PA` |
-| Verrou mouvant | Eau + Vent + Utilitaire | `-1 PA` au prochain tour, Paralysie, rupture de Garde et Blessure |
+| Alchimie de guerre | Feu + Eau + Arcane | degats + Brulure, `+1 PA` lanceur et `-1 PA` cible au prochain tour |
+| Assaut fulgurant | Feu + Vent + Arcane | degats Feu, rupture Vent, Brulure, `+1 PA` lanceur et bonus si la cible est a `0 PA` |
+| Verrou mouvant | Eau + Vent + Arcane | `-1 PA` au prochain tour, rupture de Garde et Blessure |
 
 La Triade instable affiche toujours son element actif. Cet element peut changer selon le dernier element joue par le combattant ; si l'action precedente n'a pas d'element, l'element actif precedent est conserve. Pour rendre la Triade jouable meme sans type dominant sur les actions de base, le prototype peut lire Entaille comme Feu, Garde comme Eau et Feinte comme Vent. Art conserve l'element actif courant, sauf variante explicitement typee.
 
@@ -1001,9 +1105,9 @@ Matrice simple pour la verticale :
 | Feu | Puissance | Critique | pression, burst, risque |
 | Eau | Defense | Perception | controle, endurance, lecture |
 | Vent | Vitesse | Critique | vitesse, esquive, opportunisme |
-| Utilitaire | Defense | Perception | confort tactique sans bonus de type ultime |
+| Arcane | Defense | Perception | confort tactique sans bonus de type ultime |
 
-Les utilitaires peuvent modifier le radar de maniere plus speciale : extension translucide sur l'axe PA, pulsation de Perception, marqueur de reduction de cout ou indicateur de recuperation. Ils ne doivent pas compter pour les bonus de specialisation elementaire.
+Les Arcanes peuvent modifier le radar de maniere plus speciale : extension translucide sur l'axe PA, pulsation de Perception, marqueur de reduction de cout ou indicateur de recuperation. Ils ne doivent pas compter pour les bonus de specialisation elementaire.
 
 ### Evolution et contribution radar
 
@@ -1118,27 +1222,27 @@ Le Sanctuaire donne une fonction aux doublons :
 - creature d'une espece deja connue ;
 - creature capturee surtout pour l'XP.
 
-## 18. Limite des creatures utilitaires
+## 18. Limite des creatures Arcanes
 
 Regle recommandee :
 
-> Le joueur peut equiper 3 creatures maximum, dont 0 ou 1 utilitaire.
+> Le joueur peut equiper 3 creatures maximum, dont 0 ou 1 Arcane.
 
 Compositions possibles :
 
 - specialisation pure : Feu / Feu / Feu ;
-- specialisation modulee : Feu / Feu / Utilitaire ;
+- specialisation modulee : Feu / Feu / Arcane ;
 - hybride elementaire : Feu / Eau / Vent ;
-- hybride assiste : Feu / Eau / Utilitaire.
+- hybride assiste : Feu / Eau / Arcane.
 
 Raison :
 
-- les utilitaires sont universels ;
+- les Arcanes sont universels ;
 - ils peuvent facilement dominer les creatures typees ;
 - ils peuvent casser l'economie des PA, des critiques ou de l'initiative ;
 - ils rendent le radar et l'identite du build moins lisibles s'ils sont trop nombreux.
 
-Le bonus ultime de type demande donc de renoncer aux utilitaires.
+Le bonus ultime de type demande donc de renoncer aux Arcanes.
 
 Cette limite peut etre assouplie plus tard par une regle speciale, une arme, un talent ou un mode de jeu, mais elle ne doit pas etre la regle de base.
 
@@ -1216,7 +1320,9 @@ Etat actuel du prototype :
 - Niveau II -> Niveau III : `7` combats gagnes supplementaires ;
 - les combats d'entrainement ne comptent pas pour eviter le farm sans enjeu ;
 - le compteur est attache a la creature capturee individuellement, pas a l'espece ;
-- la fiche de creature affiche l'avancement vers le prochain niveau.
+- la fiche de creature affiche l'avancement vers le prochain niveau ;
+- une sequence de montee de niveau se joue lorsqu'une creature equipee evolue apres un combat ;
+- cette sequence montre le sprite de la creature, le passage de niveau, les statistiques heritees qui changent et la progression de l'instinct.
 
 Exemple :
 
@@ -1268,6 +1374,15 @@ Autre exemple :
 - elle evolue niveau III : instinct III.
 
 Une creature capturee sans instinct reste sans instinct meme si elle evolue. Elle peut toujours etre utile pour ses statistiques, son type ou ses synergies, mais elle ne gagne pas retroactivement un instinct.
+
+Cap actuel du prologue :
+
+- le design long terme peut conserver un niveau d'instinct III ;
+- le prototype plafonne pour l'instant le niveau effectif d'instinct a II ;
+- ce cap evite que la premiere verticale donne trop vite acces aux versions finales des instincts ;
+- la sequence de level-up doit donc afficher l'amelioration atteinte sans promettre un palier encore absent du contenu jouable.
+
+Quand le contenu depassera le prologue, le cap pourra etre releve a III en meme temps que les ennemis, objectifs et bonus 12 associes.
 
 ## 22. Bonus de specialisation
 
@@ -1367,7 +1482,7 @@ Inconvenients :
 - identite parfois moins explosive ;
 - optimisation plus subtile.
 
-### Builds avec utilitaire
+### Builds avec Arcane
 
 Avantages :
 
@@ -1380,7 +1495,7 @@ Inconvenients :
 
 - renoncement au bonus 12 ;
 - moins de specialisation ;
-- risque de build trop generique si les utilitaires sont trop forts.
+- risque de build trop generique si les Arcanes sont trop forts.
 
 ## 25. Systeme de combat
 
@@ -1392,6 +1507,24 @@ Le combat est :
 - influence par les creatures, instincts et statistiques.
 
 Le heros agit directement. Les creatures ne sont pas des unites autonomes.
+
+Lisibilite actuelle du combat :
+
+- les actions sont verrouillees pendant le tour ennemi pour eviter les doubles resolutions ;
+- les jauges de PV, Garde et PA doivent rester visibles meme pendant les animations ;
+- les statuts importants ont un feedback visuel dedie ;
+- le journal de combat explique la cause des ruptures, brulures, paralysies et captures ;
+- les boutons d'action doivent signaler clairement l'indisponibilite par manque de PA, tour ennemi ou etat bloque.
+
+Dans le prototype en cours, les icones de statut visibles couvrent :
+
+| Statut | Icone UI | Lecture attendue |
+| ------ | -------- | ---------------- |
+| Brulure / Brulure legere | flamme | pression de degats automatiques |
+| Paralysie | eclair ou entrave | risque de blocage d'action |
+| Blessure / A decouvert | plaie | fragilisation de la Garde |
+
+Ces icones ne remplacent pas le journal. Elles donnent une lecture immediate, puis le journal donne le detail.
 
 ## 26. Niveau de challenge
 
@@ -1769,6 +1902,22 @@ La Feinte doit rester une reponse forte, mais elle ne doit pas donner une immuni
 
 Tous les statuts sont supprimes a la fin du combat. Ils ne doivent pas suivre le joueur dans l'exploration ou dans le combat suivant, sauf regle speciale explicitement introduite plus tard.
 
+Regle d'empilement actuelle :
+
+> Le prototype traite les grands statuts de type comme exclusifs sur une meme cible.
+
+Quand Brulure, Paralysie ou Blessure est appliquee, elle remplace les autres grands statuts de type deja presents sur la cible. Cette regle garde la lecture simple dans le prologue et evite les situations ou le joueur subit plusieurs couches de controle difficiles a comprendre.
+
+Exception de comportement :
+
+- si le statut applique n'est pas Paralysie, une action bloquee par Paralysie doit etre liberee ;
+- les statuts legers ou futurs effets temporaires pourront etre separes plus tard si le jeu a besoin de plus de profondeur.
+
+Direction long terme :
+
+- prologue : un grand statut actif maximum, tres lisible ;
+- contenu avance : empilement limite possible, mais seulement avec UI, journal et contre-jeu adaptes.
+
 Le joueur pourra aussi annuler un statut pendant le combat avec un objet pris dans son sac. Cette partie n'est pas prioritaire pour la premiere implementation du systeme de statuts, mais elle doit etre prevue dans les donnees : certains objets pourront purger Brulure, Paralysie, Blessure ou tous les statuts.
 
 ### Feinte contre actions de creatures
@@ -1932,7 +2081,7 @@ Plafond recommande :
 - 5 PA : plafond normal ;
 - 6 PA : etat exceptionnel, temporaire ou tres conditionnel.
 
-Les PA ne doivent jamais devenir une progression ouverte. Atteindre 6 PA doit rester rare et provenir principalement d'utilitaires, de bonus temporaires, de bonus 12 ou d'effets conditionnels clairement limites.
+Les PA ne doivent jamais devenir une progression ouverte. Atteindre 6 PA doit rester rare et provenir principalement d'Arcanes, de bonus temporaires, de bonus 12 ou d'effets conditionnels clairement limites.
 
 ## 31. Touche, esquive et coups manques
 
@@ -1997,7 +2146,7 @@ Recommandations :
 
 Le hasard ne doit pas voler la decision au joueur. Les chances de toucher doivent donc rester bornees et visibles dans l'interface lorsque cela compte.
 
-## 32. Exemple d'utilitaire PA
+## 32. Exemple d'Arcane PA
 
 ### Niveau 1 - Impulsion
 
@@ -2011,7 +2160,7 @@ Le hasard ne doit pas voler la decision au joueur. Les chances de toucher doiven
 
 - maximum de PA augmente de 1.
 
-Ce type d'utilitaire est puissant car il fonctionne dans presque tous les builds. Il justifie la limite de 1 utilitaire equipe.
+Ce type d'Arcane est puissant car il fonctionne dans presque tous les builds. Il justifie la limite de 1 Arcane equipe.
 
 ## 33. Critiques
 
@@ -2033,7 +2182,7 @@ Les builds critiques peuvent etre :
 - tres dynamiques ;
 - dependants de conditions.
 
-Les instincts et utilitaires peuvent modifier les effets des critiques, mais il faut eviter qu'un build critique devienne automatiquement optimal dans toutes les situations.
+Les instincts et Arcanes peuvent modifier les effets des critiques, mais il faut eviter qu'un build critique devienne automatiquement optimal dans toutes les situations.
 
 ## 34. Les deux types de combat
 
@@ -2150,6 +2299,17 @@ Progression recommandee :
 | 4e chasse et suivantes | 4 objectifs | possible |
 
 A partir de la 4e chasse, le joueur entre dans la boucle complete de capture. Les chasses ne reduisent plus leur nombre d'objectifs, sauf cas special volontaire : tutoriel avance, creature narrative, rencontre rare ou mode de jeu particulier.
+
+Etat actuel du tutoriel de capture :
+
+| Objectif | Role pedagogique | Recompense prototype |
+| -------- | ---------------- | -------------------- |
+| Reduire les PV sous 25 % | apprendre a affaiblir sans faire fuir | 25 |
+| Utiliser Garde au moins une fois | introduire la defense active | 18 |
+| Survivre 4 tours | installer la notion de tempo | 20 |
+| Capturer au-dessus de 90 % PV | objectif cache avance, lie a la Perception | 28 |
+
+Le dernier objectif est volontairement atypique : il sert a montrer que toutes les captures ne demandent pas seulement de frapper jusqu'au seuil bas. Il doit rester cache ou tres contextualise pour ne pas contredire la regle generale d'affaiblissement.
 
 Au briefing de chasse, la creature tire au hasard ses objectifs dans les listes compatibles avec son espece, son niveau de difficulte et la progression du joueur.
 
@@ -2490,7 +2650,7 @@ Instinct individuel possible :
 
 Type :
 
-- Utilitaire.
+- Arcane.
 
 Identite :
 
@@ -2510,7 +2670,7 @@ Instinct individuel possible :
 
 Type :
 
-- Utilitaire.
+- Arcane.
 
 Identite :
 
@@ -2530,7 +2690,7 @@ Instinct individuel possible :
 
 Type :
 
-- Utilitaire.
+- Arcane.
 
 Identite :
 
@@ -2608,7 +2768,7 @@ Plafonds recommandes pour les combats standards :
 | Initiative | 15 | 22 |
 | Perception | 5 | 7 via preparation dediee |
 
-Les combats standards peuvent aller plus haut parce qu'ils expriment le build complet : heros, creatures equipees, instincts de creatures, utilitaires et bonus de specialisation.
+Les combats standards peuvent aller plus haut parce qu'ils expriment le build complet : heros, creatures equipees, instincts de creatures, Arcanes et bonus de specialisation.
 
 Principe :
 
@@ -2737,7 +2897,7 @@ Les ennemis standards possedent un radar partiellement visible.
 
 Certaines informations restent cachees :
 
-- utilitaires ;
+- Arcanes ;
 - bonus exacts ;
 - synergies rares ;
 - capacites speciales.
@@ -2757,9 +2917,9 @@ Objectif :
 - encourager l'observation ;
 - eviter de transformer la capture en simple lecture de statistiques.
 
-## 45. Utilitaires dans le radar
+## 45. Arcanes dans le radar
 
-Les utilitaires modifient :
+Les Arcanes modifient :
 
 - la forme ;
 - les animations ;
@@ -3029,6 +3189,43 @@ Principe directeur :
 
 > Tout contenu qui sera repete 10 fois doit etre editable en donnees avant d'etre multiplie.
 
+### Etat actuel de production
+
+La verticale a maintenant valide plusieurs briques qui depassent le simple combat :
+
+- ecran d'accueil avec langue FR/EN, lancement normal et cheat de test ;
+- routeur d'ecrans : accueil, tutoriel, map, briefing, combat, level-up ;
+- sequence d'introduction jouable avec Nora et saisie du nom ;
+- dialogues de map avec effet typewriter, surlignage de noms et choix ;
+- transitions dialogue -> chasse -> recompense -> map ;
+- combats humains avec briefing, radar ennemi, equipe de fawnas et tutoriel Chad ;
+- level-up de fawnas apres victoire non entrainement ;
+- zones de capture lues depuis les objets de map, avec pools, niveaux et caps de contenu ;
+- mini-map de fawnas exterieure debloquee par Nora ;
+- mini-jeu Simon dans le puits ;
+- service marchand Archnide ;
+- haptique native iOS pour coffres, choix, portes, soins, impacts et zones de capture ;
+- shell iOS avec WebView et gestion des zones sures ;
+- layout mobile force sur iPadOS quand l'ergonomie tactile le demande ;
+- joystick virtuel deplacable, utilisable aussi dans le puzzle Simon.
+
+Ces elements doivent etre consideres comme des systemes de base de la verticale, pas comme des prototypes jetables.
+
+### Confort mobile et iOS
+
+La cible web reste centrale, mais le prototype a deja une branche d'usage iOS.
+
+Regles de conception :
+
+- les zones sures iOS doivent etre respectees dans les briefings, dialogues, combats et modales ;
+- le joystick ne doit pas bloquer les choix critiques ni les mini-jeux ;
+- les interactions tactiles importantes doivent avoir une protection contre le tap accidentel ;
+- l'haptique doit renforcer les evenements, pas remplacer le feedback visuel ;
+- les combats doivent rester lisibles en orientation mobile, notamment les PA, PV, Garde, statuts et boutons d'action ;
+- les modales doivent pouvoir se fermer sans masquer les boutons sous le home indicator.
+
+L'iPad peut utiliser le layout mobile si c'est le meilleur compromis de lisibilite et de controle. La largeur disponible ne suffit pas a justifier une interface desktop si l'entree principale reste tactile.
+
 ## 51. Objectif de la premiere verticale
 
 Contenu recommande :
@@ -3037,7 +3234,7 @@ Contenu recommande :
 - 1 bouclier ;
 - 3 types ;
 - 6 creatures typees ;
-- 3 utilitaires ;
+- 3 Arcanes ;
 - plusieurs instincts individuels possibles par espece ;
 - 1 emplacement d'instinct de chasse prepare pour les captures ;
 - inventaire de creatures ;
@@ -3054,6 +3251,24 @@ Contenu recommande :
 - PNJ d'entrainement rejouable ;
 - PNJ bloquant l'acces a la grotte ;
 - grotte de conclusion du prologue.
+
+Contenu actuellement present ou engage dans le prototype :
+
+- ecran d'accueil bilingue ;
+- tutoriel Nora d'arrivee et de capture ;
+- Flamillon comme premiere capture narrative ;
+- maison de Nora comme point de revelation de la mission ;
+- mini-map de zones de fawnas ;
+- huit fawnas capturables dans les donnees de rencontre : Braise-Corne, Flamillon, Plumevif, Zephyr, Loopio, Sillage, Nacrelame et Onde-Lente ;
+- pools de rencontre par zones de map, avec niveaux min/max et poids ;
+- caps de fawnas et d'instincts par zone pour controler la progression du contenu ;
+- Chad comme entraineur humain et support de tutoriel de build ;
+- adversaires humains declares en donnees : Chad, Ranbu, Orve, Ilda, Aragor ;
+- services Archnide dans la maison du puits ;
+- coffre Simon avec Echo ;
+- sequence de level-up des fawnas equipees ;
+- icones de statuts en combat ;
+- sortie de prologue `exit_prologue`.
 
 Priorites absolues :
 
@@ -3108,12 +3323,17 @@ Une fois ce circuit propre, on peut ajouter :
 - Un instinct doit encourager un comportement.
 - Un instinct appartient a une creature individuelle, pas a une progression permanente separee du heros.
 - Un instinct de creature peut etre prepare comme trace de chasse en capture, mais sans apporter type, effort, stats ou synergies.
-- Un utilitaire doit etre un joker, pas le meilleur choix par defaut.
+- Les caps de zone peuvent limiter les fawnas et instincts disponibles pour controler le rythme du prologue.
+- Un Arcane doit etre un joker, pas le meilleur choix par defaut.
 - Une capture doit enseigner la creature capturee.
 - Un bonus 12 doit transformer le gameplay.
 - Le radar doit etre utile, pas seulement joli.
 - Les rencontres doivent rester proches du niveau reel du joueur pour eviter les combats sans interet.
 - La progression permanente doit enrichir le heros sans annuler les builds.
+- La montee de niveau d'une creature doit etre lisible, celebratoire et liee a la creature exacte capturee.
+- Un tutoriel doit apparaitre quand le joueur a besoin du systeme, puis se taire quand il l'a compris.
+- Un secret de map doit encourager une interaction spatiale ou une lecture du lieu.
+- Sur mobile et iOS, la lisibilite tactique prime sur l'ambition de mise en page.
 - Le build temporaire doit etre flexible, mais la respecialisation permanente doit rester ritualisee.
 - La verticale doit tester la production de contenu autant que le gameplay.
 

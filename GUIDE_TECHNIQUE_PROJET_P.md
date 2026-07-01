@@ -372,7 +372,7 @@ En combat standard contre un humain, les créatures équipées servent à modifi
 Règles techniques :
 
 - le joueur peut équiper jusqu'à 3 créatures ;
-- une seule créature utilitaire peut être équipée dans ce groupe ;
+- une seule créature Arcane peut être équipée dans ce groupe ;
 - chaque créature équipée ajoute des statistiques héritées au radar ;
 - chaque créature équipée expose son instinct ;
 - le joueur choisit un seul instinct actif parmi les instincts des créatures équipées ;
@@ -381,7 +381,7 @@ Règles techniques :
 - les PA disponibles d'un adversaire humain sont définis dans sa fiche individuelle, pas dans son type générique, afin qu'un boss ou un duel spécial puisse changer d'économie d'action.
 - deux créatures équipées du même type donnent un type dominant au build ;
 - trois créatures de types différents donnent un build normal polyvalent ;
-- une créature utilitaire ne crée pas de type dominant, mais ne l'empêche pas si les deux autres créatures partagent un type.
+- une créature Arcane ne crée pas de type dominant, mais ne l'empêche pas si les deux autres créatures partagent un type.
 
 Radar de combat humain :
 
@@ -455,7 +455,7 @@ Répartition de départ pour la verticale :
 | Feu | +1 Puissance, +1 Critique |
 | Eau | +1 Défense, +1 Perception |
 | Vent | +1 Vitesse, +1 Critique |
-| Utilitaire | +1 Défense, +1 Perception |
+| Arcane | +1 Défense, +1 Perception |
 
 Certaines créatures peuvent aussi donner un bonus de Vitalité dans leurs bonus propres d'espèce ou de niveau. La Vitalité héritée suit la même règle data-driven que les autres stats héritées : elle vit dans `inheritedStats.speciesBonus` ou `inheritedStats.levelBonuses`, pas dans le composant de radar. Si une stat héritée dépasse le maximum du radar, l'excédent est perdu.
 
@@ -476,7 +476,7 @@ Règles de calcul recommandées :
 | Composition | `type` | `strength` |
 | --- | --- | --- |
 | 2 créatures du même type | type majoritaire | `majority` |
-| 2 créatures du même type + 1 utilitaire | type majoritaire | `majority` |
+| 2 créatures du même type + 1 Arcane | type majoritaire | `majority` |
 | 3 créatures du même type | type commun | `pure` |
 | 3 créatures du même type niveau III | type commun | `ultimate` |
 | 3 types différents | `null` | `none` |
@@ -658,7 +658,7 @@ Règles importantes :
 - Vitesse remplace l'ancienne Initiative. Elle détermine qui agit en premier et influence les chances de toucher.
 - Les actions offensives utilisent une chance de toucher de base de 90%, modifiée de 2% par point d'écart de Vitesse, bornée entre 75% et 98%.
 - Garde, Protection et Capture ne peuvent pas manquer.
-- Perception peut progresser via le radar joueur commun, puis sera enrichie à terme par runes, objets de chasse, services ou créatures utilitaires.
+- Perception peut progresser via le radar joueur commun, puis sera enrichie à terme par runes, objets de chasse, services ou créatures Arcanes.
 - Le radar normalise chaque stat selon son propre maximum.
 - Le radar doit rester lisible avant d'être spectaculaire.
 

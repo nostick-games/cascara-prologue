@@ -46,11 +46,14 @@ export class InstinctModal {
   close() {
     this.modal.hidden = true;
     this.shield.hidden = true;
+    this.modal.classList.remove("signature-modal-active");
+    this.list.classList.remove("signature-sequence-list");
     this.visibility.emitClose();
   }
 
   render(scrollTop = 0) {
-    this.list.classList.remove("signature-plain-list");
+    this.modal.classList.remove("signature-modal-active");
+    this.list.classList.remove("signature-plain-list", "signature-sequence-list");
     this.title.textContent = this.t("ui.affix_title");
     this.prompt.textContent = this.t(this.promptKey);
     setPixelButtonLabel(this.closeButton, this.t("ui.ok"));

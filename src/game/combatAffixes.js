@@ -1,5 +1,6 @@
 import { affixLevelValue } from "./affixEffects.js";
 import { rollChance } from "./combatFormulas.js";
+import { applyExclusiveStatus } from "./combatState.js";
 
 export class CombatAffixes {
   constructor({ addLog, combatDebug, creatureName, getCombat, renderCombatUi, syncCombat, t }) {
@@ -128,9 +129,9 @@ export class CombatAffixes {
 
     const damage = affixLevelValue(affix, affix.effect.statusDamageByLevel, 2);
     if (side === "enemy") {
-      combat.hero.statuses.brulure = { damage };
+      applyExclusiveStatus(combat.hero, "brulure", { damage });
     } else {
-      combat.enemy.statuses.brulure_legere = { damage };
+      applyExclusiveStatus(combat.enemy, "brulure_legere", { damage });
     }
     combat.affixUses[key] = 1;
     this.combatDebug("hunt_affix_status_applied", {

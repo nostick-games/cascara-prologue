@@ -1,8 +1,26 @@
 import { setPixelButtonLabel } from "../ui/PixelButton.js";
+import { assetPath } from "../utils/assetPath.js";
 import { nativeHaptic } from "../utils/nativeBridge.js";
 
 const defaultCombatCreatureSpriteFrameCount = 6;
 const heroDeathDisappearDelayMs = 1080;
+const statusIconDefinitions = [
+  {
+    ids: ["a_decouvert"],
+    icon: assetPath("assets/UI/combat/status_blessure.png"),
+    labelKey: "status.a_decouvert.name"
+  },
+  {
+    ids: ["brulure", "brulure_legere"],
+    icon: assetPath("assets/UI/combat/status_brulure.png"),
+    labelKey: "status.brulure.name"
+  },
+  {
+    ids: ["paralysie"],
+    icon: assetPath("assets/UI/combat/status_paralysie.png"),
+    labelKey: "status.paralysie.name"
+  }
+];
 const combatCreatureSpriteScales = {
   desktop: 4,
   mobile: 2.5,
@@ -214,6 +232,8 @@ export class CombatScreen {
     this.nodes.battleStage.classList.remove("enemy-charging", "enemy-entering", "enemy-captured", "enemy-fled", "hero-defeated", "hero-dying");
     this.nodes.battleStage.classList.add("enemy-awaiting");
     this.previousPaState = null;
+    this.renderStatusIcon(this.nodes.heroStatusIcon, null);
+    this.renderStatusIcon(this.nodes.enemyStatusIcon, null);
   }
 
   showUi() {
@@ -250,6 +270,8 @@ export class CombatScreen {
     nodes.enemyHpBar.style.width = `${(displayedEnemyHp / enemy.maxHp) * 100}%`;
     nodes.enemyGuardText.textContent = enemy.guard;
     nodes.enemyGuardBar.style.width = `${Math.min(100, enemy.guard * guardBarPointScale)}%`;
+    this.renderStatusIcon(nodes.heroStatusIcon, this.visibleStatus(hero.statuses));
+    this.renderStatusIcon(nodes.enemyStatusIcon, this.visibleStatus(enemy.statuses));
 
     this.renderPaDots({
       node: nodes.heroPaDots,
@@ -282,6 +304,29 @@ export class CombatScreen {
     this.capturePaState(combat, combat.phase);
     this.renderObjectives(combat);
     this.renderActionStates(combat);
+  }
+
+  visibleStatus(statuses = {}) {
+    return statusIconDefinitions.find((definition) => (
+      definition.ids.some((id) => Boolean(statuses?.[id]))
+    )) ?? null;
+  }
+
+  renderStatusIcon(node, status) {
+    if (!node) return;
+    if (!status) {
+      node.hidden = true;
+      node.removeAttribute("src");
+      node.removeAttribute("alt");
+      node.removeAttribute("title");
+      return;
+    }
+
+    const label = this.t(status.labelKey);
+    node.src = status.icon;
+    node.alt = label;
+    node.title = label;
+    node.hidden = false;
   }
 
   renderPaDots({

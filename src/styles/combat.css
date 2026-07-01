@@ -182,6 +182,30 @@
       z-index: 3;
     }
 
+    .combat-status-icon {
+      position: absolute;
+      top: 3px;
+      width: 48px;
+      height: 48px;
+      image-rendering: pixelated;
+      object-fit: contain;
+      z-index: 4;
+      filter: drop-shadow(0 4px 0 rgba(8, 10, 14, 0.35)) drop-shadow(0 8px 12px rgba(8, 10, 14, 0.25));
+      pointer-events: none;
+    }
+
+    .combat-status-icon[hidden] {
+      display: none;
+    }
+
+    .enemy-status-icon {
+      left: calc(100% + 10px);
+    }
+
+    .hero-status-icon {
+      right: calc(100% + 10px);
+    }
+
     .enemy-zone::before,
     .hero-zone::before {
       content: "";

@@ -439,6 +439,7 @@ const appShellTemplate = `
     <div id="game">
       <div class="battle-stage" id="battleStage">
         <div class="enemy-gauges">
+          <img class="combat-status-icon enemy-status-icon" id="enemyStatusIcon" alt="" hidden>
           <div class="bar-block">
             <div class="bar-head"><span id="enemyBarLabel"></span><span id="enemyHpText">0 / 0 PV</span></div>
             <div class="bar"><div class="bar-fill hp" id="enemyHpBar"></div></div>
@@ -459,6 +460,7 @@ const appShellTemplate = `
         </div>
 
         <div class="hero-gauges">
+          <img class="combat-status-icon hero-status-icon" id="heroStatusIcon" alt="" hidden>
           <div class="bar-block">
             <div class="bar-head"><span id="heroBarLabel"></span><span id="heroHpText">0 / 0 PV</span></div>
             <div class="bar"><div class="bar-fill hp" id="heroHpBar"></div></div>

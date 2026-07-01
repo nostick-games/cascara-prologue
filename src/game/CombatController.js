@@ -21,6 +21,7 @@ import {
   rollChance
 } from "./combatFormulas.js";
 import {
+  applyExclusiveStatus,
   applyCaptureProgress,
   createCombatState,
   createEnemyState,
@@ -894,7 +895,7 @@ export class CombatController {
 
     const intensity = typeStatusIntensity(combat.enemy);
     if (status.id === "brulure") {
-      combat.hero.statuses.brulure = { damage: intensity };
+      applyExclusiveStatus(combat.hero, "brulure", { damage: intensity });
       this.combatDebug("creature_art_status_applied", {
         status: status.id,
         damage: intensity,
@@ -915,7 +916,7 @@ export class CombatController {
     }
 
     if (status.id === "paralysie") {
-      combat.hero.statuses.paralysie = { blockChance: intensity };
+      applyExclusiveStatus(combat.hero, "paralysie", { blockChance: intensity });
       this.combatDebug("creature_art_status_applied", {
         status: status.id,
         blockChance: intensity,
@@ -936,7 +937,7 @@ export class CombatController {
     }
 
     if (status.id === "a_decouvert") {
-      combat.hero.statuses.a_decouvert = { guardLoss: intensity };
+      applyExclusiveStatus(combat.hero, "a_decouvert", { guardLoss: intensity });
       this.combatDebug("creature_art_status_applied", {
         status: status.id,
         guardLoss: intensity,
@@ -1096,15 +1097,15 @@ export class CombatController {
 
   applySignatureBurn(target, damage = 2) {
     const statusId = target === this.combat?.hero ? "brulure" : "brulure_legere";
-    target.statuses[statusId] = { damage };
+    applyExclusiveStatus(target, statusId, { damage });
   }
 
   applySignatureParalysis(target, blockChance = 0.25) {
-    target.statuses.paralysie = { blockChance };
+    applyExclusiveStatus(target, "paralysie", { blockChance });
   }
 
   applySignatureExposed(target, guardLoss = 3) {
-    target.statuses.a_decouvert = { guardLoss, ruptureScale: 0.5 };
+    applyExclusiveStatus(target, "a_decouvert", { guardLoss, ruptureScale: 0.5 });
   }
 
   applyGuardRupture(target, guardLoss) {

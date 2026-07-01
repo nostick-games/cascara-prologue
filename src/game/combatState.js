@@ -76,6 +76,15 @@ export function createCombatState({ hero, enemy, build, objectives }) {
   };
 }
 
+export function applyExclusiveStatus(target, statusId, statusState) {
+  target.statuses = {
+    [statusId]: statusState
+  };
+  if (statusId !== "paralysie" && "blockedActionId" in target) {
+    target.blockedActionId = null;
+  }
+}
+
 export function spendActionPoints(hero, cost) {
   if (hero.pa < cost) return false;
   hero.pa -= cost;
